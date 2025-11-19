@@ -16,7 +16,7 @@ public class shooterTest3 extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        double targetVelocity = -1500;
+        double targetVelocity = -1200;
         double currentVelocity;
 
 
