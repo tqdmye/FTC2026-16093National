@@ -9,36 +9,35 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name = "IntakeTest")
 public class IntakeTest extends LinearOpMode {
 
-    private DcMotorEx benzMotor;
+
 
     private DcMotorEx shooterMotorR;
     private DcMotorEx shooterMotorL;
     private DcMotorEx intakeMotor;
-    private Servo intakeLeft;
-    private Servo intakeRight;
+
     @Override
     public void runOpMode() throws InterruptedException {
+        double targetVelocity = -1200;
+        double currentVelocity;
 
-        DcMotorEx frontLeftMotor = hardwareMap.get(DcMotorEx.class,"leftFrontMotor");
-        DcMotorEx backLeftMotor = hardwareMap.get(DcMotorEx.class,"leftBackMotor");
-        DcMotorEx frontRightMotor = hardwareMap.get(DcMotorEx.class,"rightFrontMotor");
-        DcMotorEx backRightMotor = hardwareMap.get(DcMotorEx.class,"rightBackMotor");
-        DcMotorEx shooterMotorL = hardwareMap.get(DcMotorEx.class,"shooterMotorL");
-        DcMotorEx shooterMotorR = hardwareMap.get(DcMotorEx.class,"shooterMotorR");
-        DcMotorEx intakeMotor = hardwareMap.get(DcMotorEx.class,"intakeMotor");
-        DcMotorEx benzMotor = hardwareMap.get(DcMotorEx.class,"benzMotor");
+        DcMotorEx frontLeftMotor = hardwareMap.get(DcMotorEx.class,"leftFront");
+        DcMotorEx backLeftMotor = hardwareMap.get(DcMotorEx.class,"leftRear");
+        DcMotorEx frontRightMotor = hardwareMap.get(DcMotorEx.class,"rightFront");
+        DcMotorEx backRightMotor = hardwareMap.get(DcMotorEx.class,"rightRear");
+        DcMotorEx shooterMotor = hardwareMap.get(DcMotorEx.class,"shooter");
+        DcMotorEx preShooterMotor = hardwareMap.get(DcMotorEx.class,"preShooter");
+        DcMotorEx intakeMotor = hardwareMap.get(DcMotorEx.class,"intake");
+
 
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE); // only for this robot (Broken motor)
 
-        double motorInput = 1.0;
+        shooterMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        shooterMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
-        intakeMotor = hardwareMap.get(DcMotorEx.class,"intakeMotor");
-        intakeLeft = hardwareMap.get(Servo.class,"intakeLeft");
-        intakeRight = hardwareMap.get(Servo.class,"intakeRight");
 
-        intakeRight.setDirection(Servo.Direction.REVERSE);
-        intakeLeft.setDirection(Servo.Direction.FORWARD);
+
+
 
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
@@ -46,11 +45,25 @@ public class IntakeTest extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()) {
-            intakeMotor.setPower(motorInput);
+            shooterMotor.setVelocity(targetVelocity);
+            currentVelocity = shooterMotor.getVelocity();
+            telemetry.addData("currentVelocity", shooterMotor.getVelocity());
+            telemetry.addData("Difference", Math.abs(currentVelocity-targetVelocity));
+            telemetry.update();
 
-            intakeLeft.setPosition(1);
-            intakeRight.setPosition(1);
+            if (gamepad1.right_bumper){
+                intakeMotor.setPower(-1);
+            } else {
+                intakeMotor.setPower(0);
+            }
 
+            if ((Math.abs(currentVelocity-targetVelocity) <= 60) && (gamepad1.left_bumper)) {
+                preShooterMotor.setPower(1);
+
+            } else {
+                preShooterMotor.setPower(0);
+
+            }
 
             double y = -gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x * 1.1;
