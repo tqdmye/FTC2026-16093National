@@ -15,14 +15,13 @@ public class MecanumDrive extends SubsystemBase {
     public MecanumDrive(Telemetry telemetry, final HardwareMap hardwareMap) {
         this.telemetry = telemetry;
 
-        frontLeftMotor = hardwareMap.get(DcMotorEx.class, "leftFrontMotor");
-        backLeftMotor = hardwareMap.get(DcMotorEx.class, "leftBackMotor");
-        frontRightMotor = hardwareMap.get(DcMotorEx.class, "rightFrontMotor");
-        backRightMotor = hardwareMap.get(DcMotorEx.class, "rightBackMotor");
+        frontLeftMotor = hardwareMap.get(DcMotorEx.class, "leftFront");
+        backLeftMotor = hardwareMap.get(DcMotorEx.class, "leftRear");
+        frontRightMotor = hardwareMap.get(DcMotorEx.class, "rightFront");
+        backRightMotor = hardwareMap.get(DcMotorEx.class, "rightRear");
 
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void drive(double y, double x, double rx) {
