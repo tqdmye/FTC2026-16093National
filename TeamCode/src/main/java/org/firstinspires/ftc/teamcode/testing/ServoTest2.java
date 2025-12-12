@@ -18,8 +18,8 @@ public class ServoTest2 extends LinearOpMode {
     public static boolean reverse = false;
     public static double servo_pos1 = 0.5;
 
-    public static String servo_name1 = null ;
-    private Servo servo0= null;
+    public static String servo_name1 = "spindexer" ;
+    private Servo servo0;
 
     @Override
     public void runOpMode() {

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.testing;
 
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -8,51 +7,90 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 
 @TeleOp(name = "motor test", group = "test")
 @Config
 public class MotorTest extends LinearOpMode {
 
-    private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+    private final Telemetry telemetry_M =
+            new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     public static int encoder_position = 1150;
     public static double max_power = 1;
-    public static int Velocity = 1800;
+    public static int shooterVelocity = 1800;
+    public static int motorVelocity = 1800;
     public static boolean read_only = false;
     public static boolean reverse_0 = false;
     public static boolean reset = true;
     public static boolean set_power_mode = true;
     public static boolean isSetVelocity = false;
     public static boolean otherMotor = false;
-
+    public static String motor_name_0 = "leftFront";
+    public static String motor_name_1 = "leftRear";
+    public static  String motor_name_2 = "rightFront";
+    public static  String motor_name_3 = "rightRear";
 
 
     @Override
     public void runOpMode() {
-        DcMotorEx frontLeftMotor = hardwareMap.get(DcMotorEx.class, "leftFrontMotor");
-        DcMotorEx frontRightMotor = hardwareMap.get(DcMotorEx.class, "rightFrontMotor");
-        DcMotorEx backLeftMotor = hardwareMap.get(DcMotorEx.class, "leftBackMotor");
-        DcMotorEx backRightMotor = hardwareMap.get(DcMotorEx.class, "rightBackMotor");
+        DcMotorEx motor0 = hardwareMap.get(DcMotorEx.class, motor_name_0);
+        DcMotorEx motor1 = hardwareMap.get(DcMotorEx.class, motor_name_1);
+        DcMotorEx motor2 = hardwareMap.get(DcMotorEx.class, motor_name_2);
+        DcMotorEx motor3 = hardwareMap.get(DcMotorEx.class, motor_name_3);
+        motor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotor.Direction.REVERSE);
+        motor0.setDirection(DcMotor.Direction.REVERSE);
 
+
+
+        motor1.setDirection(DcMotor.Direction.REVERSE);
         waitForStart();
 
         while (opModeIsActive()) {
-            frontLeftMotor.setPower(0.1);
-            frontRightMotor.setPower(0.1);
-            backLeftMotor.setPower(0.1);
-            backRightMotor.setPower(0.1);
+            if (set_power_mode) {
+                if (read_only) {
+                    motor0.setPower(0);
+                    motor1.setPower(0);
+                    motor2.setPower(0);
+                    motor3.setPower(0);
 
+                } else {
+                    motor0.setPower(max_power);
+                    motor1.setPower(max_power);
+                    motor3.setPower(max_power);
+                    motor2.setPower(max_power);
+                }
+                motor0.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                motor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                motor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                motor3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            telemetry_M.addData("left front: ", frontLeftMotor.getVelocity());
-            telemetry_M.addData("left back: ", backLeftMotor.getVelocity());
-            telemetry_M.addData("right front: ", frontRightMotor.getVelocity());
-            telemetry_M.addData("right back: ", backRightMotor.getVelocity());
+            } else {
+                if (!read_only) {
+                    if (isSetVelocity) {
+                        motor0.setVelocity(shooterVelocity);
+                    } else {
+                        motor0.setTargetPosition(encoder_position);
+                        motor0.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        motor0.setPower(max_power);
+
+                        sleep(10000);
+                        motor0.setTargetPosition(0);
+                        motor0.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        motor0.setPower(max_power);
+                    }
+                }
+                telemetry_M.addData("is busy_1", motor0.isBusy());
+                //                telemetry_M.addData("encoder_1", motor0.getCurrentPosition());
+                //                telemetry_M.addData("is busy_3", motor1.isBusy());
+                //                telemetry_M.addData("encoder_2", motor1.getCurrentPosition());
+            }
+
+            telemetry_M.addData("velocity_0", motor0.getVelocity());
+            telemetry_M.addData("velocity_1", motor1.getVelocity());
+            telemetry_M.addData("velocity_2", motor2.getVelocity());
+            telemetry_M.addData("velocity_3", motor3.getVelocity());
             telemetry_M.update();
         }
     }
