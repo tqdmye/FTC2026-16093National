@@ -53,7 +53,7 @@ public class testColor extends LinearOpMode {
             boolean isPurple = (r + b) / 2 > g && r > 80 && b > 80;
 
             double distance = ((DistanceSensor) revColorSensor).getDistance(DistanceUnit.CM);
-            if (distance <= Constants.ColorConstants.DIS_BOUNDARY && !inZone) {
+            if (distance <= Constants.ballDetectionConstants.DIS_BOUNDARY && !inZone) {
 
                 if (isPurple) {
                     colorRecord.add(1);   // 紫色
@@ -63,7 +63,7 @@ public class testColor extends LinearOpMode {
                 inZone = true;
             }
             //2.2cm以内允许检测并记录，紫色记录为1，绿色记录为0
-            if (distance > Constants.ColorConstants.DIS_BOUNDARY){
+            if (distance > Constants.ballDetectionConstants.DIS_BOUNDARY){
                 inZone =  false;
             }
 

@@ -1,18 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 //在cyz发的limelight111版本的基础上加了lasttx，用来判断丢失时云台转的方向
+
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
-@TeleOp(name = "Limelighttest")
-public class LimelightCamera extends LinearOpMode {
+@TeleOp(name = "shooter")
+public class Shooter extends LinearOpMode {
 
     private Limelight3A limelight;
 
@@ -23,16 +23,20 @@ public class LimelightCamera extends LinearOpMode {
 
     int lostcount = 0;
 
+    private boolean Aligned = false;
+
     // 高斯权重
     private final double[] gaussianKernel = {0.06136, 0.24477, 0.38774, 0.24477, 0.06136};
-    private double previousTxFiltered = 0;  // 搞一个低通滤波器
+    private double previousTxFiltered = 0;  // 低通滤波器
 
     @Override
     public void runOpMode() throws InterruptedException {
-        DcMotorEx cameraMotor = hardwareMap.get(DcMotorEx.class, "cameraMotor");
+        DcMotorEx shooterUpMotor = hardwareMap.get(DcMotorEx.class, "shooterUpMotor");
+        DcMotorEx shooterDownMotor = hardwareMap.get(DcMotorEx.class, "shooterDownMotor");
 
 
-        cameraMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        shooterUpMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        shooterDownMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         limelight = hardwareMap.get(Limelight3A.class, "camera1");
 
@@ -49,8 +53,12 @@ public class LimelightCamera extends LinearOpMode {
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
         // See the note about this earlier on this page.[]\
-        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        frontLeftMotor.setDirection(DcMotorEx.Direction.REVERSE);
+
+
+
+        backLeftMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         waitForStart();
 
@@ -80,10 +88,13 @@ public class LimelightCamera extends LinearOpMode {
                         double kP = 0.01; // 减少幅度
                         double power = kP * txFiltered;
                         power = Math.max(-0.15, Math.min(0.15, power));
-                        cameraMotor.setPower(power);
+                        shooterUpMotor.setPower(power);
+                        shooterDownMotor.setPower(power);
                         telemetry.addData("MotorPower", power);
                     } else {
-                        cameraMotor.setPower(0);
+                        shooterUpMotor.setPower(0);
+                        shooterDownMotor.setPower(0);
+                        Aligned = true;
                         telemetry.addLine("Aligned (within deadband)");
                     }
 
@@ -98,25 +109,29 @@ public class LimelightCamera extends LinearOpMode {
                     double lostPower = 0.13; // 用小功率找
                     if (lastTx > 0) {
                         //最后在右边往左转
-                        cameraMotor.setPower(lostPower);
+                        shooterUpMotor.setPower(lostPower);
+                        shooterDownMotor.setPower(lostPower);
                     } else {
                         //最后在左边往右转
-                        cameraMotor.setPower(-lostPower);
+                        shooterUpMotor.setPower(-lostPower);
+                        shooterDownMotor.setPower(-lostPower);
                     }
                 } else {
-                    cameraMotor.setPower(0.15);
+                    shooterUpMotor.setPower(0.15);
+                    shooterDownMotor.setPower(0.15);
                 }
+            }
+            if(Aligned){
+                shooterUpMotor.setVelocity(1100);
+                shooterDownMotor.setVelocity(-1100);
             }
 
 
             telemetry.update();
-            double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
-            double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
+            double y = -gamepad1.left_stick_y;
+            double x = gamepad1.left_stick_x * 1.1;
             double rx = gamepad1.right_stick_x;
 
-            // Denominator is the largest motor power (absolute value) or 1
-            // This ensures all the powers maintain the same ratio,
-            // but only if at least one is out of the range [-1, 1]
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
             double frontLeftPower = (y + x + rx) / denominator;
             double backLeftPower = (y - x + rx) / denominator;
