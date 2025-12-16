@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-//在cyz发的limelight111版本的基础上加了lasttx，用来判断丢失时云台转的方向
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
@@ -11,142 +10,123 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import java.util.LinkedList;
 import java.util.Queue;
 
-@TeleOp(name = "shooter")
+@TeleOp(name = "shooter_diffy")
 public class Shooter extends LinearOpMode {
 
     private Limelight3A limelight;
 
-
-    private static final int WINDOW_SIZE = 6;  // 高斯窗口增大一点
+    private static final int WINDOW_SIZE = 6;
     private final Queue<Double> txHistory = new LinkedList<>();
-    private Double lastTx = null; // 上一次检测到的tx
+    private Double lastTx = null;
 
-    int lostcount = 0;
+    private boolean aligned = false;
 
-    private boolean Aligned = false;
-
-    // 高斯权重
-    private final double[] gaussianKernel = {0.06136, 0.24477, 0.38774, 0.24477, 0.06136};
-    private double previousTxFiltered = 0;  // 低通滤波器
+    private final double[] gaussianKernel =
+            {0.06136, 0.24477, 0.38774, 0.24477, 0.06136};
+    private double previousTxFiltered = 0;
 
     @Override
-    public void runOpMode() throws InterruptedException {
-        DcMotorEx shooterUpMotor = hardwareMap.get(DcMotorEx.class, "shooterUpMotor");
-        DcMotorEx shooterDownMotor = hardwareMap.get(DcMotorEx.class, "shooterDownMotor");
+    public void runOpMode() {
 
+        DcMotorEx shooterUp = hardwareMap.get(DcMotorEx.class, "shooterUp");
+        DcMotorEx shooterDown = hardwareMap.get(DcMotorEx.class, "shooterDown");
 
-        shooterUpMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        shooterDownMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        shooterUp.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        shooterDown.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         limelight = hardwareMap.get(Limelight3A.class, "camera1");
-
-        telemetry.setMsTransmissionInterval(11);
-
         limelight.pipelineSwitch(7);
         limelight.start();
-        DcMotorEx frontLeftMotor = hardwareMap.get(DcMotorEx.class,"leftFrontMotor");
-        DcMotorEx backLeftMotor = hardwareMap.get(DcMotorEx.class,"leftBackMotor");
-        DcMotorEx frontRightMotor = hardwareMap.get(DcMotorEx.class,"rightFrontMotor");
-        DcMotorEx backRightMotor = hardwareMap.get(DcMotorEx.class,"rightBackMotor");
-
-        // Reverse the right side motors. This may be wrong for your setup.
-        // If your robot moves backwards when commanded to go forwards,
-        // reverse the left side instead.
-        // See the note about this earlier on this page.[]\
-
-        frontLeftMotor.setDirection(DcMotorEx.Direction.REVERSE);
-
-
-
-        backLeftMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         waitForStart();
 
-        int notfound = 0;
-
-        // red 24
-        // blue 20
-        // tag 21,22,23
-
         while (opModeIsActive()) {
+
+            /* ==========================
+               1. 计算逻辑轴命令
+               ========================== */
+
+            double yawCmd = 0.0;    // 云台转向
+            double spinCmd = 0.0;   // shooter 转速
+
             LLResult result = limelight.getLatestResult();
 
-            if (result != null && result.isValid() && !result.getFiducialResults().isEmpty()) {
-                for (LLResultTypes.FiducialResult tag : result.getFiducialResults()) {
-                    double txRaw = tag.getTargetXDegrees();
-                    lastTx = txRaw; // 更新最后一次检测到的tx
+            if (result != null && result.isValid()
+                    && !result.getFiducialResults().isEmpty()) {
 
-                    if (txHistory.size() >= WINDOW_SIZE) txHistory.poll();
-                    txHistory.add(txRaw);
+                LLResultTypes.FiducialResult tag =
+                        result.getFiducialResults().get(0);
 
-                    double txFiltered = applyGaussianFilter();
-                    txFiltered = applyLowPassFilter(txFiltered);
+                double txRaw = tag.getTargetXDegrees();
+                lastTx = txRaw;
 
-                    double deadband = 7.0;
+                if (txHistory.size() >= WINDOW_SIZE) txHistory.poll();
+                txHistory.add(txRaw);
 
-                    if (Math.abs(txFiltered) > deadband) {
-                        double kP = 0.01; // 减少幅度
-                        double power = kP * txFiltered;
-                        power = Math.max(-0.15, Math.min(0.15, power));
-                        shooterUpMotor.setPower(power);
-                        shooterDownMotor.setPower(power);
-                        telemetry.addData("MotorPower", power);
-                    } else {
-                        shooterUpMotor.setPower(0);
-                        shooterDownMotor.setPower(0);
-                        Aligned = true;
-                        telemetry.addLine("Aligned (within deadband)");
-                    }
+                double txFiltered = applyGaussianFilter();
+                txFiltered = applyLowPassFilter(txFiltered);
 
-                    telemetry.addData("TagID", tag.getFiducialId());
-                    telemetry.addData("txRaw", txRaw);
-                    telemetry.addData("txFiltered", txFiltered);
-                    telemetry.addData("ty", tag.getTargetYDegrees());
-                }
-            } else {
-                //根据 lastTx 决定方向
-                if (lastTx != null) {
-                    double lostPower = 0.13; // 用小功率找
-                    if (lastTx > 0) {
-                        //最后在右边往左转
-                        shooterUpMotor.setPower(lostPower);
-                        shooterDownMotor.setPower(lostPower);
-                    } else {
-                        //最后在左边往右转
-                        shooterUpMotor.setPower(-lostPower);
-                        shooterDownMotor.setPower(-lostPower);
-                    }
+                double deadband = 7.0;
+                double kP = 0.01;
+
+                if (Math.abs(txFiltered) > deadband) {
+                    yawCmd = kP * txFiltered;
+                    yawCmd = clip(yawCmd, -0.15, 0.15);
+                    aligned = false;
                 } else {
-                    shooterUpMotor.setPower(0.15);
-                    shooterDownMotor.setPower(0.15);
+                    yawCmd = 0;
+                    aligned = true;
+                }
+
+                telemetry.addData("txRaw", txRaw);
+                telemetry.addData("txFiltered", txFiltered);
+
+            } else {
+                // 丢失目标：按 lastTx 扫描
+                aligned = false;
+                double searchPower = 0.13;
+
+                if (lastTx != null) {
+                    yawCmd = lastTx > 0 ? searchPower : -searchPower;
+                } else {
+                    yawCmd = searchPower;
                 }
             }
-            if(Aligned){
-                shooterUpMotor.setVelocity(1100);
-                shooterDownMotor.setVelocity(-1100);
+
+            /* ==========================
+               2. 对准后开启 shooter
+               ========================== */
+            if (aligned) {
+                spinCmd = 0.6;   // shooter 转速（功率制）
+                yawCmd = 0;      // 锁死转向
             }
 
+            /* ==========================
+               3. diffy 映射（唯一出口）
+               ========================== */
+            double upPower   = yawCmd + spinCmd;
+            double downPower = yawCmd - spinCmd;
+
+            upPower   = clip(upPower,   -1.0, 1.0);
+            downPower = clip(downPower, -1.0, 1.0);
+
+            shooterUp.setPower(upPower);
+            shooterDown.setPower(downPower);
+
+            telemetry.addData("yawCmd", yawCmd);
+            telemetry.addData("spinCmd", spinCmd);
+            telemetry.addData("upPower", upPower);
+            telemetry.addData("downPower", downPower);
+            telemetry.addData("Aligned", aligned);
 
             telemetry.update();
-            double y = -gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x * 1.1;
-            double rx = gamepad1.right_stick_x;
-
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (y + x + rx) / denominator;
-            double backLeftPower = (y - x + rx) / denominator;
-            double frontRightPower = (y - x - rx) / denominator;
-            double backRightPower = (y + x - rx) / denominator;
-
-            double powerCoefficent= 0.6;
-
-            frontLeftMotor.setPower(frontLeftPower*powerCoefficent);
-            backLeftMotor.setPower(backLeftPower*powerCoefficent);
-            frontRightMotor.setPower(frontRightPower*powerCoefficent);
-            backRightMotor.setPower(backRightPower*powerCoefficent);
+            idle();
         }
     }
 
+    /* ==========================
+       滤波工具函数
+       ========================== */
 
     private double applyGaussianFilter() {
         if (txHistory.isEmpty()) return 0.0;
@@ -156,18 +136,21 @@ public class Shooter extends LinearOpMode {
         double sum = 0;
 
         for (int i = 0; i < size; i++) {
-            // 权重对齐到最新值（右端）
-            int kernelIndex = gaussianKernel.length - size + i;
-            if (kernelIndex < 0) kernelIndex = 0;
-            sum += values[i] * gaussianKernel[kernelIndex];
+            int k = gaussianKernel.length - size + i;
+            if (k < 0) k = 0;
+            sum += values[i] * gaussianKernel[k];
         }
-
         return sum;
     }
-    private double applyLowPassFilter(double currentTxFiltered) {
-        double alpha = 0.1;  // 平滑系数，值越小越平滑
-        double filtered = alpha * currentTxFiltered + (1 - alpha) * previousTxFiltered;
+
+    private double applyLowPassFilter(double current) {
+        double alpha = 0.1;
+        double filtered = alpha * current + (1 - alpha) * previousTxFiltered;
         previousTxFiltered = filtered;
         return filtered;
+    }
+
+    private double clip(double v, double min, double max) {
+        return Math.max(min, Math.min(max, v));
     }
 }
