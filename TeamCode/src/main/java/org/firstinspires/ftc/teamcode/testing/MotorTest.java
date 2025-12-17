@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class MotorTest extends LinearOpMode {
 
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-    public static boolean read_only = true;
+    public static boolean read_only = false;
     public static boolean reverse = false;
     public static double motor_pow = 0.1;
 

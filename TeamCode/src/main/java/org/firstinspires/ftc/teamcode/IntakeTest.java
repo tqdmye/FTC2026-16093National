@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -28,70 +26,31 @@ public class IntakeTest extends LinearOpMode {
         DcMotorEx backLeftMotor = hardwareMap.get(DcMotorEx.class,"leftRear");
         DcMotorEx frontRightMotor = hardwareMap.get(DcMotorEx.class,"rightFront");
         DcMotorEx backRightMotor = hardwareMap.get(DcMotorEx.class,"rightRear");
-        DcMotorEx shooterMotor = hardwareMap.get(DcMotorEx.class,"shooter");
-        DcMotorEx preShooterMotor = hardwareMap.get(DcMotorEx.class,"preShooter");
+        DcMotorEx preShooterMotor = hardwareMap.get(DcMotorEx.class,"preshooter");
         DcMotorEx intakeMotor = hardwareMap.get(DcMotorEx.class,"intake");
 
+        Servo spinUp = hardwareMap.get(Servo.class,"spinUp");
+        Servo spinDown = hardwareMap.get(Servo.class,"spinDown");
 
+        frontLeftMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
-
-
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE); // only for this robot (Broken motor)
-
-        shooterMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        shooterMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-
-
-
-
-
-        intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         waitForStart();
 
         while(opModeIsActive()) {
 
-            currentVelocity = shooterMotor.getVelocity();
 
-            if(gamepad1.dpad_up){
-                shooterMotor.setVelocity(-900);
-                targetVelocity = -900;
-                if (Math.abs(currentVelocity-targetVelocity) <= 80){
-                    preShooterMotor.setPower(-1);
-                }
-
-            } else if (gamepad1.left_bumper){
-                shooterMotor.setVelocity(-1200);
-                targetVelocity = -1200;
-                if (Math.abs(currentVelocity-targetVelocity) <= 80){
-                    preShooterMotor.setPower(-1);
-                }
-
-            } else if (gamepad1.triangle) {
-                shooterMotor.setVelocity(-1800);
-                targetVelocity = -1800;
-                if (Math.abs(currentVelocity-targetVelocity) <= 80){
-                    preShooterMotor.setPower(-1);
-                }
-
-
-            } else {
-                targetVelocity = -700;
-                shooterMotor.setVelocity(-700);
-                preShooterMotor.setPower(0);
-            }
 
 
             if (gamepad1.right_bumper){
-                intakeMotor.setPower(-1);
+                intakeMotor.setPower(1);
             } else {
                 intakeMotor.setPower(0);
             }
-            telemetry.addData("currentVelocity", shooterMotor.getVelocity());
-            telemetry.addData("Difference", Math.abs(currentVelocity-targetVelocity));
-            telemetry.update();
+
 
             /*
             if ((Math.abs(currentVelocity-targetVelocity) <= 100) && (gamepad1.left_bumper)) {

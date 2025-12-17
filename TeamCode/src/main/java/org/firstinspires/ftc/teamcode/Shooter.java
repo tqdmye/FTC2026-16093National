@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import java.util.LinkedList;
 import java.util.Queue;
 
-@TeleOp(name = "shooter_diffy")
+@TeleOp(name = "shooter")
 public class Shooter extends LinearOpMode {
 
     private Limelight3A limelight;
@@ -35,7 +35,7 @@ public class Shooter extends LinearOpMode {
         shooterDown.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         limelight = hardwareMap.get(Limelight3A.class, "camera1");
-        limelight.pipelineSwitch(7);
+        limelight.pipelineSwitch(7); //目前还不知道程序中过滤ID的方法，或许可以先通过切换pipeline选择ID
         limelight.start();
 
         waitForStart();
@@ -84,7 +84,7 @@ public class Shooter extends LinearOpMode {
             } else {
                 // 丢失目标：按 lastTx 扫描
                 aligned = false;
-                double searchPower = 0.13;
+                double searchPower = 0.1;
 
                 if (lastTx != null) {
                     yawCmd = lastTx > 0 ? searchPower : -searchPower;

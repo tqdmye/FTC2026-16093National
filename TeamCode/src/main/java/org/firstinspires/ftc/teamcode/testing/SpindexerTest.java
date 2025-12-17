@@ -27,8 +27,8 @@ public class SpindexerTest extends LinearOpMode {
     private Servo servo0 = null;
     private Servo servo1 = null;
     public static volatile double servo_pos = 0.5;
-    public static String servo_name0 = "spinUp";
-    public static String servo_name1 = "spinDown";
+    public static String servo_name0 = "spindexerUp";
+    public static String servo_name1 = "spindexerDown";
 
 
     @Override
