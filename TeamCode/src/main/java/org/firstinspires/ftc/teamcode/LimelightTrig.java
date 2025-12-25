@@ -28,11 +28,11 @@ public class LimelightTrig extends LinearOpMode {
 
 
         odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
-        cameraMotor=hardwareMap.get(DcMotorEx.class, "cameraMotor");
+        cameraMotor = hardwareMap.get(DcMotorEx.class, "cameraMotor");
 
-        odo.setOffsets(100,90, DistanceUnit.MM);
+        odo.setOffsets(100, 90, DistanceUnit.MM);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        Pose2D pose2D = new Pose2D(DistanceUnit.MM,-1420,-1350, AngleUnit.DEGREES, Math.toRadians(0));
+        Pose2D pose2D = new Pose2D(DistanceUnit.MM, -1420, -1350, AngleUnit.DEGREES, Math.toRadians(0));
         odo.setPosition(pose2D);
 
         double localx,localy;
@@ -61,15 +61,15 @@ public class LimelightTrig extends LinearOpMode {
 
         while (opModeIsActive()) {
             odo.update();
-            localx=odo.getPosition().getX(DistanceUnit.MM);
-            localy=odo.getPosition().getY(DistanceUnit.MM);
+            localx =odo.getPosition().getX(DistanceUnit.MM);
+            localy =odo.getPosition().getY(DistanceUnit.MM);
             telemetry.addData("x",localx);
             telemetry.addData("y",localy);
-            headingAngle=odo.getPosition().getHeading(DEGREES);
-            double angle=Math.atan((-localx)/(-localy));
-            angle=Math.toDegrees(angle)+90;
+            headingAngle = odo.getPosition().getHeading(DEGREES);
+            double angle = Math.atan((-localx)/(-localy));
+            angle=Math.toDegrees(angle) + 90;
             telemetry.addData("angle",angle);
-            angle=headingAngle+angle;
+            angle = headingAngle+angle;
             cameraMotor.setTargetPosition((int) (angle));
             //cameraMotor.setTargetPosition((int) odo.getPosition().getHeading(RADIANS));
             telemetry.addData("degree", angle);
