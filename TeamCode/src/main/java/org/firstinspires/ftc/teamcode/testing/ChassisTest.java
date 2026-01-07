@@ -66,25 +66,6 @@ public class ChassisTest extends LinearOpMode {
                 motor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 motor3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            } else {
-                if (!read_only) {
-                    if (isSetVelocity) {
-                        motor0.setVelocity(shooterVelocity);
-                    } else {
-                        motor0.setTargetPosition(encoder_position);
-                        motor0.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        motor0.setPower(max_power);
-
-                        sleep(10000);
-                        motor0.setTargetPosition(0);
-                        motor0.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        motor0.setPower(max_power);
-                    }
-                }
-                telemetry_M.addData("is busy_1", motor0.isBusy());
-                //                telemetry_M.addData("encoder_1", motor0.getCurrentPosition());
-                //                telemetry_M.addData("is busy_3", motor1.isBusy());
-                //                telemetry_M.addData("encoder_2", motor1.getCurrentPosition());
             }
 
             telemetry_M.addData("velocity_0", motor0.getVelocity());

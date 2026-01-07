@@ -6,12 +6,12 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.FollowerBuilder;
 import com.pedropathing.ftc.drivetrains.MecanumConstants;
-import com.pedropathing.ftc.localization.constants.OTOSConstants;
+import com.pedropathing.ftc.localization.constants.PinpointConstants;
 import com.pedropathing.paths.PathConstraints;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Constants {
@@ -19,9 +19,9 @@ public class Constants {
 
          .useSecondaryDrivePIDF(true)
 
-        .mass(4)
-        .forwardZeroPowerAcceleration(-26.99)
-        .lateralZeroPowerAcceleration(-50.48)
+        .mass(10)
+        .forwardZeroPowerAcceleration(-33)
+        .lateralZeroPowerAcceleration(-63)
         .translationalPIDFCoefficients(new PIDFCoefficients(0.053, 0, 0.003, 0.02))
         .headingPIDFCoefficients(new PIDFCoefficients(0.6, 0, 0.01, 0.02))
         .drivePIDFCoefficients(new FilteredPIDFCoefficients(1,0.0,0.015,0.6,0.019))
@@ -34,7 +34,7 @@ public class Constants {
         return new FollowerBuilder(followerConstants, hardwareMap)
                 .pathConstraints(pathConstraints)
                 .mecanumDrivetrain(driveConstants)
-                .OTOSLocalizer(localizerConstants)
+                .pinpointLocalizer(localizerConstants)
                 /* other builder steps */
                 .build();
     }
@@ -46,23 +46,23 @@ public class Constants {
             .leftRearMotorName("leftRear")
             .leftFrontMotorName("leftFront")
 
-            .rightFrontMotorDirection(DcMotorEx.Direction.REVERSE)
-            .leftFrontMotorDirection(DcMotorEx.Direction.FORWARD)
-            .leftRearMotorDirection(DcMotorEx.Direction.FORWARD)
-            .rightRearMotorDirection(DcMotorEx.Direction.REVERSE)
+            .rightFrontMotorDirection(DcMotorEx.Direction.FORWARD)
+            .leftFrontMotorDirection(DcMotorEx.Direction.REVERSE)
+            .leftRearMotorDirection(DcMotorEx.Direction.REVERSE)
+            .rightRearMotorDirection(DcMotorEx.Direction.FORWARD)
             .xVelocity(82.28)
             .yVelocity(74.57);
 
             //.rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
 
-    public static OTOSConstants localizerConstants = new OTOSConstants()
-            .hardwareMapName("otos")
-            .linearUnit(DistanceUnit.INCH)
-            .angleUnit(AngleUnit.RADIANS)
-            .angularScalar(0.99)
-
-
-    .linearScalar(1);
+    public static PinpointConstants localizerConstants = new PinpointConstants()
+            .forwardPodY(0)
+            .strafePodX(-3.4375)
+            .distanceUnit(DistanceUnit.INCH)
+            .hardwareMapName("pinpoint")
+            .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
+            .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
+            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
 
 

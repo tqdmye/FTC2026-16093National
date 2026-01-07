@@ -9,9 +9,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-@TeleOp(name = "Servo Single Test", group = "tests")
+@TeleOp(name = "preshooter Limit Servo Test", group = "tests")
 @Config
-public class ServoSingleTest extends LinearOpMode {
+public class preshooterLimitServoTest extends LinearOpMode {
 
     private final Telemetry telemetry_M =
             new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
