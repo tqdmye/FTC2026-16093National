@@ -1,38 +1,29 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 
+import androidx.annotation.NonNull;
+
 import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.ParallelRaceGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.pedropathing.follower.Follower;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
-import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.commands.autos.driveAutoCommand;
 
 @Autonomous
 public class AutoSampleTest extends AutoCommandBase {
 
-    private Follower follower;
-    private Timer pathTimer, opModeTimer;
-
-    private Shooter shooter;
-    private Intake intake;
 
 
 
 
-    public enum PathState{
-        ScorePreload,
-        StartPos
 
-    }
-    PathState pathState;
 
     private final Pose startPose = new Pose(51.113, -47.224, Math.toRadians(309));
 
@@ -70,8 +61,19 @@ public class AutoSampleTest extends AutoCommandBase {
             intake1,intake2,intake3,
             openGateIntake,score4,intakeLoad,scoreMidLoad,prepareMid,park;
 
-    public void buildPaths() {
+    @NonNull
+    private Command openGateCommand(){
+        return new WaitCommand(700);
+    }
 
+
+
+
+
+
+
+
+    public Command runAutoCommand() {
         scorePreload = follower.pathBuilder()
                 .addPath(new BezierLine(startPose,scorePose))
                 .setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading())
@@ -192,21 +194,49 @@ public class AutoSampleTest extends AutoCommandBase {
                 .setLinearHeadingInterpolation(scoreMidPose.getHeading(), parkPose.getHeading())
                 .build();
 
-    }
 
-
-
-    public Command runAutoCommand() {
         return new SequentialCommandGroup(
-                new driveAutoCommand(follower,scorePreload),
-                autoCommand.shoot(),
-                new driveAutoCommand(follower,prepare1),
-                new driveAutoCommand(follower,intake1),
-                new driveAutoCommand(follower,after1),
-                new driveAutoCommand(follower,score1),
-                autoCommand.shoot()
+                new ParallelRaceGroup(
+                        new SequentialCommandGroup(
+                                new driveAutoCommand(follower,scorePreload),
+                                autoCommand.shoot(),
+                                new driveAutoCommand(follower,prepare1),
+                                new driveAutoCommand(follower,intake1),
+                                new driveAutoCommand(follower,after1),
+                                new driveAutoCommand(follower,score1),
+                                autoCommand.shoot(),
+                                new driveAutoCommand(follower,prepare2),
+                                new driveAutoCommand(follower,intake2),
+                                new driveAutoCommand(follower,after2),
+                                new driveAutoCommand(follower,openGate),
+                                openGateCommand(),
+                                new driveAutoCommand(follower,score2),
+                                autoCommand.shoot(),
+                                new driveAutoCommand(follower,prepare3),
+                                new driveAutoCommand(follower,intake3),
+                                new driveAutoCommand(follower,after3),
+                                new driveAutoCommand(follower,score3),
+                                autoCommand.shoot(),
+                                new driveAutoCommand(follower,prepareMid),
+                                new driveAutoCommand(follower,intakeLoad)
+                        ),
+                        new ParallelCommandGroup(
+                                autoCommand.intake(),
+                                autoCommand.accelerateSlow()
+                        )
+                ),
+                new ParallelRaceGroup(
+                        new SequentialCommandGroup(
+                                new driveAutoCommand(follower,scoreMidLoad),
+                                autoCommand.shoot(),
+                                new driveAutoCommand(follower,park)
 
-
+                        ),
+                        new ParallelCommandGroup(
+                                autoCommand.intake(),
+                                autoCommand.accelerateMid()
+                        )
+                )
 
 
         );
@@ -220,9 +250,6 @@ public class AutoSampleTest extends AutoCommandBase {
         return startPose;
     }
 
-    @Override
-    public boolean highSpeed() {
-        return false;
-    }
+
 }
 

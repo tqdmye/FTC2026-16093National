@@ -27,7 +27,9 @@ public abstract class AutoCommandBase extends LinearOpMode {
     public abstract Command runAutoCommand();
 
     public abstract Pose getStartPose();
-    public abstract boolean highSpeed();
+
+
+
 
     private void initialize() {
         follower = Constants.createFollower(hardwareMap);
@@ -38,6 +40,8 @@ public abstract class AutoCommandBase extends LinearOpMode {
         intake = new Intake(hardwareMap);
 
         this.autoCommand = new AutoCommand(shooter,intake);
+
+
     }
 
     @Override
