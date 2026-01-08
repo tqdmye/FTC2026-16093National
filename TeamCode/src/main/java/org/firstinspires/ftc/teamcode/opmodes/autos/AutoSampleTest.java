@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.ParallelRaceGroup;
@@ -15,14 +16,9 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.commands.autos.driveAutoCommand;
-
-@Autonomous
+@Config
+@Autonomous(name = "Auto Red Near Test")
 public class AutoSampleTest extends AutoCommandBase {
-
-
-
-
-
 
 
     private final Pose startPose = new Pose(51.113, -47.224, Math.toRadians(309));
@@ -65,12 +61,6 @@ public class AutoSampleTest extends AutoCommandBase {
     private Command openGateCommand(){
         return new WaitCommand(700);
     }
-
-
-
-
-
-
 
 
     public Command runAutoCommand() {
@@ -116,13 +106,6 @@ public class AutoSampleTest extends AutoCommandBase {
                 .build();
 
 
-
-
-
-//        afterOpenGate = follower.pathBuilder()
-//                .addPath(new BezierLine(new Point(openGatePose), new Point(prepare1Pose)))
-//                .setLinearHeadingInterpolation(openGatePose.getHeading(), prepare1Pose.getHeading())
-//                .build();
 
         score1 = follower.pathBuilder()
                 .addPath(new BezierLine(prepare1Pose, scorePose))
