@@ -77,6 +77,7 @@ public class Shooter {
 
         shooterDown.setVelocity(MotorConstants.SHOOTER_MID_VELOCITY.value);
         shooterUp.setVelocity(MotorConstants.SHOOTER_MID_VELOCITY.value);
+        shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_MID.value);
 
 
         targetVelocity = MotorConstants.SHOOTER_MID_VELOCITY.value;

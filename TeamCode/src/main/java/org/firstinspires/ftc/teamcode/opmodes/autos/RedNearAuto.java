@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.pedropathing.geometry.BezierCurve;
@@ -14,18 +13,17 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.commands.AccelerateAutoCommand;
 import org.firstinspires.ftc.teamcode.commands.autos.driveAutoCommand;
 @Config
-@Autonomous(name = "Auto Red Near Test 2")
-public class AutoSampleTest2 extends AutoCommandBase {
+@Autonomous(name = "Auto Red Near 3+9+3")
+public class RedNearAuto extends AutoCommandBase {
 
 
     private final Pose startPose = new Pose(51.113, -47.224, Math.toRadians(309));
 
-    private final Pose scorePose = new Pose(31.551, -31.884, Math.toRadians(317));
+    private final Pose scorePose = new Pose(26.551, -26.884, Math.toRadians(313));
 
-    private final Pose scoreMidPose = new Pose(11.416, -10.589, Math.toRadians(310));
+    private final Pose scoreMidPose = new Pose(11.416, -10.589, Math.toRadians(309));
 
     private final Pose prepare1Pose = new Pose(12.439, -27.770, Math.toRadians(270));
 
@@ -42,8 +40,8 @@ public class AutoSampleTest2 extends AutoCommandBase {
     private final Pose prepare3Pose = new Pose(-36.52, -28.23, Math.toRadians(270));
 
     private final Pose intake3Pose3 = new Pose(-36.52, -58, Math.toRadians(270));
-    private final Pose intakeLoad1 = new Pose(-42.991, -57, Math.toRadians(180));
-    private final Pose intakeLoad3 = new Pose(-62, -57, Math.toRadians(180));
+    private final Pose intakeLoad1 = new Pose(-42.991, -62, Math.toRadians(180));
+    private final Pose intakeLoad3 = new Pose(-62, -62 , Math.toRadians(180));
     private final Pose parkPose = new Pose(9.439, -27, Math.toRadians(270));
 
     private final Pose openGatePose2 = new Pose(72.982, 7.239, Math.toRadians(-1));
@@ -62,13 +60,7 @@ public class AutoSampleTest2 extends AutoCommandBase {
         return new WaitCommand(700);
     }
 
-    private Command accSlowCommand(AccelerateAutoCommand acc){
-        return new InstantCommand(()->acc.setState(AccelerateAutoCommand.AccelState.SLOW));
-    }
 
-    private Command accMidCommand(AccelerateAutoCommand acc){
-        return new InstantCommand(()->acc.setState(AccelerateAutoCommand.AccelState.MID));
-    }
 
 
     public Command runAutoCommand() {
@@ -187,10 +179,11 @@ public class AutoSampleTest2 extends AutoCommandBase {
 
 
         return new SequentialCommandGroup(
-                autoCommand.intakeAuto(intakeAutoCommand),
                 autoCommand.accelSlow(accCommand),
+                autoCommand.limitOff(),
+                autoCommand.intakeAuto(intakeAutoCommand),
                 new driveAutoCommand(follower,scorePreload),
-                autoCommand.shoot(),
+                autoCommand.shootPreload(),
                 new driveAutoCommand(follower,prepare1),
                 new driveAutoCommand(follower,intake1),
                 new driveAutoCommand(follower,after1),
@@ -209,16 +202,12 @@ public class AutoSampleTest2 extends AutoCommandBase {
                 new driveAutoCommand(follower,score3),
                 autoCommand.shoot(),
                 new driveAutoCommand(follower,prepareMid),
-
                 autoCommand.accelMid(accCommand),
                 new driveAutoCommand(follower,intakeLoad),
                 new driveAutoCommand(follower,scoreMidLoad),
-                autoCommand.shootMid()
-
-
-
-
-
+                autoCommand.shootMid(),
+                new driveAutoCommand(follower,park),
+                autoCommand.stopAll()
 
         );
 
