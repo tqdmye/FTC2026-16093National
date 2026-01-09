@@ -12,6 +12,7 @@ public class Intake {
     private DcMotorEx intake;
 
     private Servo preLimit;
+    private double powerScale = 1.0;
 
 
     public Intake(@NonNull HardwareMap hardwareMap){
@@ -19,9 +20,11 @@ public class Intake {
         this.preLimit = hardwareMap.get(Servo.class,"preLimit");
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
     }
-
+    public void setPowerScale(double scale) {
+        powerScale = scale;
+    }
     public void intake() {
-        intake.setPower(1);
+        intake.setPower(1.0 * powerScale);
     }
 
     public void outtake(){
@@ -33,11 +36,11 @@ public class Intake {
     }
 
     public void limitOn(){
-        preLimit.setPosition(0.15);
+        preLimit.setPosition(0.1);
     }
 
     public void limitOff(){
         preLimit.setPosition(0.4);
- 
+
     }
 }

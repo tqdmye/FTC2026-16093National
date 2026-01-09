@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Constants.MotorConstants;
 import org.firstinspires.ftc.teamcode.Subsystems.Constants.ServoConstants;
+import org.firstinspires.ftc.teamcode.Subsystems.Constants.ShootZone;
 
 public class Shooter {
     public DcMotorEx shooterDown, shooterUp, preShooter;
@@ -23,6 +24,8 @@ public class Shooter {
 
     public boolean isAsTargetVelocity;
     public double currentVelocity;
+
+    private double powerScale = 1.0;
 
 
 
@@ -53,21 +56,25 @@ public class Shooter {
         shooterDown.setVelocityPIDFCoefficients(MotorConstants.SHOOTER_P.value, MotorConstants.SHOOTER_I.value, MotorConstants.SHOOTER_D.value, MotorConstants.SHOOTER_F.value);
     }
 
+    public void setPowerScale(double scale) {
+        powerScale = scale;
+    }
 
-    public void servosetpositon_mid_4(){
-        shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_MID.value);
-    }
-    public void servosetpositon_mid_3(){
-        shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_MID.value+0.02);
 
-    }
-    public void servosetpositon_mid_2(){
-        shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_MID.value+0.04);
-    }
-    public void servosetpositon_mid_1(){
-        shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_MID.value+0.06);
-
-    }
+//    public void servosetpositon_mid_4(){
+//        shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_MID.value);
+//    }
+//    public void servosetpositon_mid_3(){
+//        shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_MID.value+0.02);
+//
+//    }
+//    public void servosetpositon_mid_2(){
+//        shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_MID.value+0.04);
+//    }
+//    public void servosetpositon_mid_1(){
+//        shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_MID.value+0.06);
+//
+//    }
 
 
 
@@ -78,6 +85,7 @@ public class Shooter {
         shooterDown.setVelocity(MotorConstants.SHOOTER_MID_VELOCITY.value);
         shooterUp.setVelocity(MotorConstants.SHOOTER_MID_VELOCITY.value);
         shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_MID.value);
+
 
 
         targetVelocity = MotorConstants.SHOOTER_MID_VELOCITY.value;
@@ -118,7 +126,7 @@ public class Shooter {
     }
 
     public void shoot(){
-        preShooter.setPower(1);
+        preShooter.setPower(1.0 * powerScale);
     }
 
 
@@ -144,4 +152,24 @@ public class Shooter {
         shooterDown.setPower(0);
         shooterUp.setPower(0);
     }
+    public void applyZone(ShootZone zone) {
+        switch (zone) {
+            case CLOSE:
+                accelerate_slow();
+                break;
+
+            case MID:
+                accelerate_mid();
+                break;
+
+            case FAR:
+                accelerate_fast();
+                break;
+
+            default:
+                accelerate_idle();
+                break;
+        }
+    }
+
 }

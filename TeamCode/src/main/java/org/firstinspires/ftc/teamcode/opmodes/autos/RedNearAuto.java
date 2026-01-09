@@ -62,7 +62,6 @@ public class RedNearAuto extends AutoCommandBase {
 
 
 
-
     public Command runAutoCommand() {
         scorePreload = follower.pathBuilder()
                 .addPath(new BezierLine(startPose,scorePose))

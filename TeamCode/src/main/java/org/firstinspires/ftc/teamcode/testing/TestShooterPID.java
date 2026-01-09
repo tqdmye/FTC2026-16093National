@@ -16,19 +16,19 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class TestShooterPID extends LinearOpMode {
   private final Telemetry telemetry_M =
-      new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+          new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
   public static boolean isPIDControl = true;
   public static double setP = 30;
   public static double setI = 0;
-  public static double setD = 0;
+  public static double setD = 15;
   public static double setF = 15;
   public static double setShooterPower = 1;
   public static boolean isPowerMode = false;
   public static double setPreShooterPower = 1;
-//  public static double shooterMinVelocity = 1400.0;
+  //  public static double shooterMinVelocity = 1400.0;
   public static double shooterVelocity = 1440;
 
-  public static volatile double servo_pos = 0.98;
+  public static volatile double servo_pos = 0.6;
 
   @Override
   public void runOpMode() throws InterruptedException {

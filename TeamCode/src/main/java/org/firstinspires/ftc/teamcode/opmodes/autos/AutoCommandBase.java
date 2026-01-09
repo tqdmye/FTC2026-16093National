@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
-import org.firstinspires.ftc.teamcode.commands.AccelerateAutoCommand;
-import org.firstinspires.ftc.teamcode.commands.IntakeAutoCommand;
+import org.firstinspires.ftc.teamcode.commands.autos.AccelerateAutoCommand;
+import org.firstinspires.ftc.teamcode.commands.autos.IntakeAutoCommand;
 
 import pedroPathing.Constants;
 

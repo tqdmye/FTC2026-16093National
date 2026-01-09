@@ -9,8 +9,8 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
-import org.firstinspires.ftc.teamcode.commands.AccelerateAutoCommand;
-import org.firstinspires.ftc.teamcode.commands.IntakeAutoCommand;
+import org.firstinspires.ftc.teamcode.commands.autos.AccelerateAutoCommand;
+import org.firstinspires.ftc.teamcode.commands.autos.IntakeAutoCommand;
 //import com.pedropathing.localization.Pose;
 //import com.pedropathing.pathgen.Point;
 
@@ -117,7 +117,7 @@ public class AutoCommand {
 
     public Command shootMid() {
         return new SequentialCommandGroup(
-                new InstantCommand(() -> shooter.servosetpositon_mid_4()),
+
                 new WaitCommand(130),
                 new InstantCommand(() -> shooter.shoot()),
                 new WaitCommand(1400),

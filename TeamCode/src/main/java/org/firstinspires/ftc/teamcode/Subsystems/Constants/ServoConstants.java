@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public enum ServoConstants {
 
-    SHOOTER_TURRET_SLOW(1),
-    SHOOTER_TURRET_MID(0.72),
-    SHOOTER_TURRET_LONG(0.59  ),
+    SHOOTER_TURRET_SLOW(0.88),
+    SHOOTER_TURRET_MID(0.66),
+    SHOOTER_TURRET_LONG(0.46  ),
 
     PRELIMIT_ON(0.1),
     PRELIMIT_OFF(0.4),
