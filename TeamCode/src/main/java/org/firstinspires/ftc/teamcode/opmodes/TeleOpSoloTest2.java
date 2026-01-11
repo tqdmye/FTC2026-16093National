@@ -15,10 +15,10 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Subsystems.LED;
-import org.firstinspires.ftc.teamcode.Subsystems.driving.NewMecanumDrive;
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
+import org.firstinspires.ftc.teamcode.subsystems.LED;
+import org.firstinspires.ftc.teamcode.subsystems.driving.NewMecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.commands.PedroAutoShootAdjustCommand;
 import org.firstinspires.ftc.teamcode.commands.PreLimitCommand;
 import org.firstinspires.ftc.teamcode.commands.TeleOpDriveCommand;
@@ -35,7 +35,7 @@ public class TeleOpSoloTest2 extends CommandOpModeEx {
     PedroAutoShootAdjustCommand pedroAutoShootAdjustCommand;
 
     Shooter shooter;
-    Intake intake;
+    IntakePreshooter intake;
     LED led;
 
     Follower follower;
@@ -70,7 +70,7 @@ public class TeleOpSoloTest2 extends CommandOpModeEx {
                 ()->(gamepadEx1.getButton(GamepadKeys.Button.RIGHT_BUMPER)),
                 ()->(isFieldCentric));
 
-        intake = new Intake(hardwareMap);
+        intake = new IntakePreshooter(hardwareMap);
 //        frontArm.setLED(false);
         shooter = new Shooter(hardwareMap);
 
@@ -138,12 +138,10 @@ public class TeleOpSoloTest2 extends CommandOpModeEx {
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.LEFT_BUMPER))
                 .whenPressed(new ParallelCommandGroup(
-                        new InstantCommand(()->intake.intake()),
-                        new  InstantCommand(()->shooter.shoot())        )
+                        new InstantCommand(()->intake.intake())       )
                 )
                 .whenReleased(new ParallelCommandGroup(
-                        new InstantCommand(()->intake.init()),
-                        new  InstantCommand(()->shooter.stopShoot())        )
+                        new InstantCommand(()->intake.init())        )
                 );
 
         new ButtonEx(() ->
@@ -186,11 +184,9 @@ public class TeleOpSoloTest2 extends CommandOpModeEx {
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.B))
                 .whenPressed(new ParallelCommandGroup(
-                        new InstantCommand(()->intake.outtake()),
-                        new InstantCommand(()->shooter.outtake())))
+                        new InstantCommand(()->intake.outtake())))
                 .whenReleased(new ParallelCommandGroup(
-                        new InstantCommand(()->intake.init()),
-                        new InstantCommand(()->shooter.init())));
+                        new InstantCommand(()->intake.init())));
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN))
                 .whenPressed(new InstantCommand(()->shooter.emergency()))
@@ -204,7 +200,7 @@ public class TeleOpSoloTest2 extends CommandOpModeEx {
     public void run(){
         driveCore.updateOdo();
         driveCore.update();
-        if (Math.abs(shooter.shooterUp.getVelocity()-1320)<= 40){
+        if (Math.abs(shooter.shooterRight.getVelocity()-1320)<= 40){
             shooter.isAsTargetVelocity = true;
         } else {
             shooter.isAsTargetVelocity = false;
@@ -214,7 +210,7 @@ public class TeleOpSoloTest2 extends CommandOpModeEx {
         if(isAutoShoot)telemetry.addLine("AutoShoot");
         else telemetry.addLine("Not Auto Shoot");
         telemetry.addData("Pedro Pose", follower.getPose());
-        telemetry.addData("shooter velocity", shooter.shooterDown.getVelocity());
+        telemetry.addData("shooter velocity", shooter.shooterRight.getVelocity());
         telemetry.addData("Robot vx (in/s)", robotVel.getX());
         telemetry.addData("Robot vy (in/s)", robotVel.getY());
         telemetry.addData("Robot speed", Math.hypot(robotVel.getX(), robotVel.getY()));
@@ -230,7 +226,7 @@ public class TeleOpSoloTest2 extends CommandOpModeEx {
         else telemetry.addLine("not detecting");
         if(shooter.isAsTargetVelocity) telemetry.addLine("is At target velocity");
         else telemetry.addLine("not at target vel");
-        telemetry.addData("vel diff", Math.abs(shooter.shooterUp.getVelocity()-1320));
+        telemetry.addData("vel diff", Math.abs(shooter.shooterRight.getVelocity()-1320));
         telemetry.update();
     }
 }

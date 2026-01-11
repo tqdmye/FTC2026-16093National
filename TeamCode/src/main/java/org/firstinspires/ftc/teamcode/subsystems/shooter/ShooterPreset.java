@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Subsystems.shooter;
+package org.firstinspires.ftc.teamcode.subsystems.shooter;
 
 public class ShooterPreset {
     public final double shooterVelocity;

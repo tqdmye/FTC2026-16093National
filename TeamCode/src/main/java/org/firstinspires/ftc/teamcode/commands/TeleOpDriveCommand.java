@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.Subsystems.driving.NewMecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.driving.NewMecanumDrive;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;

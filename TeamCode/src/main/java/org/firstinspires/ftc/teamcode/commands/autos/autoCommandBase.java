@@ -8,14 +8,14 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 
 
 public abstract class autoCommandBase extends LinearOpMode {
     protected Shooter shooter;
 
-    protected Intake intake;
+    protected IntakePreshooter intake;
 
     protected Telemetry telemetryM;
     protected Follower follower;
@@ -29,7 +29,7 @@ public abstract class autoCommandBase extends LinearOpMode {
 
         follower.setStartingPose(getStartPose());
         shooter = new Shooter(hardwareMap);
-        intake = new Intake(hardwareMap);
+        intake = new IntakePreshooter(hardwareMap);
 
 
     }

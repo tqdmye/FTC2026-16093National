@@ -7,8 +7,8 @@ import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.commands.autos.AccelerateAutoCommand;
 import org.firstinspires.ftc.teamcode.commands.autos.IntakeAutoCommand;
 //import com.pedropathing.localization.Pose;
@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.commands.autos.IntakeAutoCommand;
 
 public class AutoCommand {
     Shooter shooter;
-    Intake intake;
+    IntakePreshooter intake;
 
     public Command limitOff(){
         return new InstantCommand((
@@ -57,7 +57,7 @@ public class AutoCommand {
 
 
 
-    public AutoCommand(Shooter shooter, Intake intake) {
+    public AutoCommand(Shooter shooter, IntakePreshooter intake) {
         this.shooter = shooter;
         this.intake = intake;
     }

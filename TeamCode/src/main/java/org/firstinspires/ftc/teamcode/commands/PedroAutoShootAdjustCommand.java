@@ -4,9 +4,9 @@ import com.arcrobotics.ftclib.command.CommandBase;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.ShootZone;
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.ShootZoneConstants;
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shootzone;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.ShootZoneConstants;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 
 import java.util.function.BooleanSupplier;
 
@@ -44,8 +44,8 @@ public class PedroAutoShootAdjustCommand extends CommandBase {
         double x = pose.getX();
         double y = pose.getY();
 
-        ShootZone zone = ShootZoneConstants.getZone(x, y);
-        if (zone == ShootZone.INVALID) return;
+        Shootzone zone = ShootZoneConstants.getZone(x, y);
+        if (zone == Shootzone.INVALID) return;
 
         if( !isLimitOn.getAsBoolean()){
             shooter.applyZone(zone);

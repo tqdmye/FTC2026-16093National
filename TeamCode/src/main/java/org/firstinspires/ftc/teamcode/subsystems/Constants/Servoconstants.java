@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.Subsystems.Constants;
+package org.firstinspires.ftc.teamcode.subsystems.Constants;
 
 import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
-public enum ServoConstants {
+public enum Servoconstants {
 
     SHOOTER_TURRET_SLOW(0.88),
     SHOOTER_TURRET_MID(0.66),
@@ -19,7 +19,7 @@ public enum ServoConstants {
 
     public final double value;
 
-    ServoConstants(double pos) {
+    Servoconstants(double pos) {
         value = pos;
     }
     public void setToServo(@NonNull Servo servo){

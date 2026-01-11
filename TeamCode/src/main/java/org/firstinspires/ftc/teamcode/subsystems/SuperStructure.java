@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Subsystems;//package org.firstinspires.ftc.teamcode.Subsystems;
+package org.firstinspires.ftc.teamcode.subsystems;//package org.firstinspires.ftc.teamcode.Subsystems;
 //
 //import com.qualcomm.robotcore.hardware.AnalogInput;
 //import com.qualcomm.robotcore.hardware.DcMotor;

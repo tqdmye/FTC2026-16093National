@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Subsystems;
+package org.firstinspires.ftc.teamcode.subsystems.intakepreshoot;
 
 import androidx.annotation.NonNull;
 
@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class Intake {
+public class IntakePreshooter {
 
     private DcMotorEx intake;
 
@@ -15,7 +15,7 @@ public class Intake {
     private double powerScale = 1.0;
 
 
-    public Intake(@NonNull HardwareMap hardwareMap){
+    public IntakePreshooter(@NonNull HardwareMap hardwareMap){
         this.intake = hardwareMap.get(DcMotorEx.class, "intake");
         this.preLimit = hardwareMap.get(Servo.class,"preLimit");
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -34,6 +34,7 @@ public class Intake {
     public void init(){
         intake.setPower(0.4);
     }
+
 
     public void limitOn(){
         preLimit.setPosition(0.1);

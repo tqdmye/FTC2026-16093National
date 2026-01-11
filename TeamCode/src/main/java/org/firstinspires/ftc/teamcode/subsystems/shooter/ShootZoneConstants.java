@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Subsystems.shooter;
+package org.firstinspires.ftc.teamcode.subsystems.shooter;
 
 public class ShootZoneConstants {
 
@@ -10,15 +10,15 @@ public class ShootZoneConstants {
 
 
 
-    public static ShootZone getZone(double x, double y) {
+    public static Shootzone getZone(double x, double y) {
         if (x > CLOSE_X) {
-            return ShootZone.CLOSE;
+            return Shootzone.CLOSE;
         } else if (x < CLOSE_X && x > FAR_X) {
-            return ShootZone.MID;
+            return Shootzone.MID;
         } else if (x < FAR_X ) {
-            return ShootZone.FAR;
+            return Shootzone.FAR;
         }
-        return ShootZone.INVALID;
+        return Shootzone.INVALID;
     }
 
 }

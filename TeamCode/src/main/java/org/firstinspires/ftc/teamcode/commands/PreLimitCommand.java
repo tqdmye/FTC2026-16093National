@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Subsystems.LED;
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
+import org.firstinspires.ftc.teamcode.subsystems.LED;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 
 import java.util.function.BooleanSupplier;
 
@@ -19,7 +19,7 @@ public class PreLimitCommand extends CommandBase {
 
     private final Shooter shooter;
 
-    private final Intake intake;
+    private final IntakePreshooter intake;
 
     private final LED led;
 
@@ -28,7 +28,7 @@ public class PreLimitCommand extends CommandBase {
 
     public PreLimitCommand(
             Shooter shooter,
-            Intake intake,
+            IntakePreshooter intake,
             LED led,
             BooleanSupplier isVelocityDetecting,
             BooleanSupplier isLimitOn,

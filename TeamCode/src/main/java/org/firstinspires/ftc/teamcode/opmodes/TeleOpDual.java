@@ -11,9 +11,9 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
-import org.firstinspires.ftc.teamcode.Subsystems.driving.NewMecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.driving.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.commands.TeleOpDriveCommand;
 import org.firstinspires.ftc.teamcode.utils.ButtonEx;
 
@@ -23,7 +23,7 @@ public class TeleOpDual extends CommandOpModeEx {
     GamepadEx gamepadEx1, gamepadEx2;
     NewMecanumDrive driveCore;
     Shooter shooter;
-    Intake intake;
+    IntakePreshooter intake;
     private boolean isFieldCentric=false;
 
 
@@ -44,7 +44,7 @@ public class TeleOpDual extends CommandOpModeEx {
                 ()->(gamepadEx1.getButton(GamepadKeys.Button.RIGHT_BUMPER)),
                 ()->(isFieldCentric));
 
-        intake = new Intake(hardwareMap);
+        intake = new IntakePreshooter(hardwareMap);
 //        frontArm.setLED(false);
         shooter = new Shooter(hardwareMap);
 

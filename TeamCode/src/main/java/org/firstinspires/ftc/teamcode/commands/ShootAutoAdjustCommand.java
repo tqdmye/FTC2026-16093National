@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode.commands;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.ShootZone;
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.ShootZoneConstants;
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
-import org.firstinspires.ftc.teamcode.Subsystems.driving.NewMecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shootzone;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.ShootZoneConstants;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.driving.NewMecanumDrive;
 
 import java.util.function.BooleanSupplier;
 
@@ -17,7 +17,7 @@ public class ShootAutoAdjustCommand extends CommandBase {
     private final BooleanSupplier isAutoShoot;
     private final BooleanSupplier isLimitOn;
 
-    private ShootZone lastZone = null;
+    private Shootzone lastZone = null;
 
     public ShootAutoAdjustCommand(
             Shooter shooter,
@@ -36,7 +36,7 @@ public class ShootAutoAdjustCommand extends CommandBase {
         if (!isAutoShoot.getAsBoolean()) return;
 
         Pose2d pose = drive.getPoseEstimate();
-        ShootZone zone = ShootZoneConstants.getZone(pose.getX(), pose.getY());
+        Shootzone zone = ShootZoneConstants.getZone(pose.getX(), pose.getY());
 
         if( !isLimitOn.getAsBoolean()){
             shooter.applyZone(zone);

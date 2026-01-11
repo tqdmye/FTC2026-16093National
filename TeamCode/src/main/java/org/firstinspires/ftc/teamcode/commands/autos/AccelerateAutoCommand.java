@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands.autos;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 
 public class AccelerateAutoCommand extends CommandBase {
 
