@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
-public enum Servoconstants {
+public enum ServoConstants {
 
     SHOOTER_TURRET_SLOW(0.88),
     SHOOTER_TURRET_MID(0.66),
@@ -19,7 +19,7 @@ public enum Servoconstants {
 
     public final double value;
 
-    Servoconstants(double pos) {
+    ServoConstants(double pos) {
         value = pos;
     }
     public void setToServo(@NonNull Servo servo){

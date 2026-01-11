@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.subsystems.Constants.ServoConstants;
+
 public class IntakePreshooter {
 
     private DcMotorEx intake;
@@ -37,11 +39,11 @@ public class IntakePreshooter {
 
 
     public void limitOn(){
-        preLimit.setPosition(0.1);
+        preLimit.setPosition(ServoConstants.PRELIMIT_ON.value);
     }
 
     public void limitOff(){
-        preLimit.setPosition(0.4);
+        preLimit.setPosition(ServoConstants.PRELIMIT_OFF.value);
 
     }
 }

@@ -100,18 +100,18 @@ public class AutoCommand {
     public Command shootPreload() {
         return new SequentialCommandGroup(
                 new WaitCommand(500),
-                new InstantCommand(() -> shooter.shoot()),
+                new InstantCommand(() -> intake.limitOff()),
                 new WaitCommand(800),
-                new InstantCommand(() -> shooter.init())
+                new InstantCommand(() -> intake.limitOn())
         );
     }
 
     public Command shoot() {
         return new SequentialCommandGroup(
                 new WaitCommand(150),
-                new InstantCommand(() -> shooter.shoot()),
+                new InstantCommand(() -> intake.limitOff()),
                 new WaitCommand(800),
-                new InstantCommand(() -> shooter.init())
+                new InstantCommand(() -> intake.limitOn())
         );
     }
 
@@ -119,18 +119,18 @@ public class AutoCommand {
         return new SequentialCommandGroup(
 
                 new WaitCommand(130),
-                new InstantCommand(() -> shooter.shoot()),
+                new InstantCommand(() -> intake.limitOff()),
                 new WaitCommand(1400),
-                new InstantCommand(() -> shooter.init())
+                new InstantCommand(() -> intake.limitOn())
         );
     }
 
     public Command shootFar() {
         return new SequentialCommandGroup(
                 new WaitCommand(500),
-                new InstantCommand(() -> shooter.shoot()),
+                new InstantCommand(() -> intake.limitOff()),
                 new WaitCommand(1000),
-                new InstantCommand(() -> shooter.init())
+                new InstantCommand(() -> intake.limitOn())
         );
     }
 
@@ -149,7 +149,6 @@ public class AutoCommand {
     public Command stopAll() {
         return new ParallelCommandGroup(
                 new InstantCommand(() -> intake.init()),
-                new InstantCommand(() -> shooter.init()),
                 new InstantCommand(() -> shooter.stopAccelerate())
         );
     }
@@ -157,7 +156,6 @@ public class AutoCommand {
     public Command park() {
         return new ParallelCommandGroup(
                 new InstantCommand(() -> intake.init()),
-                new InstantCommand(() -> shooter.init()),
                 new InstantCommand(() -> shooter.stopAccelerate()),
                 new WaitCommand(99999999)
         );

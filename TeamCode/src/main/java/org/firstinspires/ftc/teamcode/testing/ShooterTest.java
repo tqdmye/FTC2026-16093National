@@ -44,7 +44,7 @@ public class ShooterTest extends LinearOpMode {
         DcMotorEx shooterMid = hardwareMap.get(DcMotorEx.class, "shooterMid");
 
         DcMotorEx intake = hardwareMap.get(DcMotorEx.class, "intake");
-        Servo shooterTurret = hardwareMap.get(Servo.class,"shooterTurret");
+        Servo shooterTurret = hardwareMap.get(Servo.class,"shooterAngle");
 
 
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
