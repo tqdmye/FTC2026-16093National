@@ -13,6 +13,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.subsystems.ballstorage.BallStorage;
 import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
 import org.firstinspires.ftc.teamcode.subsystems.Led;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
@@ -29,6 +30,7 @@ public class TeleOpSoloTest extends CommandOpModeEx {
     Shooter shooter;
     IntakePreshooter intake;
     Led led;
+    BallStorage ballStorage;
 
     private boolean isFieldCentric=false;
 
@@ -62,10 +64,12 @@ public class TeleOpSoloTest extends CommandOpModeEx {
 //        frontArm.setLED(false);
         shooter = new Shooter(hardwareMap);
 
+
         led = new Led(hardwareMap);
         preLimitCommand = new PreLimitCommand(shooter,
                 intake,
                 led,
+                ballStorage,
                 ()->(isVelocityDetecting),
                 ()->(isLimitOn),
                 ()->(isShooting));

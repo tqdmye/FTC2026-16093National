@@ -16,6 +16,7 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.subsystems.ballstorage.BallStorage;
 import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
 import org.firstinspires.ftc.teamcode.subsystems.Led;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
@@ -34,6 +35,7 @@ public class TeleOpSoloTest3 extends CommandOpModeEx {
     PreLimitCommand preLimitCommand;
 
     ShootAutoAdjustCommand autoShootAdjustCommand;
+    BallStorage ballStorage;
 
     Shooter shooter;
     IntakePreshooter intake;
@@ -79,6 +81,7 @@ public class TeleOpSoloTest3 extends CommandOpModeEx {
         preLimitCommand = new PreLimitCommand(shooter,
                 intake,
                 led,
+                ballStorage,
                 ()->(isVelocityDetecting),
                 ()->(isLimitOn),
                 ()->(isShooting));

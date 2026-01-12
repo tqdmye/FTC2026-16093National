@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.subsystems.Constants;
+package org.firstinspires.ftc.teamcode.subsystems.shooter;
 
-public enum MotorConstants {
+public enum ShooterConstants {
     SHOOTER_SLOW_VELOCITY(1080),
     SHOOTER_MID_VELOCITY(1300),
     SHOOTER_FAST_VELOCITY(1560),
@@ -16,7 +16,7 @@ public enum MotorConstants {
 
     public final int value;
 
-    MotorConstants(int value) {
+    ShooterConstants(int value) {
         this.value = value;
     }
 }
