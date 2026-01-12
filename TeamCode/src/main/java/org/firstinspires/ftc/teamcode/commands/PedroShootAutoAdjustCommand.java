@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 
 import java.util.function.BooleanSupplier;
 
-public class PedroAutoShootAdjustCommand extends CommandBase {
+public class PedroShootAutoAdjustCommand extends CommandBase {
 
     private final Shooter shooter;
     private final Follower follower;
@@ -18,7 +18,7 @@ public class PedroAutoShootAdjustCommand extends CommandBase {
     private final BooleanSupplier isLimitOn;
 
 
-    public PedroAutoShootAdjustCommand(
+    public PedroShootAutoAdjustCommand(
             Shooter shooter,
             Follower follower,
             BooleanSupplier isAutoShoot, BooleanSupplier isLimitOn

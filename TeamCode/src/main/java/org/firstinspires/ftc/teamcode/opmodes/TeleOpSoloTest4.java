@@ -14,7 +14,7 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.PPTeleOpDriveCommand;
-import org.firstinspires.ftc.teamcode.commands.PedroAutoShootAdjustCommand;
+import org.firstinspires.ftc.teamcode.commands.PedroShootAutoAdjustCommand;
 import org.firstinspires.ftc.teamcode.commands.PreLimitCommand;
 import org.firstinspires.ftc.teamcode.subsystems.Led;
 import org.firstinspires.ftc.teamcode.subsystems.ballstorage.BallStorage;
@@ -23,9 +23,12 @@ import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.utils.ButtonEx;
 
 import pedroPathing.Constants;
-
+/*
+pedropathing drivecommand
+auto adjust shooter, using pedropathing
+ */
 @TeleOp(group = "0-competition", name = "TeleOp Solo Test 4")
-public class TeleOpTest4 extends CommandOpModeEx {
+public class TeleOpSoloTest4 extends CommandOpModeEx {
     GamepadEx gamepadEx1, gamepadEx2;
 
     PreLimitCommand preLimitCommand;
@@ -77,24 +80,19 @@ public class TeleOpTest4 extends CommandOpModeEx {
         preLimitCommand = new PreLimitCommand(shooter,
                 intake,
                 led,
-                ballStorage,
+                //                ballStorage,
                 ()->(isVelocityDetecting),
                 ()->(isLimitOn),
                 ()->(isShooting));
-
-
-
 
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(0, 0, 0));
         follower.update();
 
-
-
-
+        CommandScheduler.getInstance().schedule(driveCommand);
         CommandScheduler.getInstance().schedule(preLimitCommand);
         CommandScheduler.getInstance().schedule(
-                new PedroAutoShootAdjustCommand(
+                new PedroShootAutoAdjustCommand(
                         shooter,
                         follower,
                         () -> isAutoShoot,
@@ -203,12 +201,10 @@ public class TeleOpTest4 extends CommandOpModeEx {
             shooter.isAsTargetVelocity = false;
         }
         CommandScheduler.getInstance().run();
-
         if(isAutoShoot)telemetry.addLine("AutoShoot");
         else telemetry.addLine("Not Auto Shoot");
         telemetry.addData("Pedro Pose", follower.getPose());
         telemetry.addData("shooter velocity", shooter.shooterRight.getVelocity());
-
         if(isFieldCentric) telemetry.addLine("Field Centric");
         else telemetry.addLine("Robot Centric");
         if(isLimitOn) telemetry.addLine("Limit On");

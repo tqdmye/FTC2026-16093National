@@ -28,8 +28,9 @@ public class Shooter {
         this.shooterMid = hardwareMap.get(DcMotorEx.class, "shooterMid");
         this.shooterAngleServo = hardwareMap.get(Servo.class,"shooterAngle");
 
-        shooterLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        shooterRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooterLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooterRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterMid.setDirection(DcMotorSimple.Direction.REVERSE);
         shooterAngleServo.setDirection(Servo.Direction.FORWARD);
 
 

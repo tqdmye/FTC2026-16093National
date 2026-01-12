@@ -15,13 +15,6 @@ public class Led {
     public void setBlue() {
         indicatorLight.setPosition(0.6);
     }
-    public void setRed() {
-        indicatorLight.setPosition(0.3);
-    }
-
-    public void setWhite() {
-        indicatorLight.setPosition(0.8);
-    }
 
     public void setGreen() {
         indicatorLight.setPosition(0.5);
@@ -31,8 +24,12 @@ public class Led {
         indicatorLight.setPosition(0);
     }
 
-    public void setBallComplete(){
+    public void setBallFull(){
         indicatorLight2.setPosition(0.5);
+    }
+
+    public void resetBall(){
+        indicatorLight2.setPosition(0);
     }
 
 

@@ -15,29 +15,34 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.subsystems.ballstorage.BallStorage;
-import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
-import org.firstinspires.ftc.teamcode.subsystems.Led;
-import org.firstinspires.ftc.teamcode.subsystems.driving.NewMecanumDrive;
-import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
-import org.firstinspires.ftc.teamcode.commands.PedroAutoShootAdjustCommand;
+import org.firstinspires.ftc.teamcode.commands.PedroShootAutoAdjustCommand;
 import org.firstinspires.ftc.teamcode.commands.PreLimitCommand;
 import org.firstinspires.ftc.teamcode.commands.TeleOpDriveCommand;
+import org.firstinspires.ftc.teamcode.subsystems.Led;
+import org.firstinspires.ftc.teamcode.subsystems.ballstorage.BallStorage;
+import org.firstinspires.ftc.teamcode.subsystems.driving.NewMecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.utils.ButtonEx;
 
 import pedroPathing.Constants;
 
+/*
+roadrunner drivecommand
+auto adjust shooter, using pedropathing
+ */
 @TeleOp(group = "0-competition", name = "TeleOp Solo Test 2")
 public class TeleOpSoloTest2 extends CommandOpModeEx {
     GamepadEx gamepadEx1, gamepadEx2;
     NewMecanumDrive driveCore;
     PreLimitCommand preLimitCommand;
 
-    PedroAutoShootAdjustCommand pedroAutoShootAdjustCommand;
+    PedroShootAutoAdjustCommand pedroAutoShootAdjustCommand;
 
     Shooter shooter;
     IntakePreshooter intake;
     Led led;
+
     BallStorage ballStorage;
 
     Follower follower;
@@ -80,7 +85,7 @@ public class TeleOpSoloTest2 extends CommandOpModeEx {
         preLimitCommand = new PreLimitCommand(shooter,
                 intake,
                 led,
-                ballStorage,
+//                ballStorage,
                 ()->(isVelocityDetecting),
                 ()->(isLimitOn),
                 ()->(isShooting));
@@ -99,7 +104,7 @@ public class TeleOpSoloTest2 extends CommandOpModeEx {
         CommandScheduler.getInstance().schedule(driveCommand);
         CommandScheduler.getInstance().schedule(preLimitCommand);
         CommandScheduler.getInstance().schedule(
-                new PedroAutoShootAdjustCommand(
+                new PedroShootAutoAdjustCommand(
                         shooter,
                         follower,
                         () -> isAutoShoot,

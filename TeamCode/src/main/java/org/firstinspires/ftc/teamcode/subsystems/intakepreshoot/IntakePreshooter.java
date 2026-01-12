@@ -20,7 +20,7 @@ public class IntakePreshooter {
     public IntakePreshooter(@NonNull HardwareMap hardwareMap){
         this.intake = hardwareMap.get(DcMotorEx.class, "intake");
         this.preLimit = hardwareMap.get(Servo.class,"preLimit");
-        intake.setDirection(DcMotorSimple.Direction.REVERSE);
+        intake.setDirection(DcMotorSimple.Direction.FORWARD);
     }
     public void setPowerScale(double scale) {
         powerScale = scale;

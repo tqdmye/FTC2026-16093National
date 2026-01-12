@@ -16,26 +16,28 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.subsystems.ballstorage.BallStorage;
-import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
-import org.firstinspires.ftc.teamcode.subsystems.Led;
-import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
-import org.firstinspires.ftc.teamcode.subsystems.driving.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.commands.PreLimitCommand;
 import org.firstinspires.ftc.teamcode.commands.ShootAutoAdjustCommand;
 import org.firstinspires.ftc.teamcode.commands.TeleOpDriveCommand;
+import org.firstinspires.ftc.teamcode.subsystems.Led;
+import org.firstinspires.ftc.teamcode.subsystems.driving.NewMecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.utils.ButtonEx;
 
 import pedroPathing.Constants;
-
+/*
+roadrunner drivecommand
+auto adjust shooter, using roadrunner
+ */
 @TeleOp(group = "0-competition", name = "TeleOp Solo Test 3")
 public class TeleOpSoloTest3 extends CommandOpModeEx {
     GamepadEx gamepadEx1, gamepadEx2;
     NewMecanumDrive driveCore;
     PreLimitCommand preLimitCommand;
 
-    ShootAutoAdjustCommand autoShootAdjustCommand;
-    BallStorage ballStorage;
+
+//    BallStorage ballStorage;
 
     Shooter shooter;
     IntakePreshooter intake;
@@ -75,14 +77,13 @@ public class TeleOpSoloTest3 extends CommandOpModeEx {
                 ()->(isFieldCentric));
 
         intake = new IntakePreshooter(hardwareMap);
-//        frontArm.setLED(false);
         shooter = new Shooter(hardwareMap);
 
         led = new Led(hardwareMap);
         preLimitCommand = new PreLimitCommand(shooter,
                 intake,
                 led,
-                ballStorage,
+//                ballStorage,
                 ()->(isVelocityDetecting),
                 ()->(isLimitOn),
                 ()->(isShooting));
@@ -215,12 +216,7 @@ public class TeleOpSoloTest3 extends CommandOpModeEx {
         if(isAutoShoot)telemetry.addLine("AutoShoot");
         else telemetry.addLine("Not Auto Shoot");
         telemetry.addData("Pose", driveCore.getPoseEstimate());
-
-
-
         telemetry.addData("Pedro Pose", follower.getPose());
-
-
         telemetry.addData("Robot vx (in/s)", robotVel.getX());
         telemetry.addData("Robot vy (in/s)", robotVel.getY());
         telemetry.addData("Robot speed", Math.hypot(robotVel.getX(), robotVel.getY()));
@@ -238,7 +234,7 @@ public class TeleOpSoloTest3 extends CommandOpModeEx {
         else telemetry.addLine("not detecting");
         if(shooter.isAsTargetVelocity) telemetry.addLine("is At target velocity");
         else telemetry.addLine("not at target vel");
-        telemetry.addData("vel diff", Math.abs(shooter.shooterRight.getVelocity()-1320));
+//        telemetry.addData("ball count", ballStorage.getBallCount());
         telemetry.update();
     }
 }

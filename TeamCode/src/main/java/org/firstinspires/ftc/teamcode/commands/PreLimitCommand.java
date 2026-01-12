@@ -3,9 +3,8 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.subsystems.ballstorage.BallStorage;
-import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
 import org.firstinspires.ftc.teamcode.subsystems.Led;
+import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 
 import java.util.function.BooleanSupplier;
@@ -20,7 +19,8 @@ public class PreLimitCommand extends CommandBase {
     private final Shooter shooter;
     private final IntakePreshooter intake;
     private final Led led;
-    private final BallStorage ballStorage;
+//    private final BallStorage ballStorage;
+
     private boolean lastLimitOn = false;
 
 
@@ -28,14 +28,14 @@ public class PreLimitCommand extends CommandBase {
             Shooter shooter,
             IntakePreshooter intake,
             Led led,
-            BallStorage ballStorage,
+//            BallStorage ballStorage,
             BooleanSupplier isVelocityDetecting,
             BooleanSupplier isLimitOn,
             BooleanSupplier isShooting) {
         this.shooter = shooter;
         this.intake = intake;
         this.led = led;
-        this.ballStorage = ballStorage;
+//        this.ballStorage = ballStorage;
         this.isLimitOn = isLimitOn;
         this.isVelocityDetecting = isVelocityDetecting;
         this.isShooting = isShooting;
@@ -69,6 +69,7 @@ public class PreLimitCommand extends CommandBase {
             led.setNone();
         } else {
 
+
             led.setBlue();
 
             if (shooting){
@@ -84,16 +85,19 @@ public class PreLimitCommand extends CommandBase {
             }
         }
 
-        if (ballStorage.isFull() && !isFullTriggered) {
-            led.setBallComplete();
-            fullTimeStamp = System.currentTimeMillis();
-            isFullTriggered = true;
-        }
-        if (isFullTriggered && System.currentTimeMillis() - fullTimeStamp >= 2000) {
+//        if (ballStorage.isFull() && !isFullTriggered) {
+//            led.setBallFull();
+//            fullTimeStamp = System.currentTimeMillis();
+//            isFullTriggered = true;
+//        }
+//        if (isFullTriggered && System.currentTimeMillis() - fullTimeStamp >= 2000) {
+//            ballStorage.reset();
+//            led.resetBall();
+//            isFullTriggered = false;
+//        }
 
-            ballStorage.reset();
-            isFullTriggered = false;
-        }
+
+
 
 
 

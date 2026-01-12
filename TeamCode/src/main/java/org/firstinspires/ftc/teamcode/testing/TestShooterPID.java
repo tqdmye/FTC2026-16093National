@@ -41,9 +41,10 @@ public class TestShooterPID extends LinearOpMode {
 
     Servo preLimit = hardwareMap.get(Servo.class,"preLimit");
 
-    shooterLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-    shooterRight.setDirection(DcMotorSimple.Direction.FORWARD);
-    intake.setDirection(DcMotorSimple.Direction.REVERSE);
+    shooterLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+    shooterRight.setDirection(DcMotorSimple.Direction.REVERSE);
+    shooterMid.setDirection(DcMotorSimple.Direction.REVERSE);
+    shooterAngleServo.setDirection(Servo.Direction.FORWARD);
 
 
     shooterLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);

@@ -21,9 +21,7 @@ public class BallStorage {
 
     private final Queue<Integer> colorQueue = new LinkedList<>();
 
-    private double distance = intakeDistanceSensor.getDistance(DistanceUnit.CM);
 
-    public boolean isBallInZone = false;
 
     private boolean isBallDetected = false;
 
@@ -41,7 +39,6 @@ public class BallStorage {
         int r = intakeColorSensor.red();
         int g = intakeColorSensor.green();
         int b = intakeColorSensor.blue();
-        float[] hsv = new float[3];
         Color.RGBToHSV(r, g, b, hsvValues);
 
         if (isBallInZone) {
@@ -58,15 +55,14 @@ public class BallStorage {
                 if (medianHue >= SensorConstants.PURPLE_MIN_H.value &&
                         medianHue <= SensorConstants.PURPLE_MAX_H.value) {
 
-                    colorQueue.offer(1); // 紫色
+                    colorQueue.offer(1);
 
                 } else if (medianHue >= SensorConstants.GREEN_MIN_H.value &&
                         medianHue <= SensorConstants.GREEN_MAX_H.value) {
 
-                    colorQueue.offer(0); // 绿色
+                    colorQueue.offer(0);
                 }
 
-                // 最多保留 3 个
                 if (colorQueue.size() > 3) {
                     colorQueue.poll();
                 }

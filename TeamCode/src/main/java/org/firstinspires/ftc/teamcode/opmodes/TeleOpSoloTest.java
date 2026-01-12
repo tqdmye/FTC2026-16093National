@@ -13,15 +13,19 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.subsystems.ballstorage.BallStorage;
-import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
-import org.firstinspires.ftc.teamcode.subsystems.Led;
-import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
-import org.firstinspires.ftc.teamcode.subsystems.driving.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.commands.PreLimitCommand;
 import org.firstinspires.ftc.teamcode.commands.TeleOpDriveCommand;
+import org.firstinspires.ftc.teamcode.subsystems.Led;
+import org.firstinspires.ftc.teamcode.subsystems.ballstorage.BallStorage;
+import org.firstinspires.ftc.teamcode.subsystems.driving.NewMecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.utils.ButtonEx;
 
+/*
+roadrunner drivecommand
+no auto adjust shooter
+ */
 @TeleOp(group = "0-competition", name = "TeleOp Solo Test")
 public class TeleOpSoloTest extends CommandOpModeEx {
     GamepadEx gamepadEx1, gamepadEx2;
@@ -30,7 +34,9 @@ public class TeleOpSoloTest extends CommandOpModeEx {
     Shooter shooter;
     IntakePreshooter intake;
     Led led;
+
     BallStorage ballStorage;
+
 
     private boolean isFieldCentric=false;
 
@@ -69,7 +75,8 @@ public class TeleOpSoloTest extends CommandOpModeEx {
         preLimitCommand = new PreLimitCommand(shooter,
                 intake,
                 led,
-                ballStorage,
+                //                ballStorage,
+
                 ()->(isVelocityDetecting),
                 ()->(isLimitOn),
                 ()->(isShooting));

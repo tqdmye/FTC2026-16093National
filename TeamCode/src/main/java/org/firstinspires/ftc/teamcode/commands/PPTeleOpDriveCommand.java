@@ -13,7 +13,7 @@ public class PPTeleOpDriveCommand extends CommandBase {
 
     private final BooleanSupplier isSlowMode;
     private final BooleanSupplier isFieldCentric;
-    private double slowModeMultiplier = 0.6;
+    private double slowModeMultiplier;
 
     public PPTeleOpDriveCommand(
             Follower follower,
@@ -28,40 +28,22 @@ public class PPTeleOpDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
+        if(isSlowMode.getAsBoolean()) slowModeMultiplier = 0.6;
+        else slowModeMultiplier = 1.0;
 
         if (isFieldCentric.getAsBoolean()) {
-            if(isSlowMode.getAsBoolean()){
-                if(isSlowMode.getAsBoolean()){
-                    follower.setTeleOpDrive(
-                            -gamepad1.left_stick_y * slowModeMultiplier,
-                            -gamepad1.left_stick_x * slowModeMultiplier,
-                            -gamepad1.right_stick_x * slowModeMultiplier,
-                            false);
-                }
-            }
-            else{
-                follower.setTeleOpDrive(
-                        -gamepad1.left_stick_y,
-                        -gamepad1.left_stick_x,
-                        -gamepad1.right_stick_x,
-                        false);
-            }
+            follower.setTeleOpDrive(
+                    -gamepad1.left_stick_y * slowModeMultiplier,
+                    -gamepad1.left_stick_x * slowModeMultiplier,
+                    -gamepad1.right_stick_x * slowModeMultiplier,
+                    false);
             follower.update();
         } else {
-            if(isSlowMode.getAsBoolean()){
-                follower.setTeleOpDrive(
-                        -gamepad1.left_stick_y * slowModeMultiplier,
-                        -gamepad1.left_stick_x * slowModeMultiplier,
-                        -gamepad1.right_stick_x * slowModeMultiplier,
-                        true);
-            }
-            else{
-                follower.setTeleOpDrive(
-                        -gamepad1.left_stick_y,
-                        -gamepad1.left_stick_x,
-                        -gamepad1.right_stick_x,
-                        true);
-            }
+            follower.setTeleOpDrive(
+                    -gamepad1.left_stick_y * slowModeMultiplier,
+                    -gamepad1.left_stick_x * slowModeMultiplier,
+                    -gamepad1.right_stick_x * slowModeMultiplier,
+                    true);
         }
         follower.update();
     }
