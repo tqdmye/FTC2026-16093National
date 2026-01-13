@@ -18,20 +18,13 @@ public class ShooterTest extends LinearOpMode {
     private final Telemetry telemetry_M =
             new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     public static boolean isPIDControl = true;
-    public static double setP = 33;
+    public static double setP = 40;
     public static double setI = 0;
-    public static double setD = 15;
-    public static double setF = 15;
-    public static double setShooterPower = 1;
+    public static double setD = 0;
+    public static double setF = 22;
 
     public static volatile double servo_pos = 0.5;
     public static boolean isVelocityMode = true;
-    public static boolean isShooterLeft = false;
-    public static boolean isShooterMid = false;
-    public static boolean isShooterRight = true;
-    public static boolean isShooterRightReverse = false;
-    public static boolean isShooterLeftReverse = true;
-    public static boolean isShooterMidReverse = false;
 
     public static double setPreShooterPower = 0.7;
     //  public static double shooterMinVelocity = 1400.0;
@@ -46,7 +39,16 @@ public class ShooterTest extends LinearOpMode {
         DcMotorEx intake = hardwareMap.get(DcMotorEx.class, "intake");
         Servo shooterTurret = hardwareMap.get(Servo.class,"shooterAngle");
 
-        intake.setDirection(DcMotorSimple.Direction.REVERSE);
+        intake.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        shooterLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooterRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterMid.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterTurret.setDirection(Servo.Direction.FORWARD);
+
+        shooterLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        shooterRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        shooterMid.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
 
         shooterLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         shooterRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
@@ -67,44 +69,22 @@ public class ShooterTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            if(isVelocityMode){
-                if(isShooterLeft){
-                    shooterLeft.setVelocity(shooterVelocity);
-                    telemetry_M.addData("Shooter Left Velocity", shooterLeft.getVelocity());
-                    telemetry_M.update();
-                } else if (isShooterRight) {
-                    shooterRight.setVelocity(shooterVelocity);
-                    telemetry_M.addData("Shooter Right Velocity", shooterRight.getVelocity());
-                    telemetry_M.update();
+            shooterTurret.setPosition(servo_pos);
 
-                } else if (isShooterMid) {
-                    shooterMid.setVelocity(shooterVelocity);
-                    telemetry_M.addData("Shooter Mid Velocity", shooterMid.getVelocity());
-                    telemetry_M.update();
+            shooterLeft.setVelocity(shooterVelocity);
+            telemetry_M.addData("Shooter Left Velocity", shooterLeft.getVelocity());
+            telemetry_M.update();
 
-                }
-            }
-            if (isShooterMidReverse){
-                shooterMid.setDirection(DcMotorEx.Direction.REVERSE);
-            } else {
-                shooterMid.setDirection(DcMotorSimple.Direction.FORWARD);
-            }
-
-            if (isShooterRightReverse){
-                shooterRight.setDirection(DcMotorEx.Direction.REVERSE);
-            } else {
-                shooterRight.setDirection(DcMotorSimple.Direction.FORWARD);
-            }
-
-            if (isShooterLeftReverse){
-                shooterLeft.setDirection(DcMotorEx.Direction.REVERSE);
-            } else {
-                shooterLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-            }
+            shooterRight.setVelocity(shooterVelocity);
+            telemetry_M.addData("Shooter Right Velocity", shooterRight.getVelocity());
+            telemetry_M.update();
 
 
+            shooterMid.setVelocity(shooterVelocity);
+            telemetry_M.addData("Shooter Mid Velocity", shooterMid.getVelocity());
+            telemetry_M.update();
 
-//      if (frontShooter.getVelocity() > shooterMinVelocity) {
+
             if(gamepad1.a){
 
                 intake.setPower(1);
@@ -113,13 +93,6 @@ public class ShooterTest extends LinearOpMode {
 
                 intake.setPower(0);
             }
-
-//      if (frontShooter.getVelocity() < shooterMinVelocity) {
-//        //            if(gamepad1.b){
-//        preShooter.setPower(0);
-//        blender.setPower(0);
-//        intake.setPower(0);
-//      }
         }
     }
 }

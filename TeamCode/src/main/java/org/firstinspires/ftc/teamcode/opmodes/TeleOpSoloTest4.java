@@ -40,7 +40,7 @@ public class TeleOpSoloTest4 extends CommandOpModeEx {
     public boolean isLimitOn = true;
     public boolean isShooting = false;
     public boolean isVelocityDetecting = false;
-    public boolean isAutoShoot = true;
+    public boolean isAutoShoot = false;
 
 
     @Override
@@ -107,7 +107,7 @@ public class TeleOpSoloTest4 extends CommandOpModeEx {
         //leftTrigger -- preShooter
         //a -- preShooter & intake 反转
 
-        new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP))
+        new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.DPAD_RIGHT))
                 .whenPressed(new InstantCommand(()->isAutoShoot=!isAutoShoot));
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.BACK))
@@ -134,7 +134,7 @@ public class TeleOpSoloTest4 extends CommandOpModeEx {
                         new SequentialCommandGroup(
                                 new WaitCommand(150),
                                 new InstantCommand(()->isVelocityDetecting = !isVelocityDetecting),
-                                new InstantCommand(() -> shooter.accelerate_slow())
+                                new InstantCommand(() -> shooter.accelerate_idle())
                         )
                 );
 
@@ -152,7 +152,7 @@ public class TeleOpSoloTest4 extends CommandOpModeEx {
                                 new InstantCommand(()->isVelocityDetecting = false),
                                 new InstantCommand(()->intake.setPowerScale(1.0)),
                                 new InstantCommand(()->shooter.setPowerScale(1.0)),
-                                new InstantCommand(() -> shooter.accelerate_slow())
+                                new InstantCommand(() -> shooter.accelerate_idle())
                         )
                 );
 
@@ -170,7 +170,7 @@ public class TeleOpSoloTest4 extends CommandOpModeEx {
                 .whenPressed(new InstantCommand(()->shooter.emergency()))
                 .whenReleased(new InstantCommand(()->shooter.stopAccelerate()));
 
-        new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP))
+        new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.DPAD_LEFT))
                 .whenPressed(new InstantCommand(()->shooter.stopAccelerate()));
     }
 
