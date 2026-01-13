@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
 
-         .useSecondaryDrivePIDF(true)
+        .useSecondaryDrivePIDF(true)
 
         .mass(10)
         .forwardZeroPowerAcceleration(-33)
@@ -46,14 +46,14 @@ public class Constants {
             .leftRearMotorName("leftRear")
             .leftFrontMotorName("leftFront")
 
+            .useBrakeModeInTeleOp(true)
+
             .rightFrontMotorDirection(DcMotorEx.Direction.FORWARD)
             .leftFrontMotorDirection(DcMotorEx.Direction.REVERSE)
             .leftRearMotorDirection(DcMotorEx.Direction.REVERSE)
             .rightRearMotorDirection(DcMotorEx.Direction.FORWARD)
             .xVelocity(82.28)
             .yVelocity(74.57);
-
-            //.rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
             .forwardPodY(0)
@@ -63,7 +63,4 @@ public class Constants {
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
             .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
-
-
-
 }

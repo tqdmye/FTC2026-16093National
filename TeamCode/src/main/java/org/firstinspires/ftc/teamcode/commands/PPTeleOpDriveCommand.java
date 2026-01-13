@@ -6,24 +6,37 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gam
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.pedropathing.follower.Follower;
 
+import org.firstinspires.ftc.teamcode.subsystems.driving.NewMecanumDrive;
+
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 public class PPTeleOpDriveCommand extends CommandBase {
     private final Follower follower;
-
+    private final DoubleSupplier x;
+    private final DoubleSupplier rotate;
+    private final DoubleSupplier y;
+    private final BooleanSupplier shouldReset;
     private final BooleanSupplier isSlowMode;
-    private final BooleanSupplier isFieldCentric;
+    private final BooleanSupplier isRobotCentric;
+
     private double slowModeMultiplier;
 
     public PPTeleOpDriveCommand(
             Follower follower,
+            DoubleSupplier x,
+            DoubleSupplier y,
+            DoubleSupplier rotate,
+            BooleanSupplier shouldReset,
             BooleanSupplier isSlowMode,
-            BooleanSupplier isFieldCentric) {
+            BooleanSupplier isRobotCentric) {
         this.follower = follower;
-
+        this.x = x;
+        this.rotate = rotate;
+        this.y = y;
+        this.shouldReset = shouldReset;
         this.isSlowMode = isSlowMode;
-//        this.isFieldCentric = isFieldCentric;
-        this.isFieldCentric = isFieldCentric;
+        this.isRobotCentric = isRobotCentric;
     }
 
     @Override
@@ -31,20 +44,11 @@ public class PPTeleOpDriveCommand extends CommandBase {
         if(isSlowMode.getAsBoolean()) slowModeMultiplier = 0.6;
         else slowModeMultiplier = 1.0;
 
-        if (isFieldCentric.getAsBoolean()) {
-            follower.setTeleOpDrive(
-                    -gamepad1.left_stick_y * slowModeMultiplier,
-                    -gamepad1.left_stick_x * slowModeMultiplier,
-                    -gamepad1.right_stick_x * slowModeMultiplier,
-                    false);
-            follower.update();
-        } else {
-            follower.setTeleOpDrive(
-                    -gamepad1.left_stick_y * slowModeMultiplier,
-                    -gamepad1.left_stick_x * slowModeMultiplier,
-                    -gamepad1.right_stick_x * slowModeMultiplier,
-                    true);
-        }
+        follower.setTeleOpDrive(
+                y.getAsDouble() * slowModeMultiplier,
+                x.getAsDouble() * slowModeMultiplier,
+                rotate.getAsDouble() * slowModeMultiplier,
+                isRobotCentric.getAsBoolean());
         follower.update();
     }
 }
