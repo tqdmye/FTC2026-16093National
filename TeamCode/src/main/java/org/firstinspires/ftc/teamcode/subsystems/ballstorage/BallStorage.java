@@ -33,10 +33,10 @@ public class BallStorage {
     public static double PURPLE_MAX_H = 240;
     public static double PURPLE_MIN_S = 0.4;
 
-    // 抗抖
+
     private static final int MIN_IN_ZONE_FRAMES = 3;
 
-    // 容量
+    
     private static final int MAX_BALLS = 3;
 
 

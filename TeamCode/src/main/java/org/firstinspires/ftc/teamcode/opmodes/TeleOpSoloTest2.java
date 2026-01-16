@@ -207,6 +207,7 @@ public class TeleOpSoloTest2 extends CommandOpModeEx {
 
     @Override
     public void run(){
+        follower.update();
         driveCore.updateOdo();
         driveCore.update();
         ballStorage.update();
