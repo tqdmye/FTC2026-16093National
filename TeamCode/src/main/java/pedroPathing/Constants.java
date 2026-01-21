@@ -20,14 +20,14 @@ public class Constants {
         .useSecondaryDrivePIDF(true)
 
         .mass(14)
-        .forwardZeroPowerAcceleration(-33)
+        .forwardZeroPowerAcceleration(-28.7)
         .lateralZeroPowerAcceleration(-63)
-        .translationalPIDFCoefficients(new PIDFCoefficients(0.053, 0, 0.003, 0.02))
-        .headingPIDFCoefficients(new PIDFCoefficients(0.6, 0, 0.01, 0.02))
-        .drivePIDFCoefficients(new FilteredPIDFCoefficients(1,0.0,0.015,0.6,0.019))
-        .centripetalScaling(0.0006);
+        .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0, 0.02))
+        .headingPIDFCoefficients(new PIDFCoefficients(0.8, 0, 0, 0.02))
+        .drivePIDFCoefficients(new FilteredPIDFCoefficients(1,0.0,0.015,0.75,0.019))
+        .centripetalScaling(0.0008);
 
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1.5
+    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 3
             , 2.5);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
@@ -52,8 +52,8 @@ public class Constants {
             .leftFrontMotorDirection(DcMotorEx.Direction.REVERSE)
             .leftRearMotorDirection(DcMotorEx.Direction.REVERSE)
             .rightRearMotorDirection(DcMotorEx.Direction.FORWARD)
-            .xVelocity(82.28)
-            .yVelocity(74.57);
+            .xVelocity(81.9)
+            .yVelocity(61.4);
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
             .forwardPodY(0)

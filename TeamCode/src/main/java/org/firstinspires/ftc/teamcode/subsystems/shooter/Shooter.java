@@ -51,10 +51,17 @@ public class Shooter {
         targetVelocity = ShooterConstants.SHOOTER_SLOW_VELOCITY.value;
     }
     public void accelerate_fast(){
-        shooterLeft.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
-        shooterRight.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
-        shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_LONG.value);
         targetVelocity = ShooterConstants.SHOOTER_FAST_VELOCITY.value;
+        if(Math.abs(shooterLeft.getVelocity() - targetVelocity)>180){
+            shooterLeft.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
+            shooterRight.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
+            shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_MID.value+0.02);
+        }
+        else{
+            shooterLeft.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value+300);
+            shooterRight.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value+300);
+            shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_LONG.value);
+        }
     }
 
     public void accelerate_idle(){

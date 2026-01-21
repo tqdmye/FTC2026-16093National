@@ -15,15 +15,16 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Constants.ShooterConstants;
+import org.firstinspires.ftc.teamcode.Subsystems.BallStorage;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakePreshooter;
+import org.firstinspires.ftc.teamcode.Subsystems.Led;
+import org.firstinspires.ftc.teamcode.Subsystems.Vision;
+import org.firstinspires.ftc.teamcode.Subsystems.driving.NewMecanumDrive;
+import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.commands.PedroShootAutoAdjustCommand;
 import org.firstinspires.ftc.teamcode.commands.PreLimitCommand;
 import org.firstinspires.ftc.teamcode.commands.TeleOpDriveCommand;
-import org.firstinspires.ftc.teamcode.Subsystems.Led;
-import org.firstinspires.ftc.teamcode.Subsystems.BallStorage;
-import org.firstinspires.ftc.teamcode.Subsystems.driving.NewMecanumDrive;
-import org.firstinspires.ftc.teamcode.Subsystems.IntakePreshooter;
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.commands.TeleOpDriveCommandVision;
 import org.firstinspires.ftc.teamcode.utils.ButtonEx;
 
 import pedroPathing.Constants;
@@ -32,8 +33,8 @@ import pedroPathing.Constants;
 roadrunner drivecommand
 auto adjust shooter, using pedropathing
  */
-@TeleOp(group = "0-competition", name = "TeleOp Solo")
-public class TeleOpSolo extends CommandOpModeEx {
+@TeleOp(group = "0-competition", name = "TeleOp Solo Vision")
+public class TeleOpSoloVision extends CommandOpModeEx {
     GamepadEx gamepadEx1, gamepadEx2;
     NewMecanumDrive driveCore;
     Follower follower;
@@ -42,11 +43,15 @@ public class TeleOpSolo extends CommandOpModeEx {
     IntakePreshooter intake;
     Led led;
     BallStorage ballStorage;
+    Vision vision;
 
     PreLimitCommand preLimitCommand;
     PedroShootAutoAdjustCommand pedroAutoShootAdjustCommand;
 
     private boolean isFieldCentric=false;
+    // 视觉自瞄是否正在接管底盘（避免和摇杆命令抢写电机功率导致抖动）
+    public boolean isVisionDriving = false;
+    private boolean visionArrivedNotified = false;
 
     public boolean isLimitOn = true;
 
@@ -66,16 +71,20 @@ public class TeleOpSolo extends CommandOpModeEx {
         gamepadEx2 = new GamepadEx(gamepad2);
 
         driveCore = new NewMecanumDrive(hardwareMap);
+        follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(new Pose(0, 0, 0));
         ballStorage = new BallStorage(hardwareMap);
+        vision = new Vision(telemetry, hardwareMap);
 
         driveCore.init();
-        TeleOpDriveCommand driveCommand = new TeleOpDriveCommand(driveCore,
+        TeleOpDriveCommandVision driveCommandVision = new TeleOpDriveCommandVision(driveCore,
                 ()->gamepadEx1.getLeftX(),
                 ()->gamepadEx1.getLeftY(),
                 ()->gamepadEx1.getRightX(),
                 ()->(gamepadEx1.getButton(GamepadKeys.Button.START) && !gamepad1.touchpad),
                 ()->(gamepadEx1.getButton(GamepadKeys.Button.RIGHT_BUMPER)),
-                ()->(isFieldCentric));
+                ()->(isFieldCentric),
+                ()->(isVisionDriving));
 
         intake = new IntakePreshooter(hardwareMap);
 //        frontArm.setLED(false);
@@ -91,17 +100,15 @@ public class TeleOpSolo extends CommandOpModeEx {
                 ()->(isShooting));
 
 
-
         driveCore.resetHeading();
 //        driveCore.yawHeading += 90; //如果specimen自动接solo手动就把这行去掉
 //        driveCore.yawHeading %= 360;    //如果specimen自动接solo手动就把这行去掉
         driveCore.resetOdo();
 
-        follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(0, 0, 0));
+
 
         driveCore.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        CommandScheduler.getInstance().schedule(driveCommand);
+        CommandScheduler.getInstance().schedule(driveCommandVision);
         CommandScheduler.getInstance().schedule(preLimitCommand);
         CommandScheduler.getInstance().schedule(
                 new PedroShootAutoAdjustCommand(
@@ -136,7 +143,12 @@ public class TeleOpSolo extends CommandOpModeEx {
         //a -- preShooter & intake 反转
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.X))
-                .whenPressed(new InstantCommand(()->isAutoShoot=!isAutoShoot));
+                .whenPressed(new InstantCommand(()-> isVisionDriving = true))
+                .whenReleased(new InstantCommand(()-> {
+                    isVisionDriving = false;
+                    visionArrivedNotified = false;
+                    vision.withOutVision();
+                }));
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.BACK))
                 .whenPressed(new InstantCommand(()->isFieldCentric=!isFieldCentric));
@@ -172,7 +184,7 @@ public class TeleOpSolo extends CommandOpModeEx {
                 && !isLimitOn   && !isAutoShoot)
                 .whenPressed(new SequentialCommandGroup(
                         new InstantCommand(()->isVelocityDetecting= true),
-                        new InstantCommand(()->intake.setPowerScale(0.75)),
+                        new InstantCommand(()->intake.setPowerScale(0.85)),
                         new InstantCommand(() -> shooter.accelerate_fast())
                 ))
                 .whenReleased(
@@ -180,8 +192,7 @@ public class TeleOpSolo extends CommandOpModeEx {
                                 new WaitCommand(150),
                                 new InstantCommand(()->isVelocityDetecting=false),
                                 new InstantCommand(()->intake.setPowerScale(1.0)),
-                                new InstantCommand(() -> shooter.accelerate_idle()),
-                                new InstantCommand(()->intake.stopPreShooter())
+                                new InstantCommand(() -> shooter.accelerate_idle())
                         )
                 );
 
@@ -208,29 +219,34 @@ public class TeleOpSolo extends CommandOpModeEx {
         follower.update();
         driveCore.updateOdo();
         driveCore.update();
+        // 视觉接管时由 vision 直接写电机；否则只由 TeleOpDriveCommandVision 写电机
+        if (isVisionDriving) {
+            vision.driveWithVision(driveCore, telemetry, true);
+            // 到位后自动停下 + 给操作手反馈（telemetry + rumble 一次）
+            if (vision.isArrived()) {
+                if (!visionArrivedNotified) {
+                    telemetry.addLine("AUTO-AIM: 到位 ✅");
+                    gamepad1.rumble(300);
+                    visionArrivedNotified = true;
+                }
+                // 自动退出自瞄，避免继续“贴着”目标微抖
+                isVisionDriving = false;
+                vision.withOutVision();
+            }
+        }
         ballStorage.update();
         shooter.checkVelocity();
         CommandScheduler.getInstance().run();
-        Vector2d robotVel = driveCore.getRobotLinearVelocity();
-        if(isAutoShoot)telemetry.addLine("AutoShoot");
-        else telemetry.addLine("Not Auto Shoot");
-        telemetry.addData("Pedro Pose", follower.getPose());
-        telemetry.addData("shooter velocity", shooter.shooterRight.getVelocity());
-        telemetry.addData("Robot vx (in/s)", robotVel.getX());
-        telemetry.addData("Robot vy (in/s)", robotVel.getY());
-        telemetry.addData("Robot speed", Math.hypot(robotVel.getX(), robotVel.getY()));
-        telemetry.addData("LF vel", driveCore.leftFront.getVelocity());
-        telemetry.addData("RF vel", driveCore.rightFront.getVelocity());
-        telemetry.addData("LR vel", driveCore.leftRear.getVelocity());
-        telemetry.addData("RR vel", driveCore.rightRear.getVelocity());
-        if(isFieldCentric) telemetry.addLine("Field Centric");
-        else telemetry.addLine("Robot Centric");
-        if(isLimitOn) telemetry.addLine("Limit On");
-        else telemetry.addLine("Limit Off");
-        if(isVelocityDetecting) telemetry.addLine("is velocity detesting" );
-        else telemetry.addLine("not detecting");
-        if(shooter.isAsTargetVelocity) telemetry.addLine("is At target velocity");
-        else telemetry.addLine("not at target vel");
+//        Vector2d robotVel = driveCore.getRobotLinearVelocity();
+//        telemetry.addData("Pedro Pose", follower.getPose());
+//        telemetry.addData("shooter velocity", shooter.shooterRight.getVelocity());
+//        telemetry.addData("Robot vx (in/s)", robotVel.getX());
+//        telemetry.addData("Robot vy (in/s)", robotVel.getY());
+//        telemetry.addData("Robot speed", Math.hypot(robotVel.getX(), robotVel.getY()));
+//        telemetry.addData("LF vel", driveCore.leftFront.getVelocity());
+//        telemetry.addData("RF vel", driveCore.rightFront.getVelocity());
+//        telemetry.addData("LR vel", driveCore.leftRear.getVelocity());
+//        telemetry.addData("RR vel", driveCore.rightRear.getVelocity());
         telemetry.update();
     }
 }

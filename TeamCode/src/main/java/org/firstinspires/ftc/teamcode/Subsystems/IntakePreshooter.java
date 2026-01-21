@@ -14,7 +14,7 @@ public class IntakePreshooter {
     private final DcMotorEx intake;
     private final DcMotorEx preShooter;
 
-    private Servo preLimit;
+    private final Servo preLimit;
     private double powerScale = 1.0;
 
 
@@ -54,5 +54,8 @@ public class IntakePreshooter {
     public void limitOff(){
         preLimit.setPosition(ServoConstants.PRELIMIT_OFF.value);
 
+    }
+    public void stopPreShooter(){
+        preShooter.setPower(0);
     }
 }
