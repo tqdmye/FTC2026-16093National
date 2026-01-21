@@ -15,16 +15,17 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Constants.ShooterConstants;
+import org.firstinspires.ftc.teamcode.Subsystems.BallStorage;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakePreshooter;
+import org.firstinspires.ftc.teamcode.Subsystems.Led;
+import org.firstinspires.ftc.teamcode.Subsystems.driving.NewMecanumDrive;
+import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.commands.PedroShootAutoAdjustCommand;
 import org.firstinspires.ftc.teamcode.commands.PreLimitCommand;
+import org.firstinspires.ftc.teamcode.commands.PreLimitCommandRevise;
 import org.firstinspires.ftc.teamcode.commands.TeleOpDriveCommand;
-import org.firstinspires.ftc.teamcode.Subsystems.Led;
-import org.firstinspires.ftc.teamcode.Subsystems.BallStorage;
-import org.firstinspires.ftc.teamcode.Subsystems.driving.NewMecanumDrive;
-import org.firstinspires.ftc.teamcode.Subsystems.IntakePreshooter;
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.utils.ButtonEx;
+import org.firstinspires.ftc.teamcode.utils.ShootControlStates;
 
 import pedroPathing.Constants;
 
@@ -32,8 +33,8 @@ import pedroPathing.Constants;
 roadrunner drivecommand
 auto adjust shooter, using pedropathing
  */
-@TeleOp(group = "0-competition", name = "TeleOp Solo Please Use This")
-public class TeleOpSolo extends CommandOpModeEx {
+@TeleOp(group = "0-competition", name = "TeleOp Solo Revise")
+public class TeleOpSoloRevise extends CommandOpModeEx {
     GamepadEx gamepadEx1, gamepadEx2;
     NewMecanumDrive driveCore;
     Follower follower;
@@ -43,18 +44,11 @@ public class TeleOpSolo extends CommandOpModeEx {
     Led led;
     BallStorage ballStorage;
 
-    PreLimitCommand preLimitCommand;
-    PedroShootAutoAdjustCommand pedroAutoShootAdjustCommand;
+    PreLimitCommandRevise preLimitCommandRevise;
+
+    ShootControlStates shootState;
 
     private boolean isFieldCentric=false;
-
-    public boolean isLimitOn = true;
-
-    public boolean isShooting = false;
-
-    public boolean isVelocityDetecting = false;
-
-    public boolean isAutoShoot = false;
 
 
     @Override
@@ -67,6 +61,10 @@ public class TeleOpSolo extends CommandOpModeEx {
 
         driveCore = new NewMecanumDrive(hardwareMap);
         ballStorage = new BallStorage(hardwareMap);
+        intake = new IntakePreshooter(hardwareMap);
+        shooter = new Shooter(hardwareMap);
+
+        led = new Led(hardwareMap);
 
         driveCore.init();
         TeleOpDriveCommand driveCommand = new TeleOpDriveCommand(driveCore,
@@ -77,24 +75,19 @@ public class TeleOpSolo extends CommandOpModeEx {
                 ()->(gamepadEx1.getButton(GamepadKeys.Button.RIGHT_BUMPER)),
                 ()->(isFieldCentric));
 
-        intake = new IntakePreshooter(hardwareMap);
-//        frontArm.setLED(false);
-        shooter = new Shooter(hardwareMap);
+        shootState = new ShootControlStates();
 
-        led = new Led(hardwareMap);
-        preLimitCommand = new PreLimitCommand(shooter,
+        preLimitCommandRevise = new PreLimitCommandRevise(
+                shooter,
                 intake,
                 led,
                 ballStorage,
-                ()->(isVelocityDetecting),
-                ()->(isLimitOn),
-                ()->(isShooting));
+                shootState
+        );
 
-
+        CommandScheduler.getInstance().schedule(preLimitCommandRevise);
 
         driveCore.resetHeading();
-//        driveCore.yawHeading += 90; //如果specimen自动接solo手动就把这行去掉
-//        driveCore.yawHeading %= 360;    //如果specimen自动接solo手动就把这行去掉
         driveCore.resetOdo();
 
         follower = Constants.createFollower(hardwareMap);
@@ -102,15 +95,7 @@ public class TeleOpSolo extends CommandOpModeEx {
 
         driveCore.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         CommandScheduler.getInstance().schedule(driveCommand);
-        CommandScheduler.getInstance().schedule(preLimitCommand);
-        CommandScheduler.getInstance().schedule(
-                new PedroShootAutoAdjustCommand(
-                        shooter,
-                        follower,
-                        () -> isAutoShoot,
-                        () -> isLimitOn
-                )
-        );
+        CommandScheduler.getInstance().schedule(preLimitCommandRevise);
 
 
 
@@ -135,14 +120,18 @@ public class TeleOpSolo extends CommandOpModeEx {
         //leftTrigger -- preShooter
         //a -- preShooter & intake 反转
 
-        new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.X))
-                .whenPressed(new InstantCommand(()->isAutoShoot=!isAutoShoot));
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.BACK))
                 .whenPressed(new InstantCommand(()->isFieldCentric=!isFieldCentric));
 
-        new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.A))
-                .whenPressed(new InstantCommand(()->isLimitOn=!isLimitOn));
+        new ButtonEx(() -> gamepadEx1.getButton(GamepadKeys.Button.A))
+                .whenPressed(() -> {
+                    shootState.limitMode =
+                            (shootState.limitMode == ShootControlStates.LimitMode.ON)
+                                    ? ShootControlStates.LimitMode.OFF
+                                    : ShootControlStates.LimitMode.ON;
+                });
+
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.LEFT_BUMPER))
                 .whenPressed(new ParallelCommandGroup(
@@ -154,40 +143,37 @@ public class TeleOpSolo extends CommandOpModeEx {
 
         new ButtonEx(() ->
                 gamepadEx1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5
-                        && !isLimitOn && !isAutoShoot)
+                        && shootState.limitMode == ShootControlStates.LimitMode.ON)
                 .whenPressed(new SequentialCommandGroup(
-                        new InstantCommand(()->isVelocityDetecting= ! isVelocityDetecting),
                         new InstantCommand(() -> shooter.accelerate_mid())))
 
                 .whenReleased(
                         new SequentialCommandGroup(
                                 new WaitCommand(150),
-                                new InstantCommand(()->isVelocityDetecting= ! isVelocityDetecting),
                                 new InstantCommand(() -> shooter.accelerate_idle())
                         )
                 );
 
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.Y)
-                && !isLimitOn   && !isAutoShoot)
+                && shootState.limitMode == ShootControlStates.LimitMode.ON)
                 .whenPressed(new SequentialCommandGroup(
-                        new InstantCommand(()->isVelocityDetecting= true),
                         new InstantCommand(()->intake.setPowerScale(0.75)),
                         new InstantCommand(() -> shooter.accelerate_fast())
                 ))
                 .whenReleased(
                         new SequentialCommandGroup(
                                 new WaitCommand(150),
-                                new InstantCommand(()->isVelocityDetecting=false),
                                 new InstantCommand(()->intake.setPowerScale(1.0)),
                                 new InstantCommand(() -> shooter.accelerate_idle()),
                                 new InstantCommand(()->intake.stopPreShooter())
                         )
                 );
 
-        new ButtonEx(()->gamepadEx1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.5)
-                .whenPressed(new InstantCommand(()->isShooting = true))
-                .whenReleased(new InstantCommand(()->isShooting = false));
+        new ButtonEx(() -> gamepadEx1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5)
+                .whenPressed(() -> shootState.shootMode = ShootControlStates.ShootMode.SHOOT)
+                .whenReleased(() -> shootState.shootMode = ShootControlStates.ShootMode.IDLE);
+
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.B))
                 .whenPressed(new ParallelCommandGroup(
@@ -212,8 +198,6 @@ public class TeleOpSolo extends CommandOpModeEx {
         shooter.checkVelocity();
         CommandScheduler.getInstance().run();
         Vector2d robotVel = driveCore.getRobotLinearVelocity();
-        if(isAutoShoot)telemetry.addLine("AutoShoot");
-        else telemetry.addLine("Not Auto Shoot");
         telemetry.addData("Pedro Pose", follower.getPose());
         telemetry.addData("shooter velocity", shooter.shooterRight.getVelocity());
         telemetry.addData("Robot vx (in/s)", robotVel.getX());
@@ -225,10 +209,6 @@ public class TeleOpSolo extends CommandOpModeEx {
         telemetry.addData("RR vel", driveCore.rightRear.getVelocity());
         if(isFieldCentric) telemetry.addLine("Field Centric");
         else telemetry.addLine("Robot Centric");
-        if(isLimitOn) telemetry.addLine("Limit On");
-        else telemetry.addLine("Limit Off");
-        if(isVelocityDetecting) telemetry.addLine("is velocity detesting" );
-        else telemetry.addLine("not detecting");
         if(shooter.isAsTargetVelocity) telemetry.addLine("is At target velocity");
         else telemetry.addLine("not at target vel");
         telemetry.update();
