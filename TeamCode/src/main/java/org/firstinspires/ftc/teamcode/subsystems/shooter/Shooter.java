@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Constants.ShooterConstants;
-import org.firstinspires.ftc.teamcode.Subsystems.Constants.ServoConstants;
+import org.firstinspires.ftc.teamcode.Subsystems.Constants.ShooterConstants;
 
 
 public class Shooter {
@@ -41,13 +41,13 @@ public class Shooter {
     public void accelerate_mid(){
         shooterLeft.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
         shooterRight.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
-        shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_MID.value);
+        shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_MID.value);
         targetVelocity = ShooterConstants.SHOOTER_MID_VELOCITY.value;
     }
     public void accelerate_slow(){
         shooterLeft.setVelocity(ShooterConstants.SHOOTER_SLOW_VELOCITY.value);
         shooterRight.setVelocity(ShooterConstants.SHOOTER_SLOW_VELOCITY.value);
-        shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_SLOW.value);
+        shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_SLOW.value);
         targetVelocity = ShooterConstants.SHOOTER_SLOW_VELOCITY.value;
     }
     public void accelerate_fast(){
@@ -55,19 +55,19 @@ public class Shooter {
         if(Math.abs(shooterLeft.getVelocity() - targetVelocity)>180){
             shooterLeft.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
             shooterRight.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
-            shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_MID.value+0.02);
+            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_MID.value+0.02);
         }
         else{
             shooterLeft.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value+300);
             shooterRight.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value+300);
-            shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_LONG.value);
+            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value);
         }
     }
 
     public void accelerate_idle(){
         shooterLeft.setVelocity(ShooterConstants.SHOOTER_IDLE_VELOCITY.value);
         shooterRight.setVelocity(ShooterConstants.SHOOTER_IDLE_VELOCITY.value);
-        shooterAngleServo.setPosition(ServoConstants.SHOOTER_TURRET_SLOW.value);
+        shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_SLOW.value);
         targetVelocity = ShooterConstants.SHOOTER_IDLE_VELOCITY.value;
 
     }

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Constants.ServoConstants;
+import org.firstinspires.ftc.teamcode.Subsystems.Constants.ShooterConstants;
 
 public class IntakePreshooter {
 
@@ -48,11 +48,11 @@ public class IntakePreshooter {
 
 
     public void limitOn(){
-        preLimit.setPosition(ServoConstants.PRELIMIT_ON.value);
+        preLimit.setPosition(ShooterConstants.PRELIMIT_ON.value);
     }
 
     public void limitOff(){
-        preLimit.setPosition(ServoConstants.PRELIMIT_OFF.value);
+        preLimit.setPosition(ShooterConstants.PRELIMIT_OFF.value);
 
     }
     public void stopPreShooter(){
