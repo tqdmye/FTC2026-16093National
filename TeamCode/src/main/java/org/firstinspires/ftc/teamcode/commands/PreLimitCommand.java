@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.subsystems.Led;
-import org.firstinspires.ftc.teamcode.subsystems.ballstorage.BallStorage;
-import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
-import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.Led;
+import org.firstinspires.ftc.teamcode.Subsystems.BallStorage;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakePreshooter;
+import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
 
 import java.util.function.BooleanSupplier;
 
@@ -80,7 +80,7 @@ public class PreLimitCommand extends CommandBase {
                 intake.limitOn();
             }
 
-            if (velocityDetecting && shooter.isAsTargetVelocity){
+            if (shooter.isAsTargetVelocity){
 
                 led.setGreen();  //
 
@@ -93,7 +93,7 @@ public class PreLimitCommand extends CommandBase {
             isFullTriggered = true;
         }
         if (isFullTriggered && System.currentTimeMillis() - fullTimeStamp >= 2000) {
-            ballStorage.reset();
+//            ballStorage.reset();
             led.resetBall();
             isFullTriggered = false;
         }

@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.subsystems.driving;
+package org.firstinspires.ftc.teamcode.Subsystems.driving;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 /*
- * Constants shared between multiple drive types.
+ * ShooterConstants shared between multiple drive types.
  *
  * TODO: Tune or adjust the following constants to fit your robot. Note that the non-final
  * fields may also be edited through the dashboard (connect to the robot's WiFi network and

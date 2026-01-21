@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.subsystems.ballstorage.SensorConstants;
+import org.firstinspires.ftc.teamcode.Subsystems.Constants.SensorConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;

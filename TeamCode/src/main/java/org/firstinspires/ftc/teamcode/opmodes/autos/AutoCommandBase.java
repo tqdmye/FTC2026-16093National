@@ -9,8 +9,8 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
-import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakePreshooter;
+import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.commands.autos.AccelerateAutoCommand;
 import org.firstinspires.ftc.teamcode.commands.autos.IntakeAutoCommand;
 

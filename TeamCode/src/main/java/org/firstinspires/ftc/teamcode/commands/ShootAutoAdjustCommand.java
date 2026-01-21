@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode.commands;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.subsystems.shooter.Shootzone;
-import org.firstinspires.ftc.teamcode.subsystems.shooter.ShootZoneConstants;
-import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
-import org.firstinspires.ftc.teamcode.subsystems.driving.NewMecanumDrive;
+import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shootzone;
+import org.firstinspires.ftc.teamcode.Subsystems.shooter.ShootZoneConstants;
+import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.driving.NewMecanumDrive;
 
 import java.util.function.BooleanSupplier;
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.shooter;
+package org.firstinspires.ftc.teamcode.Subsystems.shooter;
 
 public class ShootZoneConstants {
 

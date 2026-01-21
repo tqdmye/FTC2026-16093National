@@ -4,9 +4,9 @@ import com.arcrobotics.ftclib.command.CommandBase;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 
-import org.firstinspires.ftc.teamcode.subsystems.shooter.Shootzone;
-import org.firstinspires.ftc.teamcode.subsystems.shooter.ShootZoneConstants;
-import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shootzone;
+import org.firstinspires.ftc.teamcode.Subsystems.shooter.ShootZoneConstants;
+import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
 
 import java.util.function.BooleanSupplier;
 

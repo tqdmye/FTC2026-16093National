@@ -8,8 +8,8 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
-import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakePreshooter;
+import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
 
 
 public abstract class autoCommandBase extends LinearOpMode {

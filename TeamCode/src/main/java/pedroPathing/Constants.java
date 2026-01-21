@@ -19,7 +19,7 @@ public class Constants {
 
         .useSecondaryDrivePIDF(true)
 
-        .mass(10)
+        .mass(14)
         .forwardZeroPowerAcceleration(-33)
         .lateralZeroPowerAcceleration(-63)
         .translationalPIDFCoefficients(new PIDFCoefficients(0.053, 0, 0.003, 0.02))

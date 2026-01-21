@@ -1,12 +1,8 @@
 package org.firstinspires.ftc.teamcode.commands;
 
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.pedropathing.follower.Follower;
-
-import org.firstinspires.ftc.teamcode.subsystems.driving.NewMecanumDrive;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;

@@ -18,10 +18,10 @@ public class TestShooterPID extends LinearOpMode {
   private final Telemetry telemetry_M =
           new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
   public static boolean isPIDControl = true;
-  public static double setP = 30;
+  public static double setP = 40;
   public static double setI = 0;
-  public static double setD = 0;
-  public static double setF = 12.7;
+  public static double setD = 17;
+  public static double setF = 17.5;
   public static double setShooterPower = 1;
   public static boolean isPowerMode = false;
   public static double setPreShooterPower = 1;

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems;//package org.firstinspires.ftc.teamcode.Subsystems;
+package org.firstinspires.ftc.teamcode.Subsystems;//package org.firstinspires.ftc.teamcode.Subsystems;
 //
 //import androidx.annotation.NonNull;
 //
@@ -11,7 +11,7 @@ package org.firstinspires.ftc.teamcode.subsystems;//package org.firstinspires.ft
 //import lombok.Setter;
 //
 //import org.firstinspires.ftc.robotcore.external.Telemetry;
-//import org.firstinspires.ftc.teamcode.Subsystems.Constants.MotorConstants;
+//import org.firstinspires.ftc.teamcode.Subsystems.ShooterConstants.MotorConstants;
 //
 //public class Vision {
 //    private final Limelight3A camera;

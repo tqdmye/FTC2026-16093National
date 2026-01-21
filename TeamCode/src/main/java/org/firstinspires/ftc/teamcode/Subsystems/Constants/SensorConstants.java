@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.ballstorage;
+package org.firstinspires.ftc.teamcode.Subsystems.Constants;
 
 public enum SensorConstants {
     INZONE_DISTANCE(2.6),

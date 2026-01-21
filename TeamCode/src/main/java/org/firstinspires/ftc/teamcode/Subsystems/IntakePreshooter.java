@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.intakepreshoot;
+package org.firstinspires.ftc.teamcode.Subsystems;
 
 import androidx.annotation.NonNull;
 
@@ -7,11 +7,12 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.subsystems.Constants.ServoConstants;
+import org.firstinspires.ftc.teamcode.Subsystems.Constants.ServoConstants;
 
 public class IntakePreshooter {
 
-    private DcMotorEx intake, preShooter;
+    private final DcMotorEx intake;
+    private final DcMotorEx preShooter;
 
     private Servo preLimit;
     private double powerScale = 1.0;
@@ -28,7 +29,7 @@ public class IntakePreshooter {
         powerScale = scale;
     }
     public void intake() {
-        intake.setPower(1.0 * powerScale);
+        intake.setPower(powerScale);
 
     }
 
@@ -42,7 +43,7 @@ public class IntakePreshooter {
     }
 
     public void shoot(){
-        preShooter.setPower(1.0 * powerScale);
+        preShooter.setPower(powerScale);
     }
 
 

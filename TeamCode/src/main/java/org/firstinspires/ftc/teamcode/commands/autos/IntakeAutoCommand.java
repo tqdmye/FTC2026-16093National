@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands.autos;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-import org.firstinspires.ftc.teamcode.subsystems.intakepreshoot.IntakePreshooter;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakePreshooter;
 
 public class IntakeAutoCommand extends CommandBase {
 

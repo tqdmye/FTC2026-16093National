@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.Constants;
+package org.firstinspires.ftc.teamcode.Subsystems.Constants;
 
 import androidx.annotation.NonNull;
 
@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public enum ServoConstants {
 
     SHOOTER_TURRET_SLOW(0.54),
-    SHOOTER_TURRET_MID(0.35),
+    SHOOTER_TURRET_MID(0.37),
     SHOOTER_TURRET_LONG(0.35),
 
     PRELIMIT_ON(0.68),
