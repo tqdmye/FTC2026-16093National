@@ -78,6 +78,7 @@ public class PreLimitCommand extends CommandBase {
                 intake.shoot();
             } else {
                 intake.limitOn();
+                intake.stopPreShooter();
             }
 
             if (shooter.isAsTargetVelocity){

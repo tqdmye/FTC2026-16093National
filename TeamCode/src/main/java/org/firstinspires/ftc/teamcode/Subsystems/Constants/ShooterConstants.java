@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Subsystems.Constants;
 public enum ShooterConstants {
     SHOOTER_SLOW_VELOCITY(1140),
     SHOOTER_MID_VELOCITY(1300),
-    SHOOTER_FAST_VELOCITY(1500),
+    SHOOTER_FAST_VELOCITY(1540),
     SHOOTER_AUTO_SLOW_VELOCITY(950),
 
     SHOOTER_IDLE_VELOCITY(500),
@@ -15,10 +15,13 @@ public enum ShooterConstants {
 
     SHOOTER_TURRET_SLOW(0.54),
     SHOOTER_TURRET_MID(0.37),
-    SHOOTER_TURRET_LONG(0.28),
+    SHOOTER_TURRET_LONG(0.23),
 
     PRELIMIT_ON(0.68),
     PRELIMIT_OFF(1),
+
+    DNT_FIRE(0.68),
+    FIRE(1),
     ;
 
     public final double value;

@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.RepeatCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -15,7 +16,6 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Constants.ShooterConstants;
 import org.firstinspires.ftc.teamcode.commands.PedroShootAutoAdjustCommand;
 import org.firstinspires.ftc.teamcode.commands.PreLimitCommand;
 import org.firstinspires.ftc.teamcode.commands.TeleOpDriveCommand;
@@ -32,7 +32,7 @@ import pedroPathing.Constants;
 roadrunner drivecommand
 auto adjust shooter, using pedropathing
  */
-@TeleOp(group = "0-competition", name = "TeleOp Solo")
+@TeleOp(group = "0-competition", name = "TeleOp Solo Please Use This")
 public class TeleOpSolo extends CommandOpModeEx {
     GamepadEx gamepadEx1, gamepadEx2;
     NewMecanumDrive driveCore;
@@ -55,6 +55,7 @@ public class TeleOpSolo extends CommandOpModeEx {
     public boolean isVelocityDetecting = false;
 
     public boolean isAutoShoot = false;
+    public boolean isShootFar = false;
 
 
     @Override
@@ -170,20 +171,35 @@ public class TeleOpSolo extends CommandOpModeEx {
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.Y)
                 && !isLimitOn   && !isAutoShoot)
-                .whenPressed(new SequentialCommandGroup(
-                        new InstantCommand(()->isVelocityDetecting= true),
-                        new InstantCommand(()->intake.setPowerScale(0.75)),
-                        new InstantCommand(() -> shooter.accelerate_fast())
-                ))
-                .whenReleased(
+                .toggleWhenPressed(
+                        new ParallelCommandGroup(
+                                new InstantCommand(()->isVelocityDetecting= true),
+                                new InstantCommand(()->intake.setPowerScale(0.75)),
+                                new InstantCommand(()->isShootFar = true),
+                                new RepeatCommand(new InstantCommand(()->shooter.accelerate_fast()))
+                        ),
                         new SequentialCommandGroup(
                                 new WaitCommand(150),
                                 new InstantCommand(()->isVelocityDetecting=false),
                                 new InstantCommand(()->intake.setPowerScale(1.0)),
                                 new InstantCommand(() -> shooter.accelerate_idle()),
-                                new InstantCommand(()->intake.stopPreShooter())
+                                new InstantCommand(()->isShootFar = false)
                         )
                 );
+//                .whenPressed(new SequentialCommandGroup(
+//                        new InstantCommand(()->isVelocityDetecting= true),
+//                        new InstantCommand(()->intake.setPowerScale(0.75)),
+//                        new InstantCommand(() -> shooter.accelerate_fast())
+//                ))
+//                .whenReleased(
+//                        new SequentialCommandGroup(
+//                                new WaitCommand(150),
+//                                new InstantCommand(()->isVelocityDetecting=false),
+//                                new InstantCommand(()->intake.setPowerScale(1.0)),
+//                                new InstantCommand(() -> shooter.accelerate_idle()),
+//                                new InstantCommand(()->intake.stopPreShooter())
+//                        )
+//                );
 
         new ButtonEx(()->gamepadEx1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.5)
                 .whenPressed(new InstantCommand(()->isShooting = true))

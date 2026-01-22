@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
@@ -23,7 +22,6 @@ import org.firstinspires.ftc.teamcode.Subsystems.driving.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.commands.PedroShootAutoAdjustCommand;
 import org.firstinspires.ftc.teamcode.commands.PreLimitCommand;
-import org.firstinspires.ftc.teamcode.commands.TeleOpDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.TeleOpDriveCommandVision;
 import org.firstinspires.ftc.teamcode.utils.ButtonEx;
 

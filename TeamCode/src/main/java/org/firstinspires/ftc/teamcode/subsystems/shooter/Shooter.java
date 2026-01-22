@@ -52,14 +52,12 @@ public class Shooter {
     }
     public void accelerate_fast(){
         targetVelocity = ShooterConstants.SHOOTER_FAST_VELOCITY.value;
-        if(Math.abs(shooterLeft.getVelocity() - targetVelocity)>180){
-            shooterLeft.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
-            shooterRight.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
-            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_MID.value+0.02);
+        shooterLeft.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
+        shooterRight.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
+        if(Math.abs(shooterLeft.getVelocity() - targetVelocity)>100){
+            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.1);
         }
         else{
-            shooterLeft.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value+300);
-            shooterRight.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value+300);
             shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value);
         }
     }
@@ -68,8 +66,6 @@ public class Shooter {
         shooterLeft.setVelocity(ShooterConstants.SHOOTER_IDLE_VELOCITY.value);
         shooterRight.setVelocity(ShooterConstants.SHOOTER_IDLE_VELOCITY.value);
         shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_SLOW.value);
-        targetVelocity = ShooterConstants.SHOOTER_IDLE_VELOCITY.value;
-
     }
 
     public void emergency(){
