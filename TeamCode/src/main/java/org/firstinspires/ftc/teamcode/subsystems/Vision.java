@@ -31,14 +31,14 @@ public class Vision {
     double turn = 0;
 
     // ======== 目标约束（唯一解）========
-    private static final double TARGET_FORWARD_CM = 300.0;
-    private static final double TARGET_STRAFE_CM  = -50.0;
-    private static final double TARGET_YAW_DEG    = 20.0;
+    private static final double TARGET_FORWARD_CM = 115.0;
+    private static final double TARGET_STRAFE_CM  = -11.8;
+    private static final double TARGET_YAW_DEG    = -28.0;
 
     // 到位阈值
     private static final double YPOS_TOLERANCE_CM = 2.0;
     private static final double XPOS_TOLERANCE_CM = 2.0;
-    private static final double YAW_TOLERANCE_DEG = 2.5;
+    private static final double YAW_TOLERANCE_DEG = 1;
 
     private boolean arrived = false;
 
@@ -92,13 +92,16 @@ public class Vision {
         if (isDriveWithVision && targetFound) {
 
             // ======== 唯一解误差（Tag 坐标系）========
-            double forwardError = desiredTag.ftcPose.y - TARGET_FORWARD_CM;
-            double strafeError  = desiredTag.ftcPose.x - TARGET_STRAFE_CM;
+//            double forwardError = desiredTag.ftcPose.y - TARGET_FORWARD_CM;
+//            double strafeError  = desiredTag.ftcPose.x - TARGET_STRAFE_CM;
+            double forwardError = 0;
+            double strafeError  = 0;
             double yawError     = desiredTag.ftcPose.yaw - TARGET_YAW_DEG;
 
             // ======== 到位判定 ========
-            if (Math.abs(forwardError) < YPOS_TOLERANCE_CM &&
-                    Math.abs(strafeError)  < XPOS_TOLERANCE_CM &&
+            if (
+//                    Math.abs(forwardError) < YPOS_TOLERANCE_CM &&
+//                    Math.abs(strafeError)  < XPOS_TOLERANCE_CM &&
                     Math.abs(yawError)     < YAW_TOLERANCE_DEG) {
 
                 arrived = true;

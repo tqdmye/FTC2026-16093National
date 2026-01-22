@@ -32,7 +32,7 @@ public class VisionTest extends OpMode {
         AprilTagDetection desiredTag = null;
 
         for (AprilTagDetection detection : aprilTag.getDetections()) {
-            // 如果你只关心某一个 ID，可以在这里筛选
+            // 如果只关心某一个 ID，可以在这里筛选
             // if (detection.id == 1)
             desiredTag = detection;
             break;
@@ -44,13 +44,9 @@ public class VisionTest extends OpMode {
             return;
         }
 
-        double forwardError = desiredTag.ftcPose.y;
-        double strafeError  = desiredTag.ftcPose.x;
-        double yawError     = desiredTag.ftcPose.yaw;
-
-        telemetry.addData("Forward Error (cm)", forwardError);
-        telemetry.addData("Strafe Error (cm)", strafeError);
-        telemetry.addData("Yaw Error (deg)", yawError);
+        telemetry.addData("Forward (cm)", desiredTag.ftcPose.y);
+        telemetry.addData("Strafe (cm)", desiredTag.ftcPose.x);
+        telemetry.addData("Yaw (deg)", desiredTag.ftcPose.yaw);
         telemetry.update();
     }
 
