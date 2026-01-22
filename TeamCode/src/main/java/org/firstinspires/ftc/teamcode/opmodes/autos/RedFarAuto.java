@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.commands.autos.driveAutoCommand;
 @Config
-@Autonomous(name = "Auto Red Far Test 3+9")
+@Autonomous(name = "Auto Red Far")
 public class RedFarAuto extends AutoCommandBase {
 
 

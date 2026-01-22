@@ -15,33 +15,33 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.commands.autos.driveAutoCommand;
 @Config
-@Autonomous(name = "Auto Red Near 3+9+3")
+@Autonomous(name = "Auto Red Near")
 public class RedNearAuto extends AutoCommandBase {
 
 
-    private final Pose startPose = new Pose(51.113, -47.224, Math.toRadians(309));
+    private final Pose startPose = new Pose(46.920, -45.665, -0.931);
 
-    private final Pose scorePose = new Pose(26.551, -26.884, Math.toRadians(313));
+    private final Pose scorePose = new Pose(23.826, -27.971, -0.804);
 
-    private final Pose scoreMidPose = new Pose(11.416, -10.589, Math.toRadians(309));
+    private final Pose scoreMidPose = new Pose(9.089, -15.059,-0.789);
 
-    private final Pose prepare1Pose = new Pose(12.439, -27.770, Math.toRadians(270));
+    private final Pose prepare1Pose = new Pose(4.585, -27.999, -1.57);
 
-    private final Pose intake1Pose3 = new Pose(9.439, -53.656, Math.toRadians(270));
-    private final Pose prepareGatePose = new Pose(1.635, -48.42, Math.toRadians(270));
-    private final Pose openGatePose = new Pose(-5.635, -50.905, Math.toRadians(270));
+    private final Pose intake1Pose3 = new Pose(4.443, -52.023, -1.57);
+    private final Pose prepareGatePose = new Pose(-8.759, -47.065, -1.57);
+    private final Pose openGatePose = new Pose(-8.675, -53.34, -1.57);
 
-    private final Pose openGateIntakePose = new Pose(65,4,Math.toRadians(-70));
+    private final Pose openGateIntakePose = new Pose(-20.337,-57,-1.04);
 
-    private final Pose prepare2Pose = new Pose(-13.4, -29.18, Math.toRadians(270));
+    private final Pose prepare2Pose = new Pose(-20.352, -27.582, -1.57);
     private final Pose intake2Pose1 = new Pose(53.764, 29.378, Math.toRadians(-88));
     private final Pose intake2Pose2 = new Pose(53.764, 20.378, Math.toRadians(-88));
-    private final Pose intake2Pose3 = new Pose(-15, -58, Math.toRadians(268));
-    private final Pose prepare3Pose = new Pose(-36.52, -28.23, Math.toRadians(270));
+    private final Pose intake2Pose3 = new Pose(-20.89, -56.530, -1.57);
+    private final Pose prepare3Pose = new Pose(-44.041, -28.559, -1.57);
 
-    private final Pose intake3Pose3 = new Pose(-36.52, -58, Math.toRadians(270));
-    private final Pose intakeLoad1 = new Pose(-42.991, -62, Math.toRadians(180));
-    private final Pose intakeLoad3 = new Pose(-62, -62 , Math.toRadians(180));
+    private final Pose intake3Pose3 = new Pose(-44.041, -56.630, -1.57);
+    private final Pose intakeLoad1 = new Pose(-47.631, -62.190, -3.14);
+    private final Pose intakeLoad3 = new Pose(-65.59, -62.19 , -3.14);
     private final Pose parkPose = new Pose(9.439, -27, Math.toRadians(270));
 
     private final Pose openGatePose2 = new Pose(72.982, 7.239, Math.toRadians(-1));
@@ -91,16 +91,16 @@ public class RedNearAuto extends AutoCommandBase {
                 .build();
 
         openGate2 = follower.pathBuilder()
-                .addPath(new BezierCurve(prepareGatePose, openGatePose2))
+                .addPath(new BezierLine (prepareGatePose, openGatePose2))
                 .setLinearHeadingInterpolation(prepareGatePose.getHeading(), openGatePose2.getHeading())
                 .build();
 
         openGateIntake = follower.pathBuilder()
-                .addPath(new BezierCurve(scorePose,openGateIntakePose))
+                .addPath(new BezierLine(scorePose,openGateIntakePose))
                 .setLinearHeadingInterpolation(scorePose.getHeading(), openGateIntakePose.getHeading())
                 .build();
         score4 = follower.pathBuilder()
-                .addPath(new BezierCurve(openGateIntakePose, scorePose))
+                .addPath(new BezierLine(openGateIntakePose, scorePose))
                 .setLinearHeadingInterpolation(openGateIntakePose.getHeading(), scorePose.getHeading())
                 .build();
 
