@@ -55,6 +55,10 @@ public class IntakePreshooter {
         preLimit.setPosition(ShooterConstants.PRELIMIT_OFF.value);
 
     }
+
+    public void preShooterShoot(double powerScale){
+        preShooter.setPower(powerScale);
+    }
     public void stopPreShooter(){
         preShooter.setPower(0);
     }

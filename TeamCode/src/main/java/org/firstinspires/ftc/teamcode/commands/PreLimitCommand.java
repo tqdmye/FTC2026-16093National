@@ -51,41 +51,34 @@ public class PreLimitCommand extends CommandBase {
 
         boolean shooting = isShooting.getAsBoolean();
 
-        if (limitOn != lastLimitOn) {
+//        if (limitOn != lastLimitOn) {
+//
+//            if (!limitOn) {
+//
+//                shooter.accelerate_slow();
+//            } else {
+//
+//                shooter.accelerate_idle();
+//            }
+//
+//            lastLimitOn = limitOn;
+//        }
 
-            if (!limitOn) {
-
-                shooter.accelerate_slow();
-            } else {
-
-                shooter.accelerate_idle();
-            }
-
-            lastLimitOn = limitOn;
+        if (shooting){
+            intake.limitOff();
+            intake.shoot();
+        } else {
+            intake.limitOn();
+            intake.stopPreShooter();
         }
 
+        if (shooter.isAsTargetVelocity){
 
-        if (limitOn) {
-            intake.limitOn();
+            led.setGreen();  //
+
+        }
+        else{
             led.setNone();
-        } else {
-
-
-            led.setBlue();
-
-            if (shooting){
-                intake.limitOff();
-                intake.shoot();
-            } else {
-                intake.limitOn();
-                intake.stopPreShooter();
-            }
-
-            if (shooter.isAsTargetVelocity){
-
-                led.setGreen();  //
-
-            }
         }
 
         if (ballStorage.isFull() && !isFullTriggered) {

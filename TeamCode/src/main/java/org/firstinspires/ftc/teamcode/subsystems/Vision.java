@@ -38,7 +38,7 @@ public class Vision {
     // 到位阈值
     private static final double YPOS_TOLERANCE_CM = 2.0;
     private static final double XPOS_TOLERANCE_CM = 2.0;
-    private static final double YAW_TOLERANCE_DEG = 1;
+    private static final double YAW_TOLERANCE_DEG = 0.5;
 
     private boolean arrived = false;
 

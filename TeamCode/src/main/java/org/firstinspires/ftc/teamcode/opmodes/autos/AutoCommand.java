@@ -23,6 +23,10 @@ public class AutoCommand {
         return new InstantCommand((
         )->intake.limitOff());
     }
+    public Command limitOn(){
+        return new InstantCommand((
+        )->intake.limitOn());
+    }
 
 
 
@@ -101,6 +105,7 @@ public class AutoCommand {
         return new SequentialCommandGroup(
                 new WaitCommand(500),
                 new InstantCommand(() -> intake.limitOff()),
+                new InstantCommand(()->intake.preShooterShoot(1)),
                 new WaitCommand(800),
                 new InstantCommand(() -> intake.limitOn())
         );
@@ -110,6 +115,7 @@ public class AutoCommand {
         return new SequentialCommandGroup(
                 new WaitCommand(150),
                 new InstantCommand(() -> intake.limitOff()),
+                new InstantCommand(()->intake.preShooterShoot(1)),
                 new WaitCommand(800),
                 new InstantCommand(() -> intake.limitOn())
         );
@@ -120,6 +126,7 @@ public class AutoCommand {
 
                 new WaitCommand(130),
                 new InstantCommand(() -> intake.limitOff()),
+                new InstantCommand(()->intake.preShooterShoot(1)),
                 new WaitCommand(1400),
                 new InstantCommand(() -> intake.limitOn())
         );
@@ -129,6 +136,16 @@ public class AutoCommand {
         return new SequentialCommandGroup(
                 new WaitCommand(500),
                 new InstantCommand(() -> intake.limitOff()),
+                new InstantCommand(()->intake.preShooterShoot(0.75)),
+                new WaitCommand(1000),
+                new InstantCommand(() -> intake.limitOn())
+        );
+    }
+    public Command shootFarPreload() {
+        return new SequentialCommandGroup(
+                new WaitCommand(3000),
+                new InstantCommand(() -> intake.limitOff()),
+                new InstantCommand(()->intake.preShooterShoot(0.75)),
                 new WaitCommand(1000),
                 new InstantCommand(() -> intake.limitOn())
         );

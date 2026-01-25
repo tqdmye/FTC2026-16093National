@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Constants.ShooterConstants;
 public class Shooter {
     public DcMotorEx shooterLeft, shooterRight;
     public  Servo shooterAngleServo;
-    private double targetVelocity;
+    private double targetVelocity = 9999;
     public boolean isAsTargetVelocity = false;
 
 
@@ -54,7 +54,7 @@ public class Shooter {
         targetVelocity = ShooterConstants.SHOOTER_FAST_VELOCITY.value;
         shooterLeft.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
         shooterRight.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
-        if(Math.abs(shooterLeft.getVelocity() - targetVelocity)>100){
+        if(targetVelocity-shooterLeft.getVelocity()>100){
             shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.1);
         }
         else{

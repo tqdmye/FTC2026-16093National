@@ -18,12 +18,19 @@ import org.firstinspires.ftc.teamcode.commands.autos.driveAutoCommand;
 public class RedFarAuto extends AutoCommandBase {
 
 
-    private final Pose startPose = new Pose(0.1, -16.907, Math.toRadians(0));
+    private final Pose startPose = new Pose(1.939, 51.423, Math.toRadians(-23.17));
 
-    private final Pose scorePose = new Pose(1.939, -12.894, Math.toRadians(330.17));
+    private final Pose scorePose = new Pose(1.939, 51.423, Math.toRadians(-23.17));
 
-    private final Pose prepare1Pose = new Pose(-2, -18.524, Math.toRadians(270));
-    private final Pose intake1Pose1 = new Pose(-2, -59, Math.toRadians(270));
+    private final Pose prepare1Pose = new Pose(4.137, 7.539, Math.toRadians(-90));
+    private final Pose intake1Pose1 = new Pose(8.091, 2.056, Math.toRadians(-90));
+    private final Pose intake1Pose2 = new Pose(5.565, 0.287, Math.toRadians(-180));
+    private final Pose intake1Pose3 = new Pose(-4.086, 0.046, Math.toRadians(-180));
+    private final Pose prepare2Pose  = new Pose(31.000, 32.834, Math.toRadians(-90));
+    private final Pose intake2Pose1 = new Pose(8.091, 2.056, Math.toRadians(-90));
+    private final Pose intake2Pose2 = new Pose(31.000, 23.932, Math.toRadians(-90));
+    private final Pose intake2Pose3 = new Pose(31.000, -3, Math.toRadians(-90));
+    private final Pose parkPose = new Pose(30.729, 49.009, Math.toRadians(-11.24));
 
     private PathChain scorePreload,
             prepare1,  after1,
@@ -43,6 +50,7 @@ public class RedFarAuto extends AutoCommandBase {
 
 
     public Command runAutoCommand() {
+        follower.setMaxPower(0.8);
         scorePreload = follower.pathBuilder()
                 .addPath(new BezierLine(startPose,scorePose))
                 .setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading())
@@ -70,7 +78,7 @@ public class RedFarAuto extends AutoCommandBase {
                 .build();
         intake2 = follower.pathBuilder()
                 .addPath(new BezierLine(prepare1Pose, intake1Pose1))
-                .setLinearHeadingInterpolation(prepare1Pose.getHeading(), intake1Pose1.getHeading())
+                .setLinearHeadingInterpolation(prepare1Pose.getHeading(), intake2Pose1.getHeading())
                 .build();
         score2 = follower.pathBuilder()
                 .addPath(new BezierLine(intake1Pose1, scorePose))
@@ -96,32 +104,48 @@ public class RedFarAuto extends AutoCommandBase {
 
         return new SequentialCommandGroup(
                 autoCommand.accelFast(accCommand),
+                autoCommand.limitOn(),
                 autoCommand.intakeAuto(intakeAutoCommand),
-                new driveAutoCommand(follower,scorePreload),
-                autoCommand.shootFar(),
+                autoCommand.shootFarPreload(),
                 new driveAutoCommand(follower,prepare1),
                 new driveAutoCommand(follower,intake1),
                 new driveAutoCommand(follower,score1),
                 autoCommand.shootFar(),
-                new driveAutoCommand(follower,prepare2),
+                new driveAutoCommand(follower,prepare1),
                 new driveAutoCommand(follower,intake2),
-                new driveAutoCommand(follower,score2),
+                new driveAutoCommand(follower,score1),
                 autoCommand.shootFar(),
-                new driveAutoCommand(follower,prepare3),
-                new driveAutoCommand(follower,intake3),
-                new driveAutoCommand(follower,score3),
-                autoCommand.shootFar()
-
-
-
-
-
-
+                new driveAutoCommand(follower,prepare1),
+                new driveAutoCommand(follower,intake2),
+                new driveAutoCommand(follower,score1),
+                autoCommand.shootFar(),
+                new driveAutoCommand(follower,prepare1),
+                new driveAutoCommand(follower,intake2),
+                new driveAutoCommand(follower,score1),
+                autoCommand.shootFar(),
+                new driveAutoCommand(follower,prepare1),
+                new driveAutoCommand(follower,intake2),
+                new driveAutoCommand(follower,score1),
+                autoCommand.shootFar(),
+                new driveAutoCommand(follower,prepare1),
+                new driveAutoCommand(follower,intake2),
+                new driveAutoCommand(follower,score1),
+                autoCommand.shootFar(),
+                new driveAutoCommand(follower,prepare1),
+                new driveAutoCommand(follower,intake2),
+                new driveAutoCommand(follower,score1),
+                autoCommand.shootFar(),
+                new driveAutoCommand(follower,prepare1),
+                new driveAutoCommand(follower,intake2),
+                new driveAutoCommand(follower,score1),
+                autoCommand.shootFar(),
+                new driveAutoCommand(follower,prepare1),
+                new driveAutoCommand(follower,intake2),
+                new driveAutoCommand(follower,score1),
+                autoCommand.shootFar(),
+                autoCommand.stopAll()
 
         );
-
-
-
     }
 
     @Override

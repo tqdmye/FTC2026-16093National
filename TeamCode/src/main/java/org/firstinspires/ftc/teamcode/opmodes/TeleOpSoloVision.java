@@ -131,7 +131,7 @@ public class TeleOpSoloVision extends CommandOpModeEx {
     @Override
     public void onStart() {
         resetRuntime();
-        shooter.accelerate_slow();
+        shooter.accelerate_idle();
     }
 
     @Override
@@ -142,7 +142,7 @@ public class TeleOpSoloVision extends CommandOpModeEx {
         //leftTrigger -- preShooter
         //a -- preShooter & intake 反转
 
-        new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.X))
+        new ButtonEx(()->Math.abs(gamepadEx1.getRightY())>0.5)
                 .whenPressed(new InstantCommand(()-> isVisionDriving = true))
                 .whenReleased(new InstantCommand(()-> {
                     isVisionDriving = false;
@@ -154,7 +154,9 @@ public class TeleOpSoloVision extends CommandOpModeEx {
                 .whenPressed(new InstantCommand(()->isFieldCentric=!isFieldCentric));
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.A))
-                .whenPressed(new InstantCommand(()->isLimitOn=!isLimitOn));
+                .toggleWhenPressed(
+                        new InstantCommand(()->shooter.accelerate_slow()),
+                        new InstantCommand(()->shooter.accelerate_idle()));
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.LEFT_BUMPER))
                 .whenPressed(new ParallelCommandGroup(
@@ -166,7 +168,7 @@ public class TeleOpSoloVision extends CommandOpModeEx {
 
         new ButtonEx(() ->
                 gamepadEx1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5
-                        && !isLimitOn && !isAutoShoot)
+                        && !isAutoShoot)
                 .whenPressed(new SequentialCommandGroup(
                         new InstantCommand(()->isVelocityDetecting= ! isVelocityDetecting),
                         new InstantCommand(() -> shooter.accelerate_mid())))
@@ -181,7 +183,7 @@ public class TeleOpSoloVision extends CommandOpModeEx {
 
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.Y)
-                && !isLimitOn   && !isAutoShoot)
+                && !isAutoShoot)
                 .toggleWhenPressed(
                         new ParallelCommandGroup(
                                 new InstantCommand(()->isVelocityDetecting= true),
@@ -197,20 +199,6 @@ public class TeleOpSoloVision extends CommandOpModeEx {
                                 new InstantCommand(()->isShootFar = false)
                         )
                 );
-//                .whenPressed(new SequentialCommandGroup(
-//                        new InstantCommand(()->isVelocityDetecting= true),
-//                        new InstantCommand(()->intake.setPowerScale(0.75)),
-//                        new InstantCommand(() -> shooter.accelerate_fast())
-//                ))
-//                .whenReleased(
-//                        new SequentialCommandGroup(
-//                                new WaitCommand(150),
-//                                new InstantCommand(()->isVelocityDetecting=false),
-//                                new InstantCommand(()->intake.setPowerScale(1.0)),
-//                                new InstantCommand(() -> shooter.accelerate_idle()),
-//                                new InstantCommand(()->intake.stopPreShooter())
-//                        )
-//                );
 
         new ButtonEx(()->gamepadEx1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.5)
                 .whenPressed(new InstantCommand(()->isShooting = true))
@@ -254,7 +242,7 @@ public class TeleOpSoloVision extends CommandOpModeEx {
         shooter.checkVelocity();
         CommandScheduler.getInstance().run();
 //        Vector2d robotVel = driveCore.getRobotLinearVelocity();
-//        telemetry.addData("Pedro Pose", follower.getPose());
+        telemetry.addData("Pedro Pose", follower.getPose());
 //        telemetry.addData("shooter velocity", shooter.shooterRight.getVelocity());
 //        telemetry.addData("Robot vx (in/s)", robotVel.getX());
 //        telemetry.addData("Robot vy (in/s)", robotVel.getY());

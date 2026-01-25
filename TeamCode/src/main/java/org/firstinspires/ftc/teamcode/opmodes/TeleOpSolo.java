@@ -125,7 +125,7 @@ public class TeleOpSolo extends CommandOpModeEx {
     @Override
     public void onStart() {
         resetRuntime();
-        shooter.accelerate_slow();
+        shooter.accelerate_idle();
     }
 
     @Override
@@ -136,14 +136,13 @@ public class TeleOpSolo extends CommandOpModeEx {
         //leftTrigger -- preShooter
         //a -- preShooter & intake 反转
 
-        new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.X))
-                .whenPressed(new InstantCommand(()->isAutoShoot=!isAutoShoot));
-
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.BACK))
                 .whenPressed(new InstantCommand(()->isFieldCentric=!isFieldCentric));
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.A))
-                .whenPressed(new InstantCommand(()->isLimitOn=!isLimitOn));
+                .toggleWhenPressed(
+                        new InstantCommand(()->shooter.accelerate_slow()),
+                        new InstantCommand(()->shooter.accelerate_idle()));
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.LEFT_BUMPER))
                 .whenPressed(new ParallelCommandGroup(
@@ -155,7 +154,7 @@ public class TeleOpSolo extends CommandOpModeEx {
 
         new ButtonEx(() ->
                 gamepadEx1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5
-                        && !isLimitOn && !isAutoShoot)
+                        && !isAutoShoot)
                 .whenPressed(new SequentialCommandGroup(
                         new InstantCommand(()->isVelocityDetecting= ! isVelocityDetecting),
                         new InstantCommand(() -> shooter.accelerate_mid())))
@@ -170,7 +169,7 @@ public class TeleOpSolo extends CommandOpModeEx {
 
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.Y)
-                && !isLimitOn   && !isAutoShoot)
+                && !isAutoShoot)
                 .toggleWhenPressed(
                         new ParallelCommandGroup(
                                 new InstantCommand(()->isVelocityDetecting= true),

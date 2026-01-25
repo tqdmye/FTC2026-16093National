@@ -21,7 +21,7 @@ public class RedNearAuto extends AutoCommandBase {
 
     private final Pose startPose = new Pose(46.920, -45.665, -0.931);
 
-    private final Pose scorePose = new Pose(23.826, -27.971, -0.804);
+    private final Pose scorePose = new Pose(20.826, -25.971, -0.804);
 
     private final Pose scoreMidPose = new Pose(9.089, -15.059,-0.789);
 
@@ -179,7 +179,7 @@ public class RedNearAuto extends AutoCommandBase {
 
         return new SequentialCommandGroup(
                 autoCommand.accelSlow(accCommand),
-                autoCommand.limitOff(),
+                autoCommand.limitOn(),
                 autoCommand.intakeAuto(intakeAutoCommand),
                 new driveAutoCommand(follower,scorePreload),
                 autoCommand.shootPreload(),
