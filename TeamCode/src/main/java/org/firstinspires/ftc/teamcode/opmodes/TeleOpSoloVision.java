@@ -142,12 +142,12 @@ public class TeleOpSoloVision extends CommandOpModeEx {
         //leftTrigger -- preShooter
         //a -- preShooter & intake 反转
 
-        new ButtonEx(()->Math.abs(gamepadEx1.getRightY())>0.5)
+        new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.X))
                 .whenPressed(new InstantCommand(()-> isVisionDriving = true))
                 .whenReleased(new InstantCommand(()-> {
                     isVisionDriving = false;
                     visionArrivedNotified = false;
-                    vision.withOutVision();
+                    vision.aimHeadingOnly(driveCore, telemetry, false);
                 }));
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.BACK))
@@ -225,7 +225,7 @@ public class TeleOpSoloVision extends CommandOpModeEx {
         driveCore.update();
         // 视觉接管时由 vision 直接写电机；否则只由 TeleOpDriveCommandVision 写电机
         if (isVisionDriving) {
-            vision.driveWithVision(driveCore, telemetry, true);
+            vision.aimHeadingOnly(driveCore, telemetry, true);
             // 到位后自动停下 + 给操作手反馈（telemetry + rumble 一次）
             if (vision.isArrived()) {
                 if (!visionArrivedNotified) {
@@ -235,7 +235,7 @@ public class TeleOpSoloVision extends CommandOpModeEx {
                 }
                 // 自动退出自瞄，避免继续“贴着”目标微抖
                 isVisionDriving = false;
-                vision.withOutVision();
+                vision.aimHeadingOnly(driveCore, telemetry, false);
             }
         }
         ballStorage.update();

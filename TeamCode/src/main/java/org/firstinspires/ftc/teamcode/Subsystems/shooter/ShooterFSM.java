@@ -12,10 +12,11 @@ public class ShooterFSM {
 
     public enum State {
         IDLE,
-        ACCELERATING,
+        FAST,
+        MID,
+        SLOW,
         READY,
-        MAKEUP,
-        FAST
+        ACCELERATING
     }
     public State state = State.IDLE;
 
@@ -58,8 +59,6 @@ public class ShooterFSM {
         );
     }
 
-    /* ================= 基础控制 ================= */
-
     public void accelerate_slow() {
         shooterLeft.setVelocity(ShooterConstants.SHOOTER_SLOW_VELOCITY.value);
         shooterRight.setVelocity(ShooterConstants.SHOOTER_SLOW_VELOCITY.value);
@@ -68,16 +67,29 @@ public class ShooterFSM {
 
     public void accelerate_mid() {
         targetVelocity = ShooterConstants.SHOOTER_MID_VELOCITY.value;
-        shooterLeft.setVelocity(targetVelocity);
-        shooterRight.setVelocity(targetVelocity);
-        shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_MID.value);
+        shooterLeft.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
+        shooterRight.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
+        if(targetVelocity-shooterLeft.getVelocity()>150){
+            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_MID.value+0.07);
+        }
+        else{
+            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_MID.value);
+        }
     }
 
     public void accelerate_fast() {
         targetVelocity = ShooterConstants.SHOOTER_FAST_VELOCITY.value;
-        shooterLeft.setVelocity(targetVelocity);
-        shooterRight.setVelocity(targetVelocity);
-        shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value);
+        shooterLeft.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
+        shooterRight.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
+        if(targetVelocity-shooterLeft.getVelocity()>250){
+            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.15);
+        }
+        else if(targetVelocity-shooterLeft.getVelocity()>150){
+            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.1);
+        }
+        else{
+            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value);
+        }
     }
 
     public void accelerate_idle() {
@@ -97,38 +109,9 @@ public class ShooterFSM {
         shooterRight.setPower(0);
     }
 
-    /* ================= Zone 接口 ================= */
 
-    public void applyZone(Shootzone zone) {
-        switch (zone) {
-            case CLOSE:
-                accelerate_slow();
-                break;
 
-            case MID:
-                accelerate_mid();
-                break;
-
-            case FAR:
-                accelerate_fast();
-                break;
-
-            default:
-                accelerate_idle();
-                break;
-        }
-    }
-
-    /* ================= 状态判断 ================= */
-
-    public void checkVelocity() {
-        double velocityError = Math.abs(shooterLeft.getVelocity()-targetVelocity);
-        if (velocityError <= 60) {state = State.READY;}
-        if (velocityError > 60 && velocityError <= 200) {state = State.MAKEUP;}
-        if(velocityError > 200) {state = State.ACCELERATING;}
-    }
-
-    public double getVelocity() {
-        return shooterRight.getVelocity();
+    public boolean isAsVelocity() {
+        return Math.abs(targetVelocity - shooterLeft.getVelocity()) < 100;
     }
 }

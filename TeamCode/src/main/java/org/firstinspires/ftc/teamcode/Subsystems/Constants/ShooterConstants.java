@@ -15,13 +15,13 @@ public enum ShooterConstants {
 
     SHOOTER_TURRET_SLOW(0.54),
     SHOOTER_TURRET_MID(0.37),
-    SHOOTER_TURRET_LONG(0.23),
+    SHOOTER_TURRET_LONG(0.18),
 
     PRELIMIT_ON(0.68),
     PRELIMIT_OFF(1),
 
-    DNT_FIRE(0.68),
-    FIRE(1),
+    PRELIMIT_DNT_SHOOT(0.68),
+    PRELIMIT_SHOOT(1),
     ;
 
     public final double value;

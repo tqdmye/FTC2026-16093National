@@ -25,24 +25,27 @@ public class Vision {
     private AprilTagDetection desiredTag = null;
 
     public boolean targetFound = false;
-
-    double drive = 0;
-    double strafe = 0;
-    double turn = 0;
-
-    // ======== 目标约束（唯一解）========
-    private static final double TARGET_FORWARD_CM = 115.0;
-    private static final double TARGET_STRAFE_CM  = -11.8;
-    private static final double TARGET_YAW_DEG    = -28.0;
-
-    // 到位阈值
-    private static final double YPOS_TOLERANCE_CM = 2.0;
-    private static final double XPOS_TOLERANCE_CM = 2.0;
-    private static final double YAW_TOLERANCE_DEG = 0.5;
-
     private boolean arrived = false;
 
-    public Vision(Telemetry telemetry, final HardwareMap hardwareMap) {
+    /* ================== Target Definition ================== */
+
+    // 目标点（Tag 坐标系）
+    private static final double TARGET_FORWARD_CM = 115.0; // y
+    private static final double TARGET_STRAFE_CM  = -11.8; // x
+
+    // Heading 到位阈值
+    private static final double HEADING_TOLERANCE_DEG = 0.8;
+
+    // 防止 atan2 数值抖动
+    private static final double MIN_DY_CM = 5.0;
+
+    /* ================== Output ================== */
+
+    private double turn = 0.0;
+
+    /* ================== Constructor ================== */
+
+    public Vision(Telemetry telemetry, HardwareMap hardwareMap) {
 
         aprilTag = new AprilTagProcessor.Builder()
                 .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
@@ -62,16 +65,19 @@ public class Vision {
         return arrived;
     }
 
-    public void driveWithVision(NewMecanumDrive driveCore,
-                                Telemetry telemetry,
-                                boolean isDriveWithVision) {
+    /**
+     * 只根据 AprilTag 的 x / y 计算 Heading
+     * drive / strafe 永远为 0
+     */
+    public void aimHeadingOnly(NewMecanumDrive driveCore,
+                               Telemetry telemetry,
+                               boolean enableVision) {
 
-        drive = 0;
-        strafe = 0;
-        turn = 0;
+        turn = 0.0;
         targetFound = false;
         desiredTag = null;
 
+        /* ---------- 找 Tag ---------- */
         List<AprilTagDetection> detections = aprilTag.getDetections();
         for (AprilTagDetection d : detections) {
             if (d.metadata != null) {
@@ -81,75 +87,83 @@ public class Vision {
             }
         }
 
-        if (isDriveWithVision && !targetFound) {
+        /* ---------- 未启用或丢失 ---------- */
+        if (!enableVision || !targetFound) {
             arrived = false;
-            moveRobotVision(driveCore, 0, 0, 0);
-            telemetry.addLine("Vision: LOST TAG");
+            stopRobot(driveCore);
+            telemetry.addLine("Vision: NO TAG");
             telemetry.update();
             return;
         }
 
-        if (isDriveWithVision && targetFound) {
+        /* ---------- 当前位置（Tag 坐标系） ---------- */
+        double camX = desiredTag.ftcPose.x; // strafe
+        double camY = desiredTag.ftcPose.y; // forward
 
-            // ======== 唯一解误差（Tag 坐标系）========
-//            double forwardError = desiredTag.ftcPose.y - TARGET_FORWARD_CM;
-//            double strafeError  = desiredTag.ftcPose.x - TARGET_STRAFE_CM;
-            double forwardError = 0;
-            double strafeError  = 0;
-            double yawError     = desiredTag.ftcPose.yaw - TARGET_YAW_DEG;
+        /* ---------- 指向目标点的向量 ---------- */
+        double dx = TARGET_STRAFE_CM  - camX;
+        double dy = TARGET_FORWARD_CM - camY;
 
-            // ======== 到位判定 ========
-            if (
-//                    Math.abs(forwardError) < YPOS_TOLERANCE_CM &&
-//                    Math.abs(strafeError)  < XPOS_TOLERANCE_CM &&
-                    Math.abs(yawError)     < YAW_TOLERANCE_DEG) {
-
-                arrived = true;
-                moveRobotVision(driveCore, 0, 0, 0);
-                telemetry.addLine("Vision: ARRIVED (UNIQUE POSE)");
-                telemetry.update();
-                return;
-            } else {
-                arrived = false;
-            }
-
-            // ======== 闭环控制 ========
-            drive = Range.clip(
-                    forwardError * SensorConstants.VISION_SPEED_GAIN.value,
-                    -SensorConstants.VISION_MAX_AUTO_SPEED.value,
-                    SensorConstants.VISION_MAX_AUTO_SPEED.value);
-
-            strafe = Range.clip(
-                    strafeError * SensorConstants.VISION_STRAFE_GAIN.value,
-                    -SensorConstants.VISION_MAX_AUTO_STRAFE.value,
-                    SensorConstants.VISION_MAX_AUTO_STRAFE.value);
-
-            turn = Range.clip(
-                    yawError * SensorConstants.VISION_TURN_GAIN.value,
-                    -SensorConstants.VISION_MAX_AUTO_TURN.value,
-                    SensorConstants.VISION_MAX_AUTO_TURN.value);
-
-            telemetry.addData("Err F/S/Y",
-                    "%.1f / %.1f / %.1f",
-                    forwardError, strafeError, yawError);
+        /* ---------- 防止 dy 太小 ---------- */
+        if (Math.abs(dy) < MIN_DY_CM) {
+            dy = Math.copySign(MIN_DY_CM, dy);
         }
 
+        /* ---------- Heading Error ---------- */
+        double headingErrorDeg =
+                Math.toDegrees(Math.atan2(dx, dy));
+
+        /* ---------- 到位判定 ---------- */
+        if (Math.abs(headingErrorDeg) < HEADING_TOLERANCE_DEG) {
+            arrived = true;
+            stopRobot(driveCore);
+            telemetry.addLine("Vision: HEADING ALIGNED");
+        } else {
+            arrived = false;
+        }
+
+        /* ---------- 闭环控制（只转） ---------- */
+        turn = Range.clip(
+                headingErrorDeg * SensorConstants.VISION_TURN_GAIN.value,
+                -SensorConstants.VISION_MAX_AUTO_TURN.value,
+                SensorConstants.VISION_MAX_AUTO_TURN.value
+        );
+
+        /* ---------- 输出 ---------- */
+        moveRobot(driveCore, 0.0, 0.0, turn);
+
+        telemetry.addData("Cam X / Y", "%.1f / %.1f", camX, camY);
+        telemetry.addData("dx / dy", "%.1f / %.1f", dx, dy);
+        telemetry.addData("Heading Err", "%.2f deg", headingErrorDeg);
         telemetry.update();
-        moveRobotVision(driveCore, drive, strafe, turn);
     }
 
-    public void moveRobotVision(NewMecanumDrive drive, double x, double y, double yaw) {
+    /* ================== Drive ================== */
 
-        double fl = x - y - yaw;
-        double fr = x + y + yaw;
-        double bl = x + y - yaw;
-        double br = x - y + yaw;
+    private void stopRobot(NewMecanumDrive drive) {
+        moveRobot(drive, 0, 0, 0);
+    }
 
-        double max = Math.max(Math.max(Math.abs(fl), Math.abs(fr)),
-                Math.max(Math.abs(bl), Math.abs(br)));
+    private void moveRobot(NewMecanumDrive drive,
+                           double forward,
+                           double strafe,
+                           double yaw) {
+
+        double fl = forward - strafe - yaw;
+        double fr = forward + strafe + yaw;
+        double bl = forward + strafe - yaw;
+        double br = forward - strafe + yaw;
+
+        double max = Math.max(
+                Math.max(Math.abs(fl), Math.abs(fr)),
+                Math.max(Math.abs(bl), Math.abs(br))
+        );
 
         if (max > 1.0) {
-            fl /= max; fr /= max; bl /= max; br /= max;
+            fl /= max;
+            fr /= max;
+            bl /= max;
+            br /= max;
         }
 
         drive.leftFront.setPower(fl);
@@ -158,32 +172,31 @@ public class Vision {
         drive.rightRear.setPower(br);
     }
 
-    private void setManualExposure(Telemetry telemetry, int exposureMS, int gain) {
+    /* ================== Camera ================== */
 
-        while (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+    private void setManualExposure(Telemetry telemetry,
+                                   int exposureMS,
+                                   int gainValue) {
+
+        while (visionPortal.getCameraState()
+                != VisionPortal.CameraState.STREAMING) {
             sleep(20);
         }
 
-        ExposureControl exposure = visionPortal.getCameraControl(ExposureControl.class);
+        ExposureControl exposure =
+                visionPortal.getCameraControl(ExposureControl.class);
         exposure.setMode(ExposureControl.Mode.Manual);
         exposure.setExposure(exposureMS, TimeUnit.MILLISECONDS);
 
-        GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
-        gainControl.setGain(gain);
+        GainControl gainControl =
+                visionPortal.getCameraControl(GainControl.class);
+        gainControl.setGain(gainValue);
     }
+
 
     private void sleep(long ms) {
         try {
             Thread.sleep(ms);
         } catch (InterruptedException ignored) {}
-    }
-
-    public void withOutVision() {
-        drive = 0;
-        strafe = 0;
-        turn = 0;
-        targetFound = false;
-        desiredTag = null;
-        arrived = false;
     }
 }

@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.Subsystems.shooter;
 
+import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.RepeatCommand;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Constants.ShooterConstants;
 import org.firstinspires.ftc.teamcode.Subsystems.Constants.ShooterConstants;
 
 
@@ -39,10 +40,15 @@ public class Shooter {
     }
 
     public void accelerate_mid(){
+        targetVelocity = ShooterConstants.SHOOTER_FAST_VELOCITY.value;
         shooterLeft.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
         shooterRight.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
-        shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_MID.value);
-        targetVelocity = ShooterConstants.SHOOTER_MID_VELOCITY.value;
+//        if(targetVelocity-shooterLeft.getVelocity()>150){
+//            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_MID.value+0.07);
+//        }
+//        else{
+            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_MID.value);
+//        }
     }
     public void accelerate_slow(){
         shooterLeft.setVelocity(ShooterConstants.SHOOTER_SLOW_VELOCITY.value);
@@ -54,7 +60,10 @@ public class Shooter {
         targetVelocity = ShooterConstants.SHOOTER_FAST_VELOCITY.value;
         shooterLeft.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
         shooterRight.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
-        if(targetVelocity-shooterLeft.getVelocity()>100){
+        if(targetVelocity-shooterLeft.getVelocity()>250){
+            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.15);
+        }
+        else if(targetVelocity-shooterLeft.getVelocity()>150){
             shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.1);
         }
         else{
@@ -104,5 +113,11 @@ public class Shooter {
 
     public void checkVelocity(){
         isAsTargetVelocity = Math.abs(shooterLeft.getVelocity() - targetVelocity) <= 60;
+    }
+
+    public RepeatCommand repeatedShootMid(){
+        return new RepeatCommand(
+                new InstantCommand(this::accelerate_mid)
+        );
     }
 }

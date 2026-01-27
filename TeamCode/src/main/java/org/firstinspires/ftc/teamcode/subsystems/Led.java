@@ -4,34 +4,28 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Led {
-    public Servo indicatorLight, indicatorLight2;
+    public Servo velocityIndicator;
 
 
     public Led(HardwareMap hardwareMap) {
-        this.indicatorLight = hardwareMap.get(Servo.class, "indicatorLight");
-        this.indicatorLight2 = hardwareMap.get(Servo.class,"indicatorLight2");
+        this.velocityIndicator = hardwareMap.get(Servo.class, "indicatorLight");
     }
 
     public void setBlue() {
-        indicatorLight.setPosition(0.6);
+        velocityIndicator.setPosition(0.6);
     }
 
     public void setGreen() {
-        indicatorLight.setPosition(0.5);
+        velocityIndicator.setPosition(0.5);
     }
 
     public void setNone(){
-        indicatorLight.setPosition(0);
+        velocityIndicator.setPosition(0);
     }
 
-    public void setBallFull(){
-        indicatorLight2.setPosition(0.5);
+    public void isAtVelocity() {
+        velocityIndicator.setPosition(0.5);
     }
-
-    public void resetBall(){
-        indicatorLight2.setPosition(0);
-    }
-
 
 
     public enum ledColor{

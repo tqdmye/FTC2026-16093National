@@ -81,16 +81,16 @@ public class PreLimitCommand extends CommandBase {
             led.setNone();
         }
 
-        if (ballStorage.isFull() && !isFullTriggered) {
-            led.setBallFull();
-            fullTimeStamp = System.currentTimeMillis();
-            isFullTriggered = true;
-        }
-        if (isFullTriggered && System.currentTimeMillis() - fullTimeStamp >= 2000) {
-//            ballStorage.reset();
-            led.resetBall();
-            isFullTriggered = false;
-        }
+//        if (ballStorage.isFull() && !isFullTriggered) {
+//            led.setBallFull();
+//            fullTimeStamp = System.currentTimeMillis();
+//            isFullTriggered = true;
+//        }
+//        if (isFullTriggered && System.currentTimeMillis() - fullTimeStamp >= 2000) {
+////            ballStorage.reset();
+//            led.resetBall();
+//            isFullTriggered = false;
+//        }
 
 
 

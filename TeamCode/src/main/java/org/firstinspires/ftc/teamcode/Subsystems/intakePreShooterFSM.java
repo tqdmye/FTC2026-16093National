@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Constants.ShooterConstants;
 
-public class Firer {
+public class intakePreShooterFSM {
 
     public enum State {
         HOLDING,
@@ -26,7 +26,7 @@ public class Firer {
 
 
 
-    public Firer(@NonNull HardwareMap hardwareMap){
+    public intakePreShooterFSM(@NonNull HardwareMap hardwareMap){
         this.intake = hardwareMap.get(DcMotorEx.class, "intake");
         this.preShooter = hardwareMap.get(DcMotorEx.class, "preShooter");
         this.preLimit = hardwareMap.get(Servo.class,"preLimit");
@@ -52,13 +52,14 @@ public class Firer {
 
     public void shoot(){
         preShooter.setPower(powerScale);
-        preLimit.setPosition(ShooterConstants.PRELIMIT_OFF.value);
+        preLimit.setPosition(ShooterConstants.PRELIMIT_SHOOT.value);
         state = State.FIRING;
     }
 
 
-    public void dntFire(){
-        preLimit.setPosition(ShooterConstants.DNT_FIRE.value);
+    public void dntShoot(){
+        preLimit.setPosition(ShooterConstants.PRELIMIT_DNT_SHOOT.value);
+        preShooter.setPower(0);
         state = State.HOLDING;
     }
 
