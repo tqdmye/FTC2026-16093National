@@ -32,7 +32,7 @@ import pedroPathing.Constants;
 roadrunner drivecommand
 auto adjust shooter, using pedropathing
  */
-@TeleOp(group = "0-competition", name = "TeleOp Solo Please Use This")
+//@TeleOp(group = "0-competition", name = "TeleOp Solo Please Use This")
 public class TeleOpSolo extends CommandOpModeEx {
     GamepadEx gamepadEx1, gamepadEx2;
     NewMecanumDrive driveCore;

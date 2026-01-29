@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import android.util.Size;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
@@ -11,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.Constants.SensorConstants;
 import org.firstinspires.ftc.teamcode.Subsystems.driving.NewMecanumDrive;
+import org.firstinspires.ftc.teamcode.commands.autos.driveAutoCommand;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -18,185 +21,140 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class Vision {
+import com.acmerobotics.dashboard.config.Config;
 
+@Config
+public class Vision {
     private VisionPortal visionPortal;
     private AprilTagProcessor aprilTag;
     private AprilTagDetection desiredTag = null;
 
     public boolean targetFound = false;
-    private boolean arrived = false;
 
-    /* ================== Target Definition ================== */
+    // --- PID 实战参数 (根据调试结果修改) ---
+    public static double kP = 0.5;
+    public static double kI = 0.08;
+    public static double kD = 6;
+    public static double kI_LIMIT = 0.2; // 积分限幅
+    public static double MIN_TURN = 0.01;
+    public static double MAX_TURN = 0.2;
+    public static double TOLERANCE = 3; // 度
 
-    // 目标点（Tag 坐标系）
-    private static final double TARGET_FORWARD_CM = 115.0; // y
-    private static final double TARGET_STRAFE_CM  = -11.8; // x
-
-    // Heading 到位阈值
-    private static final double HEADING_TOLERANCE_DEG = 0.8;
-
-    // 防止 atan2 数值抖动
-    private static final double MIN_DY_CM = 5.0;
-
-    /* ================== Output ================== */
-
-    private double turn = 0.0;
-
-    /* ================== Constructor ================== */
+    private double lastError = 0;
+    private double integral = 0;
+    private double lastFilteredError = 0;
+    public static double alpha = 0.1; // 滤波系数
 
     public Vision(Telemetry telemetry, HardwareMap hardwareMap) {
-
         aprilTag = new AprilTagProcessor.Builder()
                 .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
                 .build();
-
-        aprilTag.setDecimation(2);
+        aprilTag.setDecimation(1);
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .setCameraResolution(new Size(640, 480))
                 .addProcessor(aprilTag)
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // 提升到30FPS
+                .enableLiveView(true)
                 .build();
 
-        setManualExposure(telemetry, 6, 250);
-    }
-
-    public boolean isArrived() {
-        return arrived;
+        setManualExposure(telemetry, 3, 200);
     }
 
     /**
-     * 只根据 AprilTag 的 x / y 计算 Heading
-     * drive / strafe 永远为 0
+     * 实战调用：获取 PID 转向功率
      */
-    public void aimHeadingOnly(NewMecanumDrive driveCore,
-                               Telemetry telemetry,
-                               boolean enableVision) {
+    public double getPIDAutoAlignTurn(Telemetry telemetry) {
+        double error = getFilteredHeadingError();
 
-        turn = 0.0;
-        targetFound = false;
-        desiredTag = null;
+        if (!targetFound) {
+            resetPID();
+            return 0.0;
+        }
 
-        /* ---------- 找 Tag ---------- */
+        double turnPower = 0;
+        if (Math.abs(error) > TOLERANCE) {
+            // P
+            double pTerm = error * kP;
+            // I (含抗饱和限幅)
+            integral += error;
+            double iTerm = Range.clip(integral * kI, -kI_LIMIT, kI_LIMIT);
+            // D
+            double dTerm = (error - lastError) * kD;
+
+            turnPower = pTerm + iTerm + dTerm;
+            // 摩擦力补偿
+            turnPower += Math.signum(turnPower) * MIN_TURN;
+            // 输出限幅
+            turnPower = Range.clip(turnPower, -MAX_TURN, MAX_TURN);
+        } else {
+            integral = 0;
+        }
+
+        lastError = error;
+        telemetry.addData("Vision Error", "%.2f deg", error);
+        return -turnPower; // 根据底盘朝向可能需要去负号
+    }
+
+    public double getRawHeadingError() {
         List<AprilTagDetection> detections = aprilTag.getDetections();
-        for (AprilTagDetection d : detections) {
-            if (d.metadata != null) {
-                targetFound = true;
-                desiredTag = d;
-                break;
+        targetFound = false;
+        if (detections != null) {
+            for (AprilTagDetection d : detections) {
+                if (d.metadata != null) {
+                    targetFound = true;
+                    double yTotal = d.ftcPose.y + Math.cos(d.ftcPose.yaw) * 16;
+                    double xTotal = d.ftcPose.x + Math.sin(d.ftcPose.yaw) * 16;
+                    return Math.toDegrees(Math.atan2(xTotal, yTotal));
+                }
             }
         }
-
-        /* ---------- 未启用或丢失 ---------- */
-        if (!enableVision || !targetFound) {
-            arrived = false;
-            stopRobot(driveCore);
-            telemetry.addLine("Vision: NO TAG");
-            telemetry.update();
-            return;
-        }
-
-        /* ---------- 当前位置（Tag 坐标系） ---------- */
-        double camX = desiredTag.ftcPose.x; // strafe
-        double camY = desiredTag.ftcPose.y; // forward
-
-        /* ---------- 指向目标点的向量 ---------- */
-        double dx = TARGET_STRAFE_CM  - camX;
-        double dy = TARGET_FORWARD_CM - camY;
-
-        /* ---------- 防止 dy 太小 ---------- */
-        if (Math.abs(dy) < MIN_DY_CM) {
-            dy = Math.copySign(MIN_DY_CM, dy);
-        }
-
-        /* ---------- Heading Error ---------- */
-        double headingErrorDeg =
-                Math.toDegrees(Math.atan2(dx, dy));
-
-        /* ---------- 到位判定 ---------- */
-        if (Math.abs(headingErrorDeg) < HEADING_TOLERANCE_DEG) {
-            arrived = true;
-            stopRobot(driveCore);
-            telemetry.addLine("Vision: HEADING ALIGNED");
-        } else {
-            arrived = false;
-        }
-
-        /* ---------- 闭环控制（只转） ---------- */
-        turn = Range.clip(
-                headingErrorDeg * SensorConstants.VISION_TURN_GAIN.value,
-                -SensorConstants.VISION_MAX_AUTO_TURN.value,
-                SensorConstants.VISION_MAX_AUTO_TURN.value
-        );
-
-        /* ---------- 输出 ---------- */
-        moveRobot(driveCore, 0.0, 0.0, turn);
-
-        telemetry.addData("Cam X / Y", "%.1f / %.1f", camX, camY);
-        telemetry.addData("dx / dy", "%.1f / %.1f", dx, dy);
-        telemetry.addData("Heading Err", "%.2f deg", headingErrorDeg);
-        telemetry.update();
+        return 0;
     }
 
-    /* ================== Drive ================== */
-
-    private void stopRobot(NewMecanumDrive drive) {
-        moveRobot(drive, 0, 0, 0);
-    }
-
-    private void moveRobot(NewMecanumDrive drive,
-                           double forward,
-                           double strafe,
-                           double yaw) {
-
-        double fl = forward - strafe - yaw;
-        double fr = forward + strafe + yaw;
-        double bl = forward + strafe - yaw;
-        double br = forward - strafe + yaw;
-
-        double max = Math.max(
-                Math.max(Math.abs(fl), Math.abs(fr)),
-                Math.max(Math.abs(bl), Math.abs(br))
-        );
-
-        if (max > 1.0) {
-            fl /= max;
-            fr /= max;
-            bl /= max;
-            br /= max;
+    public double getFilteredHeadingError() {
+        double rawError = getRawHeadingError();
+        if (!targetFound) {
+            lastFilteredError = 0;
+            return 0;
         }
-
-        drive.leftFront.setPower(fl);
-        drive.rightFront.setPower(fr);
-        drive.leftRear.setPower(bl);
-        drive.rightRear.setPower(br);
+        double filteredError = alpha * rawError + (1.0 - alpha) * lastFilteredError;
+        lastFilteredError = filteredError;
+        return filteredError;
     }
 
-    /* ================== Camera ================== */
+    public void resetPID() {
+        lastError = 0;
+        integral = 0;
+        lastFilteredError = 0;
+    }
 
-    private void setManualExposure(Telemetry telemetry,
-                                   int exposureMS,
-                                   int gainValue) {
-
-        while (visionPortal.getCameraState()
-                != VisionPortal.CameraState.STREAMING) {
+    private void setManualExposure(Telemetry telemetry, int exposureMS, int gainValue) {
+        while (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
             sleep(20);
         }
-
-        ExposureControl exposure =
-                visionPortal.getCameraControl(ExposureControl.class);
+        ExposureControl exposure = visionPortal.getCameraControl(ExposureControl.class);
         exposure.setMode(ExposureControl.Mode.Manual);
         exposure.setExposure(exposureMS, TimeUnit.MILLISECONDS);
-
-        GainControl gainControl =
-                visionPortal.getCameraControl(GainControl.class);
+        GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
         gainControl.setGain(gainValue);
     }
 
-
     private void sleep(long ms) {
-        try {
-            Thread.sleep(ms);
-        } catch (InterruptedException ignored) {}
+        try { Thread.sleep(ms); } catch (InterruptedException ignored) {}
     }
+
+//    public Command turnToAprilTag(Follower follower){
+//        double yTotal = desiredTag.ftcPose.y + Math.cos(desiredTag.ftcPose.yaw)*16;
+//        double xTotal = desiredTag.ftcPose.x + Math.sin(desiredTag.ftcPose.yaw)*16;
+//        double headingTotal = Math.atan2(xTotal, yTotal);  //heading total （rad）
+//        PathChain turnToTag = follower.pathBuilder()
+//                .addPath(new BezierLine(
+//                        follower.getPose(),
+//                        new Pose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading() + headingTotal)))
+//                .setLinearHeadingInterpolation(follower.getHeading(), follower.getHeading() + headingTotal)
+//                .build();
+//        return new driveAutoCommand(follower, turnToTag);
+//    }
 }

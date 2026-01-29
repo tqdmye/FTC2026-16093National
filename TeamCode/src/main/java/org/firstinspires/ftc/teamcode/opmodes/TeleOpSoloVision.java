@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
@@ -11,15 +12,15 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Subsystems.BallStorage;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakePreshooter;
 import org.firstinspires.ftc.teamcode.Subsystems.Led;
 import org.firstinspires.ftc.teamcode.Subsystems.Vision;
-import org.firstinspires.ftc.teamcode.Subsystems.driving.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.commands.PedroShootAutoAdjustCommand;
 import org.firstinspires.ftc.teamcode.commands.PreLimitCommand;
@@ -35,7 +36,7 @@ auto adjust shooter, using pedropathing
 @TeleOp(group = "0-competition", name = "TeleOp Solo Vision")
 public class TeleOpSoloVision extends CommandOpModeEx {
     GamepadEx gamepadEx1, gamepadEx2;
-    NewMecanumDrive driveCore;
+//    NewMecanumDrive driveCore;
     Follower follower;
 
     Shooter shooter;
@@ -70,21 +71,22 @@ public class TeleOpSoloVision extends CommandOpModeEx {
         gamepadEx1 = new GamepadEx(gamepad1);
         gamepadEx2 = new GamepadEx(gamepad2);
 
-        driveCore = new NewMecanumDrive(hardwareMap);
+//        driveCore = new NewMecanumDrive(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(0, 0, 0));
         ballStorage = new BallStorage(hardwareMap);
         vision = new Vision(telemetry, hardwareMap);
 
-        driveCore.init();
-        TeleOpDriveCommandVision driveCommandVision = new TeleOpDriveCommandVision(driveCore,
+//        driveCore.init();
+        TeleOpDriveCommandVision driveCommandVision = new TeleOpDriveCommandVision(
+                follower,
+                vision,
                 ()->gamepadEx1.getLeftX(),
                 ()->gamepadEx1.getLeftY(),
                 ()->gamepadEx1.getRightX(),
-                ()->(gamepadEx1.getButton(GamepadKeys.Button.START) && !gamepad1.touchpad),
                 ()->(gamepadEx1.getButton(GamepadKeys.Button.RIGHT_BUMPER)),
-                ()->(isFieldCentric),
-                ()->(isVisionDriving));
+                ()->(isVisionDriving),
+                telemetry);
 
         intake = new IntakePreshooter(hardwareMap);
 //        frontArm.setLED(false);
@@ -100,14 +102,13 @@ public class TeleOpSoloVision extends CommandOpModeEx {
                 ()->(isShooting));
 
 
-        driveCore.resetHeading();
+//        driveCore.resetHeading();
 //        driveCore.yawHeading += 90; //如果specimen自动接solo手动就把这行去掉
 //        driveCore.yawHeading %= 360;    //如果specimen自动接solo手动就把这行去掉
-        driveCore.resetOdo();
+//        driveCore.resetOdo();
 
 
 
-        driveCore.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         CommandScheduler.getInstance().schedule(driveCommandVision);
         CommandScheduler.getInstance().schedule(preLimitCommand);
         CommandScheduler.getInstance().schedule(
@@ -131,6 +132,7 @@ public class TeleOpSoloVision extends CommandOpModeEx {
     @Override
     public void onStart() {
         resetRuntime();
+        follower.startTeleOpDrive(true);
         shooter.accelerate_idle();
     }
 
@@ -142,12 +144,14 @@ public class TeleOpSoloVision extends CommandOpModeEx {
         //leftTrigger -- preShooter
         //a -- preShooter & intake 反转
 
-        new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.X))
-                .whenPressed(new InstantCommand(()-> isVisionDriving = true))
-                .whenReleased(new InstantCommand(()-> {
+        new ButtonEx(() -> gamepadEx1.getButton(GamepadKeys.Button.X))
+                .whenPressed(new InstantCommand(() -> {
+                    isVisionDriving = true;
+                    gamepad1.rumble(100);
+                }))
+                .whenReleased(new InstantCommand(() -> {
                     isVisionDriving = false;
-                    visionArrivedNotified = false;
-                    vision.aimHeadingOnly(driveCore, telemetry, false);
+                    vision.resetPID();
                 }));
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.BACK))
@@ -216,41 +220,31 @@ public class TeleOpSoloVision extends CommandOpModeEx {
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP))
                 .whenPressed(new InstantCommand(()->shooter.stopAccelerate()));
+
+//        new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.DPAD_LEFT))
+//                .whenPressed(vision.turnToAprilTag(follower));
     }
 
     @Override
     public void run(){
         follower.update();
-        driveCore.updateOdo();
-        driveCore.update();
-        // 视觉接管时由 vision 直接写电机；否则只由 TeleOpDriveCommandVision 写电机
-        if (isVisionDriving) {
-            vision.aimHeadingOnly(driveCore, telemetry, true);
-            // 到位后自动停下 + 给操作手反馈（telemetry + rumble 一次）
-            if (vision.isArrived()) {
-                if (!visionArrivedNotified) {
-                    telemetry.addLine("AUTO-AIM: 到位 ✅");
-                    gamepad1.rumble(300);
-                    visionArrivedNotified = true;
-                }
-                // 自动退出自瞄，避免继续“贴着”目标微抖
-                isVisionDriving = false;
-                vision.aimHeadingOnly(driveCore, telemetry, false);
-            }
-        }
         ballStorage.update();
         shooter.checkVelocity();
         CommandScheduler.getInstance().run();
-//        Vector2d robotVel = driveCore.getRobotLinearVelocity();
-        telemetry.addData("Pedro Pose", follower.getPose());
-//        telemetry.addData("shooter velocity", shooter.shooterRight.getVelocity());
-//        telemetry.addData("Robot vx (in/s)", robotVel.getX());
-//        telemetry.addData("Robot vy (in/s)", robotVel.getY());
-//        telemetry.addData("Robot speed", Math.hypot(robotVel.getX(), robotVel.getY()));
-//        telemetry.addData("LF vel", driveCore.leftFront.getVelocity());
-//        telemetry.addData("RF vel", driveCore.rightFront.getVelocity());
-//        telemetry.addData("LR vel", driveCore.leftRear.getVelocity());
-//        telemetry.addData("RR vel", driveCore.rightRear.getVelocity());
+
+        // 实战反馈：如果开启自瞄且误差极小，手柄轻微震动提醒可以发射
+        if (isVisionDriving && vision.targetFound) {
+            if (Math.abs(vision.getFilteredHeadingError()) < Vision.TOLERANCE) {
+                // 每秒轻微震动一次提示对准
+                if (getRuntime() % 0.5 < 0.05) {
+                    gamepad1.rumble(60);
+                }
+            }
+        }
+
+        telemetry.addData("Vision Mode", isVisionDriving);
+        telemetry.addData("Tag Visible", vision.targetFound);
+        telemetry.addData("Pose", follower.getPose().toString());
         telemetry.update();
     }
 }
