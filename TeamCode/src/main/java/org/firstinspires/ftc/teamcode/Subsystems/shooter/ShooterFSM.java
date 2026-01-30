@@ -60,6 +60,7 @@ public class ShooterFSM {
     }
 
     public void accelerate_slow() {
+        targetVelocity = ShooterConstants.SHOOTER_SLOW_VELOCITY.value;
         shooterLeft.setVelocity(ShooterConstants.SHOOTER_SLOW_VELOCITY.value);
         shooterRight.setVelocity(ShooterConstants.SHOOTER_SLOW_VELOCITY.value);
         shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_SLOW.value);

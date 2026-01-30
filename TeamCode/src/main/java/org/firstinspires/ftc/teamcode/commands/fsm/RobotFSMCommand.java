@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands.fsm;
 
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.teamcode.Subsystems.intakePreShooterFSM;
 import org.firstinspires.ftc.teamcode.Subsystems.Led;
@@ -30,7 +31,7 @@ public class RobotFSMCommand extends CommandBase {
     @Override
     public void execute() {
 
-        if(fireRequest.getAsBoolean()){
+        if(fireRequest.getAsBoolean() && shooterFSM.state != ShooterFSM.State.IDLE){
             intakePreShooterFSM.shoot();
         }
         else{

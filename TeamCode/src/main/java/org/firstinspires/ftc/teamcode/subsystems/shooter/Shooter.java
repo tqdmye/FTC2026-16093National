@@ -61,10 +61,10 @@ public class Shooter {
         shooterLeft.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
         shooterRight.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
         if(targetVelocity-shooterLeft.getVelocity()>160){
-            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.17);
+            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.14);
         }
         else if(targetVelocity-shooterLeft.getVelocity()>120){
-            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.1);
+            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.8);
         }
         else{
             shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value);
