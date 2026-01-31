@@ -144,7 +144,7 @@ public class TeleOpSoloFSM extends CommandOpModeEx {
                                 new InstantCommand(()-> intakePreShooterFSM.stopPreShooter())
                         ),
                         new SequentialCommandGroup(
-                                new InstantCommand(()-> intakePreShooterFSM.setPowerScale(0.75)),
+                                new InstantCommand(()-> intakePreShooterFSM.setPowerScale(0.85)),
                                 new InstantCommand(() -> shooterFSM.state = ShooterFSM.State.FAST)
                         ),
                         ()->shooterFSM.state != ShooterFSM.State.IDLE)

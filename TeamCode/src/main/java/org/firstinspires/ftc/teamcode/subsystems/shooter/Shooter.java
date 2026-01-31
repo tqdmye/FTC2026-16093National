@@ -40,7 +40,7 @@ public class Shooter {
     }
 
     public void accelerate_mid(){
-        targetVelocity = ShooterConstants.SHOOTER_FAST_VELOCITY.value;
+        targetVelocity = ShooterConstants.SHOOTER_MID_VELOCITY.value;
         shooterUp.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
         shooterDown.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
 //        if(targetVelocity-shooterLeft.getVelocity()>150){
