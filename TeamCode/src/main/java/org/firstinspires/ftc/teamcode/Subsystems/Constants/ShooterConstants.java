@@ -17,7 +17,7 @@ public enum ShooterConstants {
     SHOOTER_TURRET_MID(0.2),
     SHOOTER_TURRET_LONG(0),
 
-    PRELIMIT_ON(0.68),
+    PRELIMIT_ON(0.65),
     PRELIMIT_OFF(1),
 
     PRELIMIT_DNT_SHOOT(0.68),

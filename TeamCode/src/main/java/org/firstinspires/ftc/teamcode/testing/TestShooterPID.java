@@ -32,8 +32,8 @@ public class TestShooterPID extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
-    DcMotorEx shooterLeft = hardwareMap.get(DcMotorEx.class, "shooterLeft");
-    DcMotorEx shooterRight = hardwareMap.get(DcMotorEx.class, "shooterRight");
+    DcMotorEx shooterUp = hardwareMap.get(DcMotorEx.class, "shooterUp");
+    DcMotorEx shooterDown = hardwareMap.get(DcMotorEx.class, "shooterDown");
 
 
     DcMotorEx intake = hardwareMap.get(DcMotorEx.class, "intake");
@@ -42,26 +42,26 @@ public class TestShooterPID extends LinearOpMode {
 
     Servo preLimit = hardwareMap.get(Servo.class,"preLimit");
 
-    shooterLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-    shooterRight.setDirection(DcMotorSimple.Direction.REVERSE);
+    shooterUp.setDirection(DcMotorSimple.Direction.FORWARD);
+    shooterDown.setDirection(DcMotorSimple.Direction.REVERSE);
     intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
     shooterAngleServo.setDirection(Servo.Direction.FORWARD);
 
 
-    shooterLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
-    shooterRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+    shooterUp.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+    shooterDown.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
 
 
-    shooterLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    shooterLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    shooterRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    shooterRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    shooterUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    shooterUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    shooterDown.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    shooterDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
     if (isPIDControl) {
-      shooterLeft.setVelocityPIDFCoefficients(setP, setI, setD, setF);
-      shooterRight.setVelocityPIDFCoefficients(setP, setI, setD, setF);
+      shooterUp.setVelocityPIDFCoefficients(setP, setI, setD, setF);
+      shooterDown.setVelocityPIDFCoefficients(setP, setI, setD, setF);
 
     }
 
@@ -69,12 +69,12 @@ public class TestShooterPID extends LinearOpMode {
 
     while (opModeIsActive()) {
       if(isPowerMode){
-        shooterLeft.setPower(setShooterPower);
-        shooterRight.setPower(setShooterPower);
+        shooterUp.setPower(setShooterPower);
+        shooterDown.setPower(setShooterPower);
       }
       else{
-        shooterLeft.setVelocity(shooterVelocity);
-        shooterRight.setVelocity(shooterVelocity);
+        shooterUp.setVelocity(shooterVelocity);
+        shooterDown.setVelocity(shooterVelocity);
 
         shooterAngleServo.setPosition(servo_pos);
 
@@ -101,8 +101,8 @@ public class TestShooterPID extends LinearOpMode {
 //        intake.setPower(0);
 //      }
 
-      telemetry_M.addData("Shooter Down Velocity", shooterLeft.getVelocity());
-      telemetry_M.addData("Shooter Up Velocity", shooterLeft.getVelocity());
+      telemetry_M.addData("Shooter Down Velocity", shooterDown.getVelocity());
+      telemetry_M.addData("Shooter Up Velocity", shooterUp.getVelocity());
 
       telemetry_M.update();
 

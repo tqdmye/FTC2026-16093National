@@ -20,7 +20,7 @@ public class ShooterFSM {
     }
     public State state = State.IDLE;
 
-    public DcMotorEx shooterLeft, shooterRight;
+    public DcMotorEx shooterUp, shooterDown;
     public Servo shooterAngleServo;
 
     private double targetVelocity = 0.0;
@@ -28,30 +28,30 @@ public class ShooterFSM {
 
     public ShooterFSM(HardwareMap hardwareMap) {
 
-        shooterLeft = hardwareMap.get(DcMotorEx.class, "shooterLeft");
-        shooterRight = hardwareMap.get(DcMotorEx.class, "shooterRight");
+        shooterUp = hardwareMap.get(DcMotorEx.class, "shooterUp");
+        shooterDown = hardwareMap.get(DcMotorEx.class, "shooterDown");
         shooterAngleServo = hardwareMap.get(Servo.class, "shooterAngle");
 
-        shooterLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        shooterRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        shooterAngleServo.setDirection(Servo.Direction.FORWARD);
+        shooterUp.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterDown.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooterAngleServo.setDirection(Servo.Direction.REVERSE);
 
-        shooterLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        shooterRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        shooterUp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        shooterDown.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        shooterLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shooterRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shooterLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooterRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooterDown.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooterUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        shooterLeft.setVelocityPIDFCoefficients(
+        shooterUp.setVelocityPIDFCoefficients(
                 ShooterConstants.SHOOTER_P.value,
                 ShooterConstants.SHOOTER_I.value,
                 ShooterConstants.SHOOTER_D.value,
                 ShooterConstants.SHOOTER_F.value
         );
 
-        shooterRight.setVelocityPIDFCoefficients(
+        shooterDown.setVelocityPIDFCoefficients(
                 ShooterConstants.SHOOTER_P.value,
                 ShooterConstants.SHOOTER_I.value,
                 ShooterConstants.SHOOTER_D.value,
@@ -61,16 +61,16 @@ public class ShooterFSM {
 
     public void accelerate_slow() {
         targetVelocity = ShooterConstants.SHOOTER_SLOW_VELOCITY.value;
-        shooterLeft.setVelocity(ShooterConstants.SHOOTER_SLOW_VELOCITY.value);
-        shooterRight.setVelocity(ShooterConstants.SHOOTER_SLOW_VELOCITY.value);
+        shooterUp.setVelocity(ShooterConstants.SHOOTER_SLOW_VELOCITY.value);
+        shooterDown.setVelocity(ShooterConstants.SHOOTER_SLOW_VELOCITY.value);
         shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_SLOW.value);
     }
 
     public void accelerate_mid() {
         targetVelocity = ShooterConstants.SHOOTER_MID_VELOCITY.value;
-        shooterLeft.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
-        shooterRight.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
-        if(targetVelocity-shooterLeft.getVelocity()>150){
+        shooterUp.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
+        shooterDown.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
+        if(targetVelocity-shooterUp.getVelocity()>150){
             shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_MID.value+0.07);
         }
         else{
@@ -80,12 +80,12 @@ public class ShooterFSM {
 
     public void accelerate_fast() {
         targetVelocity = ShooterConstants.SHOOTER_FAST_VELOCITY.value;
-        shooterLeft.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
-        shooterRight.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
-        if(targetVelocity-shooterLeft.getVelocity()>250){
+        shooterUp.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
+        shooterDown.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
+        if(targetVelocity-shooterUp.getVelocity()>250){
             shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.15);
         }
-        else if(targetVelocity-shooterLeft.getVelocity()>150){
+        else if(targetVelocity-shooterUp.getVelocity()>150){
             shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.1);
         }
         else{
@@ -94,25 +94,25 @@ public class ShooterFSM {
     }
 
     public void accelerate_idle() {
-        shooterLeft.setVelocity(ShooterConstants.SHOOTER_IDLE_VELOCITY.value);
-        shooterRight.setVelocity(ShooterConstants.SHOOTER_IDLE_VELOCITY.value);
+        shooterUp.setVelocity(ShooterConstants.SHOOTER_IDLE_VELOCITY.value);
+        shooterDown.setVelocity(ShooterConstants.SHOOTER_IDLE_VELOCITY.value);
         shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_SLOW.value);
         state = State.IDLE;
     }
 
     public void emergency() {
-        shooterLeft.setPower(-1);
-        shooterRight.setPower(-1);
+        shooterUp.setPower(-1);
+        shooterDown.setPower(-1);
     }
 
     public void stopAccelerate() {
-        shooterLeft.setPower(0);
-        shooterRight.setPower(0);
+        shooterUp.setPower(0);
+        shooterDown.setPower(0);
     }
 
 
 
     public boolean isAsVelocity() {
-        return Math.abs(targetVelocity - shooterLeft.getVelocity()) < 100;
+        return Math.abs(targetVelocity - shooterUp.getVelocity()) < 100;
     }
 }

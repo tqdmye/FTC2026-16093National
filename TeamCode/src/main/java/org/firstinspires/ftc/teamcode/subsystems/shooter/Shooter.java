@@ -12,37 +12,37 @@ import org.firstinspires.ftc.teamcode.Subsystems.Constants.ShooterConstants;
 
 
 public class Shooter {
-    public DcMotorEx shooterLeft, shooterRight;
+    public DcMotorEx shooterUp, shooterDown;
     public  Servo shooterAngleServo;
     private double targetVelocity = 9999;
     public boolean isAsTargetVelocity = false;
 
 
     public Shooter(HardwareMap hardwareMap) {
-        this.shooterLeft = hardwareMap.get(DcMotorEx.class, "shooterLeft");
-        this.shooterRight = hardwareMap.get(DcMotorEx.class, "shooterRight");
+        this.shooterUp = hardwareMap.get(DcMotorEx.class, "shooterUp");
+        this.shooterDown = hardwareMap.get(DcMotorEx.class, "shooterDown");
         this.shooterAngleServo = hardwareMap.get(Servo.class,"shooterAngle");
 
-        shooterLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        shooterRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterUp.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterDown.setDirection(DcMotorSimple.Direction.FORWARD);
         shooterAngleServo.setDirection(Servo.Direction.FORWARD);
 
-        shooterLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
-        shooterRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        shooterUp.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        shooterDown.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
 
-        shooterLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shooterRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shooterLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooterRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooterDown.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooterUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        shooterRight.setVelocityPIDFCoefficients(ShooterConstants.SHOOTER_P.value, ShooterConstants.SHOOTER_I.value, ShooterConstants.SHOOTER_D.value, ShooterConstants.SHOOTER_F.value);
-        shooterLeft.setVelocityPIDFCoefficients(ShooterConstants.SHOOTER_P.value, ShooterConstants.SHOOTER_I.value, ShooterConstants.SHOOTER_D.value, ShooterConstants.SHOOTER_F.value);
+        shooterDown.setVelocityPIDFCoefficients(ShooterConstants.SHOOTER_P.value, ShooterConstants.SHOOTER_I.value, ShooterConstants.SHOOTER_D.value, ShooterConstants.SHOOTER_F.value);
+        shooterUp.setVelocityPIDFCoefficients(ShooterConstants.SHOOTER_P.value, ShooterConstants.SHOOTER_I.value, ShooterConstants.SHOOTER_D.value, ShooterConstants.SHOOTER_F.value);
     }
 
     public void accelerate_mid(){
         targetVelocity = ShooterConstants.SHOOTER_FAST_VELOCITY.value;
-        shooterLeft.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
-        shooterRight.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
+        shooterUp.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
+        shooterDown.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
 //        if(targetVelocity-shooterLeft.getVelocity()>150){
 //            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_MID.value+0.07);
 //        }
@@ -51,19 +51,19 @@ public class Shooter {
 //        }
     }
     public void accelerate_slow(){
-        shooterLeft.setVelocity(ShooterConstants.SHOOTER_SLOW_VELOCITY.value);
-        shooterRight.setVelocity(ShooterConstants.SHOOTER_SLOW_VELOCITY.value);
+        shooterUp.setVelocity(ShooterConstants.SHOOTER_SLOW_VELOCITY.value);
+        shooterDown.setVelocity(ShooterConstants.SHOOTER_SLOW_VELOCITY.value);
         shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_SLOW.value);
         targetVelocity = ShooterConstants.SHOOTER_SLOW_VELOCITY.value;
     }
     public void accelerate_fast(){
         targetVelocity = ShooterConstants.SHOOTER_FAST_VELOCITY.value;
-        shooterLeft.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
-        shooterRight.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
-        if(targetVelocity-shooterLeft.getVelocity()>160){
+        shooterUp.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
+        shooterDown.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
+        if(targetVelocity-shooterUp.getVelocity()>160){
             shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.14);
         }
-        else if(targetVelocity-shooterLeft.getVelocity()>120){
+        else if(targetVelocity-shooterUp.getVelocity()>120){
             shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.8);
         }
         else{
@@ -72,19 +72,19 @@ public class Shooter {
     }
 
     public void accelerate_idle(){
-        shooterLeft.setVelocity(ShooterConstants.SHOOTER_IDLE_VELOCITY.value);
-        shooterRight.setVelocity(ShooterConstants.SHOOTER_IDLE_VELOCITY.value);
+        shooterUp.setVelocity(ShooterConstants.SHOOTER_IDLE_VELOCITY.value);
+        shooterDown.setVelocity(ShooterConstants.SHOOTER_IDLE_VELOCITY.value);
         shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_SLOW.value);
     }
 
     public void emergency(){
-        shooterLeft.setPower(-1);
-        shooterRight.setPower(-1);
+        shooterUp.setPower(-1);
+        shooterDown.setPower(-1);
     }
 
     public void stopAccelerate(){
-        shooterLeft.setPower(0);
-        shooterRight.setPower(0);
+        shooterUp.setPower(0);
+        shooterDown.setPower(0);
     }
 
     public void applyZone(Shootzone zone) {
@@ -108,11 +108,11 @@ public class Shooter {
     }
 
     public double getVelocity(){
-        return shooterRight.getVelocity();
+        return shooterDown.getVelocity();
     }
 
     public void checkVelocity(){
-        isAsTargetVelocity = Math.abs(shooterLeft.getVelocity() - targetVelocity) <= 60;
+        isAsTargetVelocity = Math.abs(shooterUp.getVelocity() - targetVelocity) <= 60;
     }
 
     public RepeatCommand repeatedShootMid(){

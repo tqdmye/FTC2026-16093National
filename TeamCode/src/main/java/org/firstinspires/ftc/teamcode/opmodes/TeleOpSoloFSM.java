@@ -37,7 +37,7 @@ public class TeleOpSoloFSM extends CommandOpModeEx {
     private ShooterFSM shooterFSM;
     private intakePreShooterFSM intakePreShooterFSM;
     private Led led;
-    private BallStorage ballStorage;
+//    private BallStorage ballStorage;
 
     private RobotFSMCommand robotFSMCommand;
 
@@ -59,7 +59,7 @@ public class TeleOpSoloFSM extends CommandOpModeEx {
         shooterFSM = new ShooterFSM(hardwareMap);
         intakePreShooterFSM = new intakePreShooterFSM (hardwareMap);
         led = new Led(hardwareMap);
-        ballStorage = new BallStorage(hardwareMap);
+//        ballStorage = new BallStorage(hardwareMap);
 
         driveCore.init();
         driveCore.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -174,7 +174,7 @@ public class TeleOpSoloFSM extends CommandOpModeEx {
 
         Vector2d vel = driveCore.getRobotLinearVelocity();
 
-        telemetry.addData("shooter Speed", shooterFSM.shooterLeft.getVelocity());
+        telemetry.addData("shooter Speed", shooterFSM.shooterUp.getVelocity());
         telemetry.update();
     }
 }
