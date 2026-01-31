@@ -120,7 +120,13 @@ public class TeleOpSoloFSM extends CommandOpModeEx {
 
         new ButtonEx(() ->
                 gamepadEx1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5)
-                .whenPressed(new InstantCommand(()->shooterFSM.state = ShooterFSM.State.MID))
+                .whenPressed(new SequentialCommandGroup(
+                                new InstantCommand(()->shooterFSM.state = ShooterFSM.State.MID),
+                                new InstantCommand(()-> intakePreShooterFSM.setPowerScale(1.0))
+                                           )
+                )
+
+
                 .whenReleased(
                         new SequentialCommandGroup(
                                 new WaitCommand(150),

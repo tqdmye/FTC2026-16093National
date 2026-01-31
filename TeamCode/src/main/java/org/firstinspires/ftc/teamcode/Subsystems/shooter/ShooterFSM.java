@@ -83,7 +83,7 @@ public class ShooterFSM {
         shooterUp.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
         shooterDown.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
         if(targetVelocity-shooterUp.getVelocity()>250){
-            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.15);
+            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.17);
         }
         else if(targetVelocity-shooterUp.getVelocity()>150){
             shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.1);

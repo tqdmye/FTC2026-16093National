@@ -13,8 +13,8 @@ public enum ShooterConstants {
     SHOOTER_D(17),
     SHOOTER_F(17.5),
 
-    SHOOTER_TURRET_SLOW(0.51),
-    SHOOTER_TURRET_MID(0.2),
+    SHOOTER_TURRET_SLOW(0.51),qz
+    SHOOTER_TURRET_MID(0.17),
     SHOOTER_TURRET_LONG(0),
 
     PRELIMIT_ON(0.65),

@@ -28,7 +28,7 @@ public class TestShooterPID extends LinearOpMode {
   //  public static double shooterMinVelocity = 1400.0;
   public static double shooterVelocity = 1440;
 
-  public static volatile double servo_pos = 0.35;
+  public static volatile double servo_pos = 0.54;
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -42,9 +42,11 @@ public class TestShooterPID extends LinearOpMode {
 
     Servo preLimit = hardwareMap.get(Servo.class,"preLimit");
 
-    shooterUp.setDirection(DcMotorSimple.Direction.FORWARD);
-    shooterDown.setDirection(DcMotorSimple.Direction.REVERSE);
+    shooterUp.setDirection(DcMotorSimple.Direction.REVERSE);
+    shooterDown.setDirection(DcMotorSimple.Direction.FORWARD);
+
     intake.setDirection(DcMotorSimple.Direction.REVERSE);
+    preShooter.setDirection(DcMotorSimple.Direction.FORWARD);
 
     shooterAngleServo.setDirection(Servo.Direction.FORWARD);
 
@@ -85,13 +87,13 @@ public class TestShooterPID extends LinearOpMode {
 
         intake.setPower(1);
         preShooter.setPower(setPreShooterPower);
-        preLimit.setPosition(0.4);
+        preLimit.setPosition(1);
       }
       else{
 
         intake.setPower(0);
         preShooter.setPower(0);
-        preLimit.setPosition(0.4);
+        preLimit.setPosition(0.68);
       }
 
 //      if (frontShooter.getVelocity() < shooterMinVelocity) {
