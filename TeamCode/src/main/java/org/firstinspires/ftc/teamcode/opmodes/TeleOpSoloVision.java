@@ -2,32 +2,23 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
-import com.arcrobotics.ftclib.command.RepeatCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Subsystems.BallStorage;
-import org.firstinspires.ftc.teamcode.Subsystems.driving.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.Subsystems.Led;
 import org.firstinspires.ftc.teamcode.Subsystems.Vision;
 import org.firstinspires.ftc.teamcode.Subsystems.intakePreShooterFSM;
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter.ShooterFSM;
-import org.firstinspires.ftc.teamcode.commands.PedroShootAutoAdjustCommand;
-import org.firstinspires.ftc.teamcode.commands.PreLimitCommand;
 import org.firstinspires.ftc.teamcode.commands.RobotFSMCommand;
 import org.firstinspires.ftc.teamcode.commands.TeleOpDriveCommandVision;
 import org.firstinspires.ftc.teamcode.utils.ButtonEx;
@@ -49,19 +40,8 @@ public class TeleOpSoloVision extends CommandOpModeEx {
     BallStorage ballStorage;
     Vision vision;
 
-
-
     // 视觉自瞄是否正在接管底盘（避免和摇杆命令抢写电机功率导致抖动）
     public boolean isVisionDriving = false;
-
-    public boolean isLimitOn = true;
-
-    public boolean isShooting = false;
-
-    public boolean isVelocityDetecting = false;
-
-    public boolean isAutoShoot = false;
-    public boolean isShootFar = false;
 
 
     @Override

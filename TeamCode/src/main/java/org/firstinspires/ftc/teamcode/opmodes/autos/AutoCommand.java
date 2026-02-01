@@ -58,48 +58,10 @@ public class AutoCommand {
 
 
 
-
-
-
     public AutoCommand(Shooter shooter, IntakePreshooter intake) {
         this.shooter = shooter;
         this.intake = intake;
     }
-//    public Command accelerateSlow() {
-//        return new RunCommand(shooter::accelerate_slow) {
-//            @Override
-//            public void end(boolean interrupted) {
-//                shooter.stopAccelerate();
-//            }
-//        };
-//    }
-//
-//    public Command accelerateMid() {
-//        return new RunCommand(shooter::accelerate_mid) {
-//            @Override
-//            public void end(boolean interrupted) {
-//                shooter.stopAccelerate();
-//            }
-//        };
-//    }
-
-
-//    public Command accelerateSlow() {
-//        return new RunCommand(() -> shooter.accelerate_slow());
-//    }
-//
-//    public Command accelerateMid() {
-//        return new RunCommand(() -> shooter.accelerate_mid());
-//    }
-
-//    public Command accelerateFast() {
-//        return new RunCommand(() -> shooter.accelerate_fast());
-//    }
-//
-//
-//    public Command preLimitOn() {
-//        return new InstantCommand(() -> intake.limitOff());
-//    }
 
     public Command shootPreload() {
         return new SequentialCommandGroup(
