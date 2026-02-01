@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.commands.fsm;
+package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.teamcode.Subsystems.intakePreShooterFSM;
 import org.firstinspires.ftc.teamcode.Subsystems.Led;
