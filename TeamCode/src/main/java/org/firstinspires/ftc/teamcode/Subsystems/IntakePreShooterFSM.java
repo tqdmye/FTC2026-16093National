@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Constants.ShooterConstants;
 
-public class intakePreShooterFSM {
+public class IntakePreShooterFSM {
 
     public enum State {
         HOLDING,
@@ -26,7 +26,7 @@ public class intakePreShooterFSM {
 
 
 
-    public intakePreShooterFSM(@NonNull HardwareMap hardwareMap){
+    public IntakePreShooterFSM(@NonNull HardwareMap hardwareMap){
         this.intake = hardwareMap.get(DcMotorEx.class, "intake");
         this.preShooter = hardwareMap.get(DcMotorEx.class, "preShooter");
         this.preLimit = hardwareMap.get(Servo.class,"preLimit");

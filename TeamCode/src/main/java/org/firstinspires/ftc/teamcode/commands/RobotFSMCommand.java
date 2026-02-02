@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.Subsystems.intakePreShooterFSM;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakePreShooterFSM;
 import org.firstinspires.ftc.teamcode.Subsystems.Led;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter.ShooterFSM;
 
@@ -11,13 +11,13 @@ import java.util.function.BooleanSupplier;
 public class RobotFSMCommand extends CommandBase {
 
     private final ShooterFSM shooterFSM;
-    private final intakePreShooterFSM intakePreShooterFSM;
+    private final IntakePreShooterFSM intakePreShooterFSM;
     private final Led led;
     private final BooleanSupplier fireRequest;
 
     public RobotFSMCommand(
             ShooterFSM shooterFSM,
-            intakePreShooterFSM intakePreShooterFSM,
+            IntakePreShooterFSM intakePreShooterFSM,
             Led led,
             BooleanSupplier fireRequest
     ) {

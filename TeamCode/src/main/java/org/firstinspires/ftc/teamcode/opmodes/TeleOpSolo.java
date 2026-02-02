@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.commands.TeleOpDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.RobotFSMCommand;
-import org.firstinspires.ftc.teamcode.Subsystems.intakePreShooterFSM ;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakePreShooterFSM;
 import org.firstinspires.ftc.teamcode.Subsystems.Led;
 import org.firstinspires.ftc.teamcode.Subsystems.driving.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter.ShooterFSM;
@@ -30,7 +30,7 @@ public class TeleOpSolo extends CommandOpModeEx {
     private NewMecanumDrive driveCore;
 
     private ShooterFSM shooterFSM;
-    private intakePreShooterFSM intakePreShooterFSM;
+    private IntakePreShooterFSM intakePreShooterFSM;
     private Led led;
     private RobotFSMCommand robotFSMCommand;
 
@@ -49,7 +49,7 @@ public class TeleOpSolo extends CommandOpModeEx {
         /* ---------- Subsystems ---------- */
         driveCore = new NewMecanumDrive(hardwareMap);
         shooterFSM = new ShooterFSM(hardwareMap);
-        intakePreShooterFSM = new intakePreShooterFSM (hardwareMap);
+        intakePreShooterFSM = new IntakePreShooterFSM(hardwareMap);
         led = new Led(hardwareMap);
 
         driveCore.init();

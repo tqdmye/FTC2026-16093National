@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Subsystems.BallStorage;
 import org.firstinspires.ftc.teamcode.Subsystems.Led;
 import org.firstinspires.ftc.teamcode.Subsystems.Vision;
-import org.firstinspires.ftc.teamcode.Subsystems.intakePreShooterFSM;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakePreShooterFSM;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter.ShooterFSM;
 import org.firstinspires.ftc.teamcode.commands.RobotFSMCommand;
 import org.firstinspires.ftc.teamcode.commands.TeleOpDriveCommandVision;
@@ -33,7 +33,7 @@ auto adjust shooter, using pedropathing
 public class TeleOpSoloVision extends CommandOpModeEx {
     GamepadEx gamepadEx1;
     Follower follower;
-    private intakePreShooterFSM intakePreShooterFSM;
+    private IntakePreShooterFSM intakePreShooterFSM;
     private RobotFSMCommand robotFSMCommand;
     private ShooterFSM shooterFSM;
     Led led;
@@ -60,7 +60,7 @@ public class TeleOpSoloVision extends CommandOpModeEx {
         follower.setStartingPose(new Pose(0, 0, 0));
         vision = new Vision(telemetry, hardwareMap);
         shooterFSM = new ShooterFSM(hardwareMap);
-        intakePreShooterFSM = new intakePreShooterFSM (hardwareMap);
+        intakePreShooterFSM = new IntakePreShooterFSM(hardwareMap);
         led = new Led(hardwareMap);
 
         /* ---------- Drive Command ---------- */
