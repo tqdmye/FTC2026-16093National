@@ -70,17 +70,17 @@ public class RedNearAuto extends AutoCommandBase {
         after1   = path(intake1Pose, prepare1Pose);
         score1   = path(prepare1Pose, scorePose);
 
-        prepare2 = path(scorePose, prepare2Pose);
+        prepare2 = path(scoreMidPose, prepare2Pose);
         intake2  = path(prepare2Pose, intake2Pose);
         after2   = path(intake2Pose, prepare2Pose);
-        score2   = path(openGatePose, scorePose);
+        score2   = path(openGatePose, scoreMidPose);
 
-        prepare3 = path(scorePose, prepare3Pose);
+        prepare3 = path(scoreMidPose, prepare3Pose);
         intake3  = path(prepare3Pose, intake3Pose);
         after3   = path(intake3Pose, prepare3Pose);
-        score3   = path(prepare3Pose, scorePose);
+        score3   = path(prepare3Pose, scoreMidPose);
 
-        prepareMid   = path(scorePose, intakeLoad1);
+        prepareMid   = path(scoreMidPose, intakeLoad1);
         intakeLoad   = path(intakeLoad1, intakeLoad3);
         scoreMidLoad = path(intakeLoad3, scoreMidPose);
 
@@ -98,9 +98,14 @@ public class RedNearAuto extends AutoCommandBase {
                 autoCommand.shootSlow()
         );
 
-        SequentialCommandGroup cycle1 = intakeScoreCycle(
-                prepare1, intake1, after1, score1,
-                autoCommand::shootSlow
+        SequentialCommandGroup cycle1 = new SequentialCommandGroup(
+                autoCommand.accelMid(),
+                new driveAutoCommand(follower, prepare1),
+                new driveAutoCommand(follower, intake1),
+                new driveAutoCommand(follower, after1),
+                new driveAutoCommand(follower, score1),
+
+                autoCommand.shootMid()
         );
 
         SequentialCommandGroup cycle2 = new SequentialCommandGroup(
@@ -110,16 +115,20 @@ public class RedNearAuto extends AutoCommandBase {
                 setPower(1),
                 new driveAutoCommand(follower, after2),
                 new driveAutoCommand(follower, path(prepare2Pose, openGatePose)),
-                autoCommand.accelMid(),
                 openGateWait(),
                 new driveAutoCommand(follower, score2),
                 autoCommand.shootMid()
         );
 
-        SequentialCommandGroup cycle3 = intakeScoreCycle(
-                prepare3, intake3, after3, score3,
-                autoCommand::shootMid
+        SequentialCommandGroup cycle3 = new SequentialCommandGroup(
+                new driveAutoCommand(follower, prepare3),
+                new driveAutoCommand(follower, intake3),
+                new driveAutoCommand(follower, after3),
+                new driveAutoCommand(follower, score3),
+
+                autoCommand.shootMid()
         );
+
 
         SequentialCommandGroup midLoad = new SequentialCommandGroup(
                 new driveAutoCommand(follower, prepareMid),
