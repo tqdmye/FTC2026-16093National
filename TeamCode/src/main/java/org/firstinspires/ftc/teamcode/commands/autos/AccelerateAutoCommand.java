@@ -1,43 +1,39 @@
 package org.firstinspires.ftc.teamcode.commands.autos;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.shooter.ShooterFSM;
 
 public class AccelerateAutoCommand extends CommandBase {
 
+    private final ShooterFSM shooter;
+
     public enum AccelState {
-        OFF,
+        IDLE,
         SLOW,
         MID,
         FAST
     }
 
-    private final Shooter shooter;
-    private AccelState state = AccelState.OFF;
-    private AccelState lastState = null;
+    private AccelState accelState = AccelState.IDLE;
 
-    public AccelerateAutoCommand(Shooter shooter) {
+    public AccelerateAutoCommand(ShooterFSM shooter) {
         this.shooter = shooter;
-
+        addRequirements();
     }
 
-    public void setState(AccelState newState) {
-        state = newState;
-    }
-
-    @Override
-    public void initialize() {
-        lastState = null;
+    public void setState(AccelState state) {
+        this.accelState = state;
+        switch (state) {
+            case IDLE: shooter.state = ShooterFSM.State.IDLE; break;
+            case SLOW: shooter.state = ShooterFSM.State.SLOW; break;
+            case MID:  shooter.state = ShooterFSM.State.MID;  break;
+            case FAST: shooter.state = ShooterFSM.State.FAST; break;
+        }
     }
 
     @Override
     public void execute() {
-        if (state != lastState) {
-            onEnter(state);
-            lastState = state;
-        }
-
-        switch (state) {
+        switch (shooter.state) {
             case SLOW:
                 shooter.accelerate_slow();
                 break;
@@ -45,17 +41,12 @@ public class AccelerateAutoCommand extends CommandBase {
                 shooter.accelerate_mid();
                 break;
             case FAST:
-                shooter.accelerate_fast();
+                shooter.accelerate_fast_auto();
                 break;
-            case OFF:
-
+            case IDLE:
+            default:
+                shooter.accelerate_idle();
                 break;
-        }
-    }
-
-    private void onEnter(AccelState state) {
-        if (state == AccelState.OFF) {
-            shooter.stopAccelerate();
         }
     }
 

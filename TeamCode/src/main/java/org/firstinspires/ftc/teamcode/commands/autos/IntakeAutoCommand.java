@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.commands.autos;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-import org.firstinspires.ftc.teamcode.Subsystems.IntakePreshooter;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakePreShooterFSM;
 
 public class IntakeAutoCommand extends CommandBase {
 
-    private final IntakePreshooter intake;
+    private final IntakePreShooterFSM intake;
     public enum IntakeState {
         OUTTAKE,
         INIT,
@@ -16,7 +16,7 @@ public class IntakeAutoCommand extends CommandBase {
     private IntakeState state = IntakeState.INIT;
     private IntakeState lastState = null;
 
-    public IntakeAutoCommand(IntakePreshooter intake) {
+    public IntakeAutoCommand(IntakePreShooterFSM intake) {
         this.intake = intake;
 
     }

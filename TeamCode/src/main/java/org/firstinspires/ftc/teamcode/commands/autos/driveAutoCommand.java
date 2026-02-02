@@ -21,12 +21,11 @@ public class driveAutoCommand extends CommandBase {
         nextPath = null;
     }
 
-    public driveAutoCommand(Follower follower, PathChain pathChain, double waitTime, PathChain nextPath) {
+    public driveAutoCommand(Follower follower, PathChain pathChain, double waitTime) {
         this.follower = follower;
         this.pathChain = pathChain;
         this.waitTime = waitTime;
         this.timer = new ElapsedTime();
-        this.nextPath = nextPath;
     }
 
     @Override

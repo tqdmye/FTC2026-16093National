@@ -9,8 +9,8 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Subsystems.IntakePreshooter;
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakePreShooterFSM;
+import org.firstinspires.ftc.teamcode.Subsystems.shooter.ShooterFSM;
 import org.firstinspires.ftc.teamcode.commands.autos.AccelerateAutoCommand;
 import org.firstinspires.ftc.teamcode.commands.autos.IntakeAutoCommand;
 
@@ -18,9 +18,9 @@ import pedroPathing.Constants;
 
 
 public abstract class AutoCommandBase extends LinearOpMode {
-    protected Shooter shooter;
+    protected ShooterFSM shooter;
 
-    protected IntakePreshooter intake;
+    protected IntakePreShooterFSM intake;
 
     protected Follower follower;
 
@@ -41,15 +41,17 @@ public abstract class AutoCommandBase extends LinearOpMode {
         follower = Constants.createFollower(hardwareMap);
 
         follower.setStartingPose(getStartPose());
-        shooter = new Shooter(hardwareMap);
+        shooter = new ShooterFSM(hardwareMap);
 
-        intake = new IntakePreshooter(hardwareMap);
+        intake = new IntakePreShooterFSM(hardwareMap);
         accCommand = new AccelerateAutoCommand(shooter);
         intakeAutoCommand = new IntakeAutoCommand(intake);
 
 
-        this.autoCommand = new AutoCommand(shooter,intake);
+        this.autoCommand = new AutoCommand(shooter,intake,accCommand);
 
+        intake.dntShoot();
+        intake.setPowerScale(1);
 
     }
 

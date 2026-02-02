@@ -51,6 +51,7 @@ public class IntakePreShooterFSM {
     }
 
     public void shoot(){
+        intake.setPower(powerScale);
         preShooter.setPower(powerScale);
         preLimit.setPosition(ShooterConstants.PRELIMIT_SHOOT.value);
         state = State.FIRING;

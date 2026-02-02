@@ -39,32 +39,32 @@ public class Shooter {
         shooterUp.setVelocityPIDFCoefficients(ShooterConstants.SHOOTER_P.value, ShooterConstants.SHOOTER_I.value, ShooterConstants.SHOOTER_D.value, ShooterConstants.SHOOTER_F.value);
     }
 
-    public void accelerate_mid(){
-        targetVelocity = ShooterConstants.SHOOTER_MID_VELOCITY.value;
-        shooterUp.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
-        shooterDown.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
-//        if(targetVelocity-shooterLeft.getVelocity()>150){
-//            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_MID.value+0.07);
-//        }
-//        else{
-            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_MID.value);
-//        }
-    }
     public void accelerate_slow(){
+        shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_SLOW.value);
         shooterUp.setVelocity(ShooterConstants.SHOOTER_SLOW_VELOCITY.value);
         shooterDown.setVelocity(ShooterConstants.SHOOTER_SLOW_VELOCITY.value);
         shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_SLOW.value);
-        targetVelocity = ShooterConstants.SHOOTER_SLOW_VELOCITY.value;
     }
-    public void accelerate_fast(){
+    public void accelerate_mid() {
+        shooterUp.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
+        shooterDown.setVelocity(ShooterConstants.SHOOTER_MID_VELOCITY.value);
+        if(targetVelocity-shooterUp.getVelocity()>150){
+            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_MID.value+0.07);
+        }
+        else{
+            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_MID.value);
+        }
+    }
+
+    public void accelerate_fast() {
         targetVelocity = ShooterConstants.SHOOTER_FAST_VELOCITY.value;
         shooterUp.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
         shooterDown.setVelocity(ShooterConstants.SHOOTER_FAST_VELOCITY.value);
-        if(targetVelocity-shooterUp.getVelocity()>160){
-            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.14);
+        if(targetVelocity-shooterUp.getVelocity()>220){
+            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.17);
         }
-        else if(targetVelocity-shooterUp.getVelocity()>120){
-            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.8);
+        else if(targetVelocity-shooterUp.getVelocity()>140){
+            shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value+0.1);
         }
         else{
             shooterAngleServo.setPosition(ShooterConstants.SHOOTER_TURRET_LONG.value);

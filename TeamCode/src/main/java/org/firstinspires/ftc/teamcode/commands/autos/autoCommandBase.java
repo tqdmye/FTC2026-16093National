@@ -8,14 +8,19 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Subsystems.IntakePreshooter;
-import org.firstinspires.ftc.teamcode.Subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakePreShooterFSM;
+import org.firstinspires.ftc.teamcode.Subsystems.shooter.ShooterFSM;
+import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand;
+
+import pedroPathing.Constants;
 
 
 public abstract class autoCommandBase extends LinearOpMode {
-    protected Shooter shooter;
+    protected ShooterFSM shooter;
+    protected AccelerateAutoCommand accCommand;
+    protected AutoCommand autoCommand;
 
-    protected IntakePreshooter intake;
+    protected IntakePreShooterFSM intake;
 
     protected Telemetry telemetryM;
     protected Follower follower;
@@ -26,13 +31,23 @@ public abstract class autoCommandBase extends LinearOpMode {
 
     private void initialize() {
 
-
+        follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(getStartPose());
-        shooter = new Shooter(hardwareMap);
-        intake = new IntakePreshooter(hardwareMap);
 
+        shooter = new ShooterFSM(hardwareMap);
+        intake  = new IntakePreShooterFSM(hardwareMap);
 
+        accCommand = new AccelerateAutoCommand(shooter);
+
+        autoCommand = new AutoCommand(
+                shooter,
+                intake,
+                accCommand
+        );
+
+        CommandScheduler.getInstance().schedule(accCommand);
     }
+
 
     @Override
     public void runOpMode() throws InterruptedException {

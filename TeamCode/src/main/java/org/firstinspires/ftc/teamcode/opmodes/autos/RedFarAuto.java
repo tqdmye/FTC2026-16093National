@@ -20,7 +20,7 @@ public class RedFarAuto extends AutoCommandBase {
 
 
     private final Pose startPose = new Pose(1.939, 51.423, Math.toRadians(-23.17));
-    private final Pose scorePose = new Pose(1.939, 51.423, Math.toRadians(-23.17));
+    private final Pose scorePose = new Pose(1.939, 47.423, Math.toRadians(-20.17));
     private final Pose preparePose = new Pose(4.137, 7.539, Math.toRadians(-90));
     private final Pose intakeLoadingPose = new Pose(8.091, 2.056, Math.toRadians(-90));
     private final Pose intakeOtherPose = new Pose(8.091, 2.056, Math.toRadians(-90));
@@ -53,26 +53,24 @@ public class RedFarAuto extends AutoCommandBase {
 
 
         SequentialCommandGroup preload = new SequentialCommandGroup(
-                autoCommand.accelFast(accCommand),
-                autoCommand.limitOn(),
-                autoCommand.intakeAuto(intakeAutoCommand),
+                autoCommand.accelFast(),
                 autoCommand.shootFarPreload()
         );
 
         SequentialCommandGroup scoreFirst = new SequentialCommandGroup(
                 new driveAutoCommand(follower, prepare),
-                new InstantCommand(()->follower.setMaxPower(0.6)),
-                new driveAutoCommand(follower, intakeLoading),
                 new InstantCommand(()->follower.setMaxPower(0.9)),
+                new driveAutoCommand(follower, intakeLoading),
+                new InstantCommand(()->follower.setMaxPower(0.7)),
                 new driveAutoCommand(follower, score),
                 autoCommand.shootFar()
         );
 
         SequentialCommandGroup scoreInfinite = new SequentialCommandGroup(
                 new driveAutoCommand(follower, prepare),
-                new InstantCommand(()->follower.setMaxPower(0.6)),
-                new driveAutoCommand(follower, intakeInfinite),
                 new InstantCommand(()->follower.setMaxPower(0.9)),
+                new driveAutoCommand(follower, intakeInfinite),
+                new InstantCommand(()->follower.setMaxPower(0.7)),
                 new driveAutoCommand(follower, score),
                 autoCommand.shootFar()
         );
