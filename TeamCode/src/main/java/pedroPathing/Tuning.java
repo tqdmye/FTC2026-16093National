@@ -782,7 +782,42 @@ class TranslationalTuner extends OpMode {
  * @author Harrison Womack - 10158 Scott's Bots
  * @version 1.0, 3/12/2024
  */
-class HeadingTuner extends OpMode {
+class
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+HeadingTuner extends OpMode {
     public static double DISTANCE = 40;
     private boolean forward = true;
 
@@ -1124,7 +1159,7 @@ class Triangle extends OpMode {
  * @version 1.0, 3/12/2024
  */
 class Circle extends OpMode {
-    public static double RADIUS = 10;
+    public static double RADIUS = 20;
     private PathChain circle;
 
     public void start() {
