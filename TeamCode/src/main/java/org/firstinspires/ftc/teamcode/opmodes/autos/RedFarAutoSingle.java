@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.pedropathing.geometry.BezierLine;
@@ -13,18 +12,18 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.commands.autos.driveAutoCommand;
 
 @Config
-@Autonomous(name = "Auto Blue Far")
-public class BlueFarAuto extends AutoCommandBase {
+@Autonomous(name = "Auto Red Far Single")
+public class RedFarAutoSingle extends AutoCommandBase {
 
     /* ================= Pose ================= */
 
-    private final Pose startPose = new Pose(1.939, -51.423, Math.toRadians(23));
-    private final Pose scorePose = new Pose(1.939, -47.423, Math.toRadians(30));
-    private final Pose preparePose = new Pose(1, -47, Math.toRadians(90));
-    private final Pose intakeLoadingPose = new Pose(1, -1, Math.toRadians(90));
-    private final Pose intakeOtherPose = new Pose(1, -2, Math.toRadians(90));
+    private final Pose startPose = new Pose(1.939, 51.423, Math.toRadians(-23));
+    private final Pose scorePose = new Pose(1.939, 47.423, Math.toRadians(-30));
+    private final Pose preparePose = new Pose(1, 47, Math.toRadians(-90));
+    private final Pose intakeLoadingPose = new Pose(1, 1, Math.toRadians(-90));
+    private final Pose intakeOtherPose = new Pose(1, 2, Math.toRadians(-90));
 
-    private final Pose parkPose = new Pose(1, -15, Math.toRadians(90));
+    private final Pose parkPose = new Pose(1, -15, Math.toRadians(-90));
 
     /* ================= 参数 ================= */
 

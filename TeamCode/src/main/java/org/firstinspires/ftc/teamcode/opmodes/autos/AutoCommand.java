@@ -77,18 +77,18 @@ public class AutoCommand {
 
     public Command shootMid() {
         return new SequentialCommandGroup(
-                new WaitCommand(500),
+                new WaitCommand(150),
                 new InstantCommand(intake::shoot),
-                new WaitCommand(1000),
+                new WaitCommand(450),
                 new InstantCommand(intake::dntShoot)
         );
     }
 
     public Command shootSlow() {
         return new SequentialCommandGroup(
-                new WaitCommand(500),
+                new WaitCommand(150),
                 new InstantCommand(intake::shoot),
-                new WaitCommand(1000),
+                new WaitCommand(450),
                 new InstantCommand(intake::dntShoot)
         );
     }

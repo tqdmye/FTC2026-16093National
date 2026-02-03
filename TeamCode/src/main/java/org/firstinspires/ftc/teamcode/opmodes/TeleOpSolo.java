@@ -139,7 +139,8 @@ public class TeleOpSolo extends CommandOpModeEx {
         new ButtonEx(()->gamepadEx1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.5)
                 .whenReleased(new SequentialCommandGroup(
                         new WaitCommand(600),
-                        new InstantCommand(()->shooterFSM.state = ShooterFSM.State.IDLE)
+                        new InstantCommand(()->shooterFSM.state = ShooterFSM.State.IDLE),
+                        new InstantCommand(()->intakePreShooterFSM.init())
                 ));
 
         new ButtonEx(()->gamepadEx1.getButton(GamepadKeys.Button.B))

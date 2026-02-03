@@ -125,6 +125,18 @@ public class ShooterFSM {
         }
     }
 
+    public void accelerate_mid_auto() {
+        targetVelocity = ShooterConstants.AUTO_SHOOTER_MID_VELOCITY.value;
+        shooterUp.setVelocity(ShooterConstants.AUTO_SHOOTER_MID_VELOCITY.value);
+        shooterDown.setVelocity(ShooterConstants.AUTO_SHOOTER_MID_VELOCITY.value);
+        if(targetVelocity-shooterUp.getVelocity()>100){
+            shooterAngleServo.setPosition(ShooterConstants.AUTO_SHOOTER_TURRET_MID.value+0.07);
+        }
+        else{
+            shooterAngleServo.setPosition(ShooterConstants.AUTO_SHOOTER_TURRET_MID.value);
+        }
+    }
+
 
 
     public boolean isAsVelocity() {

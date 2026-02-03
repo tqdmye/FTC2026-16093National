@@ -38,7 +38,7 @@ public class AccelerateAutoCommand extends CommandBase {
                 shooter.accelerate_slow();
                 break;
             case MID:
-                shooter.accelerate_mid();
+                shooter.accelerate_mid_auto();
                 break;
             case FAST:
                 shooter.accelerate_fast_auto();
