@@ -12,6 +12,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.commands.autos.driveAutoCommand;
 
+/*
+预制3个
+拿完3组之后吸3个loading
+ */
+
 @Config
 @Autonomous(name = "Auto Red Near Loading")
 public class RedNearAutoLoading extends AutoCommandBase {

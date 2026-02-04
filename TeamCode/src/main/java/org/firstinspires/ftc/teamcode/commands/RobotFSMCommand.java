@@ -37,21 +37,36 @@ public class RobotFSMCommand extends CommandBase {
             intakePreShooterFSM.dntShoot();
         }
         if (shooterFSM.isAsVelocity()) {
-            led.isAtVelocity();
+            led.isAtVelocity();   // 到速：统一提示色（例如白色/蓝色）
         } else {
-            led.setNone();
+            switch (shooterFSM.state) {
+                case SLOW:
+                    led.setRed();
+                    break;
+                case MID:
+                    led.setYellow();
+                    break;
+                case FAST:
+                    led.setPurple();
+                    break;
+                case IDLE:
+                    led.setNone();
+                    break;
+            }
         }
 
 
         switch (shooterFSM.state) {
             case SLOW:
                 shooterFSM.accelerate_slow();
+
                 break;
             case MID:
                 shooterFSM.accelerate_mid();
                 break;
             case FAST:
                 shooterFSM.accelerate_fast();
+
                 break;
             case IDLE:
                 shooterFSM.accelerate_idle();

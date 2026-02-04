@@ -35,7 +35,7 @@ public class AccelerateAutoCommand extends CommandBase {
     public void execute() {
         switch (shooter.state) {
             case SLOW:
-                shooter.accelerate_slow();
+                shooter.accelerate_slow_auto();
                 break;
             case MID:
                 shooter.accelerate_mid_auto();
