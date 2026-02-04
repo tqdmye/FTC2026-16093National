@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.autos;
+package org.firstinspires.ftc.teamcode.opmodes.autos.far;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
@@ -10,10 +10,11 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.commands.autos.driveAutoCommand;
+import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
 
 @Config
-@Autonomous(name = "Auto Blue Far Cross")
-public class BlueFarAutoCross extends AutoCommandBase {
+@Autonomous(name = "Auto Blue Far Single")
+public class BlueFarAutoSingle extends AutoCommandBase {
 
     /* ================= Pose ================= */
 

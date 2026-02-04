@@ -114,11 +114,11 @@ public class ShooterFSM {
         targetVelocity = ShooterConstants.AUTO_SHOOTER_FAST_VELOCITY.value;
         shooterUp.setVelocity(ShooterConstants.AUTO_SHOOTER_FAST_VELOCITY.value);
         shooterDown.setVelocity(ShooterConstants.AUTO_SHOOTER_FAST_VELOCITY.value);
-        if(targetVelocity-shooterUp.getVelocity()>140){
+        if(targetVelocity-shooterUp.getVelocity()>160){
             shooterAngleServo.setPosition(ShooterConstants.AUTO_SHOOTER_TURRET_LONG.value+0.25);
         }
-        else if(targetVelocity-shooterUp.getVelocity()>80){
-            shooterAngleServo.setPosition(ShooterConstants.AUTO_SHOOTER_TURRET_LONG.value+0.15);
+        else if(targetVelocity-shooterUp.getVelocity()>100){
+            shooterAngleServo.setPosition(ShooterConstants.AUTO_SHOOTER_TURRET_LONG.value+0.13);
         }
         else{
             shooterAngleServo.setPosition(ShooterConstants.AUTO_SHOOTER_TURRET_LONG.value);
