@@ -113,44 +113,25 @@ public class BlueFarAutoSingle extends AutoCommandBase {
                 new driveAutoCommand(follower, score),
                 autoCommand.shootFar()
         );
+        SequentialCommandGroup intakeLast = new SequentialCommandGroup(
+                new driveAutoCommand(follower, prepare),
+                new InstantCommand(() -> follower.setMaxPower(1)),
+                new driveAutoCommand(follower, intakeInfinite1, 1600),
+                new driveAutoCommand(follower, intakeInfinite2, 100),
+                new driveAutoCommand(follower, intakeInfinite3, 1600)
 
-        /* ---------- Time Guard ---------- */
+        );
 
-//        Command scoreOrPark = new ConditionalCommand(
-//                scoreInfinite,
-//                new SequentialCommandGroup(
-//                        new InstantCommand(() -> follower.setMaxPower(1)),
-//                        new driveAutoCommand(follower, park),
-//                        autoCommand.stopAll()
-//                ),
-//                () -> (AUTO_TOTAL_TIME - getRuntime()) > PARK_REMAIN_TIME
-//        );
 
-        /* ---------- Final Auto ---------- */
+
 
         return new SequentialCommandGroup(
                 preload,
                 scoreFirst,
-
                 scoreInfinite,
                 scoreInfinite,
                 scoreInfinite,
-                scoreInfinite,
-                scoreInfinite,
-                scoreInfinite,
-                scoreInfinite,
-                scoreInfinite,
-
-                // 无限循环，但每次都会判断时间
-//                scoreOrPark,
-//                scoreOrPark,
-//                scoreOrPark,
-//                scoreOrPark,
-//                scoreOrPark,
-//                scoreOrPark,
-//                scoreOrPark,
-//                scoreOrPark,
-
+                intakeLast,
                 autoCommand.stopAll()
         );
     }

@@ -16,42 +16,43 @@ import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
 /**假设队友只能远端离线！
  * 射预制
  * 吸射第二组
- * 怼门吸三个漏三个
- * 吸射第三组
+ * 怼门吸三个
+ * 怼门吸三个
  * 吸射第一组
+ * 吸射第三组
  */
 
 @Config
-@Autonomous(name = "Auto Blue Near Gate")
-public class BlueNearAutoGate extends AutoCommandBase {
+@Autonomous(name = "Auto Red Near Gate 3")
+public class RedNearAutoGate3 extends AutoCommandBase {
 
     /* ================= Pose ================= */
 
-    private final Pose startPose      = new Pose(58.767, 45.313, Math.toRadians(53));
-    private final Pose scorePose      = new Pose(40, 30, Math.toRadians(50));
-    private final Pose scoreMidPose   = new Pose(20, 20, Math.toRadians(54));
+    private final Pose startPose      = new Pose(58.767, -45.313, Math.toRadians(-53));
+    private final Pose scorePose      = new Pose(40, -30, Math.toRadians(-50));
+    private final Pose scoreMidPose   = new Pose(20, -20, Math.toRadians(-56));
 
-    private final Pose prepare1Pose   = new Pose(14.5, 25.574, Math.toRadians(90));
-    private final Pose intake1Pose    = new Pose(14.5, 52, Math.toRadians(90));
+    private final Pose prepare1Pose   = new Pose(14.5, -22.574, Math.toRadians(-90));
+    private final Pose intake1Pose    = new Pose(14.5, -52, Math.toRadians(-90));
 
-//    private final Pose openGatePreparePose   = new Pose(10, 30, Math.toRadians(90));
+    //    private final Pose openGatePreparePose   = new Pose(10, 30, Math.toRadians(90));
 //    private final Pose beforeOpenGatePose   = new Pose(-13, 62, Math.toRadians(60));
-    private final Pose prepareOpenGatePose   = new Pose(-2, 25.318, Math.toRadians(90));
-    private final Pose openGatePose   = new Pose(-2, 52.5, Math.toRadians(90));
-    private final Pose afterOpenGatePose   = new Pose(-2, 51, Math.toRadians(90));
-    private final Pose intakeOpenGatePose2   = new Pose(-9, 63, Math.toRadians(5));
-    private final Pose intakeOpenGatePose1   = new Pose(-6.5, 61, Math.toRadians(68));
+    private final Pose prepareOpenGatePose   = new Pose(-2, -22.318, Math.toRadians(-90));
+    private final Pose openGatePose   = new Pose(-2, -52.5, Math.toRadians(-90));
+    private final Pose afterOpenGatePose   = new Pose(-2, -51, Math.toRadians(-90));
+    private final Pose intakeOpenGatePose2   = new Pose(-9, -63, Math.toRadians(-5));
+    private final Pose intakeOpenGatePose1   = new Pose(-7.15, -61, Math.toRadians(-68));
 
-    private final Pose intakeOpenGatePose3   = new Pose(-10, 58.5, Math.toRadians(67));
+    private final Pose intakeOpenGatePose3   = new Pose(-10, -58.5, Math.toRadians(-67));
 
 
-    private final Pose prepare2Pose   = new Pose(-9.5, 25.318, Math.toRadians(90));
-    private final Pose intake2Pose    = new Pose(-9.5, 57, Math.toRadians(90));
+    private final Pose prepare2Pose   = new Pose(-9.5, -22.318, Math.toRadians(-90));
+    private final Pose intake2Pose    = new Pose(-9.5, -57, Math.toRadians(-90));
 
-    private final Pose prepare3Pose   = new Pose(-32.5, 25.077, Math.toRadians(90));
-    private final Pose intake3Pose    = new Pose(-32.5, 57, Math.toRadians(90));
+    private final Pose prepare3Pose   = new Pose(-32.5, -25.077, Math.toRadians(-90));
+    private final Pose intake3Pose    = new Pose(-32.5, -57, Math.toRadians(-90));
 
-    private final Pose parkPose       = new Pose(3.187, 40, Math.toRadians(90));
+    private final Pose parkPose       = new Pose(3.187, -40, Math.toRadians(-90));
 
 
     /* ================= Small Commands ================= */
@@ -84,12 +85,12 @@ public class BlueNearAutoGate extends AutoCommandBase {
         PathChain prepare3 = path(scoreMidPose, prepare3Pose);
         PathChain intake3 = path(prepare3Pose, intake3Pose);
         PathChain after3 = path(intake3Pose, prepare3Pose);
-        PathChain score3 = path(prepare3Pose, scoreMidPose);
+        PathChain score3 = path(intake3Pose, scoreMidPose);
 
         PathChain prepare1 = path(scorePose, prepare1Pose);
         PathChain intake1 = path(prepare1Pose, intake1Pose);
         PathChain after1 = path(intake1Pose, prepare1Pose);
-        PathChain score1 = path(openGatePose, scoreMidPose);
+        PathChain score1 = path(intake1Pose, scoreMidPose);
 
         PathChain park = path(scoreMidPose, parkPose);
 
@@ -108,12 +109,12 @@ public class BlueNearAutoGate extends AutoCommandBase {
                 autoCommand.accelMid(),
                 new driveAutoCommand(follower, prepare1),
                 new driveAutoCommand(follower, intake1),
-                new driveAutoCommand(follower, after1),
                 new driveAutoCommand(follower, score1),
                 autoCommand.shootMid()
         );
 
         SequentialCommandGroup cycle2 = new SequentialCommandGroup(
+                autoCommand.accelMid(),
                 new driveAutoCommand(follower, prepare2),
                 new driveAutoCommand(follower, intake2),
                 new driveAutoCommand(follower, after2),
@@ -129,7 +130,7 @@ public class BlueNearAutoGate extends AutoCommandBase {
         SequentialCommandGroup cycleExtra = new SequentialCommandGroup(
                 new driveAutoCommand(follower, prepareOpenGate),
                 new driveAutoCommand(follower, openGate),
-                new WaitCommand(1000),
+                new WaitCommand(750),
                 new driveAutoCommand(follower, afterOpenGate),
                 new driveAutoCommand(follower, scoreExtra),
                 autoCommand.shootMid()
@@ -142,8 +143,9 @@ public class BlueNearAutoGate extends AutoCommandBase {
                 cycle2,
                 cycleExtra,
                 cycleExtra,
+                cycleExtra,
                 cycle1,
-                cycle3,
+                new driveAutoCommand(follower, park),
                 autoCommand.stopAll()
         );
     }
