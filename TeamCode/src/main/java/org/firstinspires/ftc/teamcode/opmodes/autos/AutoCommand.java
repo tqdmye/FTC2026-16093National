@@ -65,18 +65,24 @@ public class AutoCommand {
 
     public Command shootFarPreload() {
         return new SequentialCommandGroup(
+                new InstantCommand(()->intake.setPowerScale(0.7)),
                 new WaitCommand(2100),
                 new InstantCommand(intake::shoot),
-                new WaitCommand(500),
-                new InstantCommand(intake::dntShoot)
+                new WaitCommand(1000),
+                new InstantCommand(intake::dntShoot),
+        new InstantCommand(()->intake.setPowerScale(1))
+
         );
     }
 
     public Command shootFar() {
         return new SequentialCommandGroup(
+                new InstantCommand(()->intake.setPowerScale(0.7)),
                 new InstantCommand(intake::shoot),
-                new WaitCommand(500),
-                new InstantCommand(intake::dntShoot)
+                new WaitCommand(675),
+                new InstantCommand(intake::dntShoot),
+        new InstantCommand(()->intake.setPowerScale(1))
+
         );
     }
 
@@ -84,7 +90,7 @@ public class AutoCommand {
         return new SequentialCommandGroup(
                 new WaitCommand(20),
                 new InstantCommand(intake::shoot),
-                new WaitCommand(500),
+                new WaitCommand(600),
                 new InstantCommand(intake::dntShoot)
         );
     }
@@ -93,7 +99,7 @@ public class AutoCommand {
         return new SequentialCommandGroup(
                 new WaitCommand(100),
                 new InstantCommand(intake::shoot),
-                new WaitCommand(500),
+                new WaitCommand(550),
                 new InstantCommand(intake::dntShoot)
         );
     }

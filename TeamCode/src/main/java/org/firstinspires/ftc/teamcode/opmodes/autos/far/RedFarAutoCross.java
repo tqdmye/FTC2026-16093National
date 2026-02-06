@@ -20,15 +20,15 @@ public class RedFarAutoCross extends AutoCommandBase {
     /* ================= Pose ================= */
 
     private final Pose startPose = new Pose(1.939, 51.423, Math.toRadians(-23));
-    private final Pose scorePoseStraight = new Pose(8, 40.423, Math.toRadians(-25));
-    private final Pose scorePoseCross = new Pose(4, 40.423, Math.toRadians(-35));
-    private final Pose prepareLoadingPose = new Pose(1, 47, Math.toRadians(-90));
+    private final Pose scorePoseStraight = new Pose(8, 40.423, Math.toRadians(-22));
+    private final Pose scorePoseCross = new Pose(8, 40.423, Math.toRadians(-24));
+    private final Pose prepareLoadingPose = new Pose(3, 47, Math.toRadians(-90));
     private final Pose intakeLoadingPose = new Pose(1, 3, Math.toRadians(-90));
-    private final Pose prepareCrossPose = new Pose(30, 40, Math.toRadians(-80));
-    private final Pose intakeCrossPose = new Pose(30, 3, Math.toRadians(-85));
+    private final Pose prepareCrossPose = new Pose(30, 40, Math.toRadians(-85));
+    private final Pose intakeCrossPose = new Pose(30, 3, Math.toRadians(-90));
 
 
-    private final Pose parkPose = new Pose(1, -15, Math.toRadians(-90));
+    private final Pose parkPose = new Pose(1, 15, Math.toRadians(-90));
 
     /* ================= 参数 ================= */
 
@@ -44,12 +44,14 @@ public class RedFarAutoCross extends AutoCommandBase {
 
         SequentialCommandGroup preload = new SequentialCommandGroup(
                 new InstantCommand(() -> intake.dntShoot()),
-                autoCommand.accelFast(),
+                autoCommand.accelFastPreload(),
                 autoCommand.intakeAuto(intakeAutoCommand),
                 autoCommand.shootFarPreload()
         );
 
         SequentialCommandGroup scoreFirst = new SequentialCommandGroup(
+                autoCommand.accelFast(),
+
                 new driveAutoCommand(follower, buildPath(startPose, prepareLoadingPose)),
                 new InstantCommand(() -> follower.setMaxPower(0.9)),
                 new driveAutoCommand(follower, buildPath(prepareLoadingPose, intakeLoadingPose), 1800),
@@ -71,7 +73,6 @@ public class RedFarAutoCross extends AutoCommandBase {
                 getScoreStraightCommand(),
                 // 2. 这里再次调用方法，生成又一个新的 scoreCross 实例并加入队列
                 getScoreCrossCommand(),
-                getScoreStraightCommand(),
 
                 // 3. ConditionalCommand 内部也会调用 getScoreCrossCommand()，生成它自己专用的实例
                 // 这样就避免了同一个 Command 对象被添加多次的问题
@@ -89,19 +90,21 @@ public class RedFarAutoCross extends AutoCommandBase {
 
     private SequentialCommandGroup getScoreCrossCommand() {
         return new SequentialCommandGroup(
+                autoCommand.accelFast(),
                 new driveAutoCommand(follower, buildPath(scorePoseStraight, prepareCrossPose)),
                 new InstantCommand(() -> follower.setMaxPower(1)),
                 new driveAutoCommand(follower, buildPath(prepareCrossPose, intakeCrossPose), 1600),
-                new driveAutoCommand(follower, buildPath(intakeCrossPose, prepareCrossPose), 200),
-                new driveAutoCommand(follower, buildPath(prepareCrossPose, intakeCrossPose), 1600),
                 new InstantCommand(() -> follower.setMaxPower(0.75)),
-                new driveAutoCommand(follower, buildPath(intakeCrossPose, scorePoseCross)),
+                new driveAutoCommand(follower, buildPath(intakeCrossPose, prepareCrossPose)),
+                new driveAutoCommand(follower, buildPath(prepareCrossPose, scorePoseCross)),
+
                 autoCommand.shootFar()
         );
     }
 
     private SequentialCommandGroup getScoreStraightCommand() {
         return new SequentialCommandGroup(
+
                 new driveAutoCommand(follower, buildPath(scorePoseCross, prepareLoadingPose)),
                 new InstantCommand(() -> follower.setMaxPower(1)),
                 new driveAutoCommand(follower, buildPath(prepareLoadingPose, intakeLoadingPose), 1600),

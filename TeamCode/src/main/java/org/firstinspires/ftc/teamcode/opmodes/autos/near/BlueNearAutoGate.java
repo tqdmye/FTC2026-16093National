@@ -29,7 +29,7 @@ public class BlueNearAutoGate extends AutoCommandBase {
 
     private final Pose startPose      = new Pose(58.767, 45.313, Math.toRadians(53));
     private final Pose scorePose      = new Pose(40, 30, Math.toRadians(50));
-    private final Pose scoreMidPose   = new Pose(20, 20, Math.toRadians(43));
+    private final Pose scoreMidPose   = new Pose(20, 20, Math.toRadians(45));
 
     private final Pose prepare1Pose   = new Pose(14.5, 25.574, Math.toRadians(90));
     private final Pose intake1Pose    = new Pose(14.5, 52, Math.toRadians(90));
@@ -131,6 +131,8 @@ public class BlueNearAutoGate extends AutoCommandBase {
 
         SequentialCommandGroup cycleExtra = new SequentialCommandGroup(
                 new driveAutoCommand(follower, prepareOpenGate,1000),
+                new InstantCommand(()->follower.setMaxPower(0.75)),
+
                 new driveAutoCommand(follower, openGate,1500),
                 new WaitCommand(1000),
                 new driveAutoCommand(follower, afterOpenGate),

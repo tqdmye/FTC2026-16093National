@@ -26,17 +26,17 @@ public class RedNearAuto1 extends AutoCommandBase {
     private final Pose scorePose      = new Pose(40, -30, Math.toRadians(-50));
     private final Pose scoreMidPose   = new Pose(20, -20, Math.toRadians(-45));
 
-    private final Pose prepare1Pose   = new Pose(14.5, -25.574, Math.toRadians(-90));
-    private final Pose intake1Pose    = new Pose(14.5, -51, Math.toRadians(-90) );
+    private final Pose prepare1Pose   = new Pose(13.8, -25.574, Math.toRadians(-90));
+    private final Pose intake1Pose    = new Pose(13.8, -51, Math.toRadians(-90) );
 
     private final Pose openGatePreparePose   = new Pose(10, -30, Math.toRadians(-90));
-    private final Pose openGatePose   = new Pose(6, -52, Math.toRadians(-90));
+    private final Pose openGatePose   = new Pose(6, -52.5, Math.toRadians(-90));
 
-    private final Pose prepare2Pose   = new Pose(-9.5, -25.318, Math.toRadians(-90));
-    private final Pose intake2Pose    = new Pose(-9.5, -56, Math.toRadians(-90));
+    private final Pose prepare2Pose   = new Pose(-9.7, -25.318, Math.toRadians(-90));
+    private final Pose intake2Pose    = new Pose(-9.7, -56, Math.toRadians(-90));
 
-    private final Pose prepare3Pose   = new Pose(-32.5, -25.077, Math.toRadians(-90));
-    private final Pose intake3Pose    = new Pose(-32.5, -56, Math.toRadians(-90));
+    private final Pose prepare3Pose   = new Pose(-32.7, -25.077, Math.toRadians(-90));
+    private final Pose intake3Pose    = new Pose(-32.7, -56, Math.toRadians(-90));
 
     private final Pose parkPose       = new Pose(3.187, -40, Math.toRadians(-90));
 

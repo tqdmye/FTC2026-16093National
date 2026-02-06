@@ -19,12 +19,12 @@ public class RedFarAutoSingle extends AutoCommandBase {
     /* ================= Pose ================= */
 
     private final Pose startPose = new Pose(1.939, 51.423, Math.toRadians(-23));
-    private final Pose scorePose = new Pose(1.939, 47.423, Math.toRadians(-30));
-    private final Pose preparePose = new Pose(1, 47, Math.toRadians(-90));
-    private final Pose intakeLoadingPose = new Pose(1, 1, Math.toRadians(-90));
-    private final Pose intakeOtherPose = new Pose(1, 2, Math.toRadians(-90));
+    private final Pose scorePose =  new Pose(8, 40.423, Math.toRadians(-22));
+    private final Pose preparePose = new Pose(4, 47, Math.toRadians(-90));
+    private final Pose intakeLoadingPose = new Pose(0.5, 3, Math.toRadians(-90));
+    private final Pose intakeOtherPose = new Pose(0.5, 4, Math.toRadians(-90));
 
-    private final Pose parkPose = new Pose(1, -15, Math.toRadians(-90));
+    private final Pose parkPose = new Pose(0.5, 15, Math.toRadians(-90));
 
     /* ================= 参数 ================= */
 
@@ -87,12 +87,14 @@ public class RedFarAutoSingle extends AutoCommandBase {
 
         SequentialCommandGroup preload = new SequentialCommandGroup(
                 new InstantCommand(() -> intake.dntShoot()),
-                autoCommand.accelFast(),
+                autoCommand.accelFastPreload(),
                 autoCommand.intakeAuto(intakeAutoCommand),
                 autoCommand.shootFarPreload()
         );
 
         SequentialCommandGroup scoreFirst = new SequentialCommandGroup(
+                autoCommand.accelFast(),
+
                 new driveAutoCommand(follower, prepare),
                 new InstantCommand(() -> follower.setMaxPower(0.9)),
                 new driveAutoCommand(follower, intakeLoading1, 1800),
@@ -113,7 +115,6 @@ public class RedFarAutoSingle extends AutoCommandBase {
                 new driveAutoCommand(follower, score),
                 autoCommand.shootFar()
         );
-
         SequentialCommandGroup intakeLast = new SequentialCommandGroup(
                 new driveAutoCommand(follower, prepare),
                 new InstantCommand(() -> follower.setMaxPower(1)),
@@ -122,6 +123,8 @@ public class RedFarAutoSingle extends AutoCommandBase {
                 new driveAutoCommand(follower, intakeInfinite3, 1600)
 
         );
+
+
 
 
         return new SequentialCommandGroup(
