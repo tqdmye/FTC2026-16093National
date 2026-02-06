@@ -132,7 +132,7 @@ public class RedNearAutoLoading extends AutoCommandBase {
 
         SequentialCommandGroup midLoad = new SequentialCommandGroup(
                 new driveAutoCommand(follower, prepareMid),
-                new driveAutoCommand(follower, intakeLoad),
+                new driveAutoCommand(follower, intakeLoad, 1000),
                 new driveAutoCommand(follower, scoreMidLoad),
                 autoCommand.shootMid()
         );

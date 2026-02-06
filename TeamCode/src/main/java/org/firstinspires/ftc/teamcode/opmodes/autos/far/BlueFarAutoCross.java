@@ -20,12 +20,18 @@ public class BlueFarAutoCross extends AutoCommandBase {
     /* ================= Pose ================= */
 
     private final Pose startPose = new Pose(1.939, -51.423, Math.toRadians(23));
-    private final Pose scorePoseStraight = new Pose(8, -40.423, Math.toRadians(25));
-    private final Pose scorePoseCross = new Pose(4, -40.423, Math.toRadians(35));
-    private final Pose prepareLoadingPose = new Pose(1, -47, Math.toRadians(90));
-    private final Pose intakeLoadingPose = new Pose(1, -3, Math.toRadians(90));
-    private final Pose prepareCrossPose = new Pose(30, -40, Math.toRadians(80));
-    private final Pose intakeCrossPose = new Pose(30, -3, Math.toRadians(85));
+    private final Pose scorePoseStraight = new Pose(8, -40.423, Math.toRadians(28));
+    private final Pose scorePoseStraightLoading = new Pose(8, -40.423, Math.toRadians(26));
+
+    private final Pose scorePoseCross = new Pose(8, -40.423, Math.toRadians(30));
+    private final Pose scorePoseCrossThird = new Pose(8, -40.423, Math.toRadians(30));
+
+    private final Pose prepareLoadingPose = new Pose(6, -47, Math.toRadians(90));
+    private final Pose intakeLoadingPose = new Pose(1, -5, Math.toRadians(90));
+    private final Pose prepareThirdPose = new Pose(30, -40, Math.toRadians(90));
+    private final Pose intakeThirdPose = new Pose(30, -9, Math.toRadians(90));
+    private final Pose intakeCrossPose1 = new Pose(13, -6, Math.toRadians(45));
+    private final Pose intakeCrossPose2 = new Pose(30, -6, Math.toRadians(45));
 
 
     private final Pose parkPose = new Pose(1, -15, Math.toRadians(90));
@@ -44,19 +50,30 @@ public class BlueFarAutoCross extends AutoCommandBase {
 
         SequentialCommandGroup preload = new SequentialCommandGroup(
                 new InstantCommand(() -> intake.dntShoot()),
-                autoCommand.accelFast(),
+                autoCommand.accelFastPreload(),
                 autoCommand.intakeAuto(intakeAutoCommand),
                 autoCommand.shootFarPreload()
         );
 
-        SequentialCommandGroup scoreFirst = new SequentialCommandGroup(
+        SequentialCommandGroup scoreLoading = new SequentialCommandGroup(
+                autoCommand.accelFast(),
+
                 new driveAutoCommand(follower, buildPath(startPose, prepareLoadingPose)),
                 new InstantCommand(() -> follower.setMaxPower(0.9)),
                 new driveAutoCommand(follower, buildPath(prepareLoadingPose, intakeLoadingPose), 1800),
                 new driveAutoCommand(follower, buildPath(intakeLoadingPose, prepareLoadingPose), 200),
                 new driveAutoCommand(follower, buildPath(prepareLoadingPose, intakeLoadingPose), 1800),
                 new InstantCommand(() -> follower.setMaxPower(0.75)),
-                new driveAutoCommand(follower, buildPath(intakeLoadingPose, scorePoseStraight)),
+                new driveAutoCommand(follower, buildPath(intakeLoadingPose, scorePoseStraightLoading)),
+                autoCommand.shootFar()
+        );
+
+        SequentialCommandGroup scoreThird = new SequentialCommandGroup(
+                new driveAutoCommand(follower, buildPath(scorePoseStraightLoading, prepareThirdPose)),
+                new InstantCommand(() -> follower.setMaxPower(0.8)),
+                new driveAutoCommand(follower, buildPath(prepareThirdPose, intakeThirdPose), 3000),
+                new InstantCommand(()->follower.setMaxPower(0.75)),
+                new driveAutoCommand(follower, buildPath(intakeThirdPose, scorePoseCross)),
                 autoCommand.shootFar()
         );
 
@@ -64,10 +81,10 @@ public class BlueFarAutoCross extends AutoCommandBase {
 
         return new SequentialCommandGroup(
                 preload,
-                scoreFirst,
+                scoreLoading,
 
-                // 1. 这里调用方法，生成一个新的 scoreCross 实例并加入队列
-                getScoreCrossCommand(),
+                scoreThird,
+
                 getScoreStraightCommand(),
                 // 2. 这里再次调用方法，生成又一个新的 scoreCross 实例并加入队列
                 getScoreCrossCommand(),
@@ -89,13 +106,11 @@ public class BlueFarAutoCross extends AutoCommandBase {
 
     private SequentialCommandGroup getScoreCrossCommand() {
         return new SequentialCommandGroup(
-                new driveAutoCommand(follower, buildPath(scorePoseStraight, prepareCrossPose)),
-                new InstantCommand(() -> follower.setMaxPower(1)),
-                new driveAutoCommand(follower, buildPath(prepareCrossPose, intakeCrossPose), 1600),
-                new driveAutoCommand(follower, buildPath(intakeCrossPose, prepareCrossPose), 200),
-                new driveAutoCommand(follower, buildPath(prepareCrossPose, intakeCrossPose), 1600),
+                new InstantCommand(()->follower.setMaxPower(1)),
+                new driveAutoCommand(follower, buildPath(scorePoseStraight, intakeCrossPose1), 1600),
+                new driveAutoCommand(follower, buildPath(intakeCrossPose1, intakeCrossPose2), 1600),
                 new InstantCommand(() -> follower.setMaxPower(0.75)),
-                new driveAutoCommand(follower, buildPath(intakeCrossPose, scorePoseCross)),
+                new driveAutoCommand(follower, buildPath(intakeCrossPose2, scorePoseCross)),
                 autoCommand.shootFar()
         );
     }
@@ -115,11 +130,9 @@ public class BlueFarAutoCross extends AutoCommandBase {
 
     private SequentialCommandGroup getIntakeLastCommand() {
         return new SequentialCommandGroup(
-                new driveAutoCommand(follower, buildPath(scorePoseStraight, prepareCrossPose)),
-                new InstantCommand(() -> follower.setMaxPower(1)),
-                new driveAutoCommand(follower, buildPath(prepareCrossPose, intakeCrossPose), 1600),
-                new driveAutoCommand(follower, buildPath(intakeCrossPose, prepareCrossPose), 200),
-                new driveAutoCommand(follower, buildPath(prepareCrossPose, intakeCrossPose), 1600)
+                new InstantCommand(()->follower.setMaxPower(1)),
+                new driveAutoCommand(follower, buildPath(scorePoseStraight, intakeCrossPose1), 1600),
+                new driveAutoCommand(follower, buildPath(intakeCrossPose1, intakeCrossPose2), 1600)
         );
     }
 

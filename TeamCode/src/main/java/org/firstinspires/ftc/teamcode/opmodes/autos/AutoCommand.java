@@ -46,10 +46,15 @@ public class AutoCommand {
                 () -> accel.setState(AccelerateAutoCommand.AccelState.MID)
         );
     }
-
     public Command accelFast() {
         return new InstantCommand(
                 () -> accel.setState(AccelerateAutoCommand.AccelState.FAST)
+        );
+    }
+
+    public Command accelFastPreload() {
+        return new InstantCommand(
+                () -> accel.setState(AccelerateAutoCommand.AccelState.FASTPRELOAD)
         );
     }
 
@@ -79,7 +84,7 @@ public class AutoCommand {
         return new SequentialCommandGroup(
                 new WaitCommand(20),
                 new InstantCommand(intake::shoot),
-                new WaitCommand(400),
+                new WaitCommand(500),
                 new InstantCommand(intake::dntShoot)
         );
     }
@@ -88,7 +93,7 @@ public class AutoCommand {
         return new SequentialCommandGroup(
                 new WaitCommand(100),
                 new InstantCommand(intake::shoot),
-                new WaitCommand(400),
+                new WaitCommand(500),
                 new InstantCommand(intake::dntShoot)
         );
     }

@@ -11,6 +11,7 @@ public class AccelerateAutoCommand extends CommandBase {
         IDLE,
         SLOW,
         MID,
+        FASTPRELOAD,
         FAST
     }
 
@@ -27,7 +28,9 @@ public class AccelerateAutoCommand extends CommandBase {
             case IDLE: shooter.state = ShooterFSM.State.IDLE; break;
             case SLOW: shooter.state = ShooterFSM.State.SLOW; break;
             case MID:  shooter.state = ShooterFSM.State.MID;  break;
+            case FASTPRELOAD: shooter.state = ShooterFSM.State.FASTPRELOAD; break;
             case FAST: shooter.state = ShooterFSM.State.FAST; break;
+
         }
     }
 
@@ -39,6 +42,9 @@ public class AccelerateAutoCommand extends CommandBase {
                 break;
             case MID:
                 shooter.accelerate_mid_auto();
+                break;
+            case FASTPRELOAD:
+                shooter.accelerate_fast_preload_auto();
                 break;
             case FAST:
                 shooter.accelerate_fast_auto();

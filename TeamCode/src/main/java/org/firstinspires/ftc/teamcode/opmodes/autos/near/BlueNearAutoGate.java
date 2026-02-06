@@ -29,15 +29,15 @@ public class BlueNearAutoGate extends AutoCommandBase {
 
     private final Pose startPose      = new Pose(58.767, 45.313, Math.toRadians(53));
     private final Pose scorePose      = new Pose(40, 30, Math.toRadians(50));
-    private final Pose scoreMidPose   = new Pose(20, 20, Math.toRadians(54));
+    private final Pose scoreMidPose   = new Pose(20, 20, Math.toRadians(43));
 
     private final Pose prepare1Pose   = new Pose(14.5, 25.574, Math.toRadians(90));
     private final Pose intake1Pose    = new Pose(14.5, 52, Math.toRadians(90));
 
 //    private final Pose openGatePreparePose   = new Pose(10, 30, Math.toRadians(90));
 //    private final Pose beforeOpenGatePose   = new Pose(-13, 62, Math.toRadians(60));
-    private final Pose prepareOpenGatePose   = new Pose(-2, 25.318, Math.toRadians(90));
-    private final Pose openGatePose   = new Pose(-2, 52.5, Math.toRadians(90));
+    private final Pose prepareOpenGatePose   = new Pose(-2.5, 25.318, Math.toRadians(90));
+    private final Pose openGatePose   = new Pose(-2.5, 52.5, Math.toRadians(90));
     private final Pose afterOpenGatePose   = new Pose(-2, 51, Math.toRadians(90));
     private final Pose intakeOpenGatePose2   = new Pose(-9, 63, Math.toRadians(5));
     private final Pose intakeOpenGatePose1   = new Pose(-6.5, 61, Math.toRadians(68));
@@ -67,9 +67,9 @@ public class BlueNearAutoGate extends AutoCommandBase {
 
         /* ---------- Paths ---------- */
 
-        PathChain scorePreload = path(startPose, scorePose);
+        PathChain scorePreload = path(startPose, scoreMidPose);
 
-        PathChain prepare2 = path(scorePose, prepare2Pose);
+        PathChain prepare2 = path(scoreMidPose, prepare2Pose);
         PathChain intake2 = path(prepare2Pose, intake2Pose);
         PathChain after2 = path(intake2Pose, prepare2Pose);
         PathChain score2 = path(prepare2Pose, scoreMidPose);
@@ -86,26 +86,27 @@ public class BlueNearAutoGate extends AutoCommandBase {
         PathChain after3 = path(intake3Pose, prepare3Pose);
         PathChain score3 = path(prepare3Pose, scoreMidPose);
 
-        PathChain prepare1 = path(scorePose, prepare1Pose);
+        PathChain prepare1 = path(scoreMidPose, prepare1Pose);
         PathChain intake1 = path(prepare1Pose, intake1Pose);
         PathChain after1 = path(intake1Pose, prepare1Pose);
-        PathChain score1 = path(openGatePose, scoreMidPose);
+        PathChain score1 = path(prepare1Pose, scoreMidPose);
 
         PathChain park = path(scoreMidPose, parkPose);
 
         /* ---------- Command Groups ---------- */
 
         SequentialCommandGroup preload = new SequentialCommandGroup(
-                new InstantCommand(()->follower.setMaxPower(1)),
                 new InstantCommand(() -> intake.dntShoot()),
-                autoCommand.accelSlow(),
+                autoCommand.accelMid(),
                 autoCommand.intakeAuto(intakeAutoCommand),
+                new InstantCommand(()->follower.setMaxPower(0.8)),
                 new driveAutoCommand(follower, scorePreload),
-                autoCommand.shootSlow()
+                autoCommand.shootMid()
         );
 
         SequentialCommandGroup cycle1 = new SequentialCommandGroup(
                 autoCommand.accelMid(),
+                new InstantCommand(()->follower.setMaxPower(0.85)),
                 new driveAutoCommand(follower, prepare1),
                 new driveAutoCommand(follower, intake1),
                 new driveAutoCommand(follower, after1),
@@ -117,7 +118,9 @@ public class BlueNearAutoGate extends AutoCommandBase {
                 new driveAutoCommand(follower, prepare2),
                 new driveAutoCommand(follower, intake2),
                 new driveAutoCommand(follower, after2),
+                new InstantCommand(()->follower.setMaxPower(0.75)),
                 new driveAutoCommand(follower, score2),
+                new InstantCommand(()->follower.setMaxPower(0.85)),
                 autoCommand.shootMid()
         );
 
@@ -127,11 +130,13 @@ public class BlueNearAutoGate extends AutoCommandBase {
         );
 
         SequentialCommandGroup cycleExtra = new SequentialCommandGroup(
-                new driveAutoCommand(follower, prepareOpenGate),
-                new driveAutoCommand(follower, openGate),
+                new driveAutoCommand(follower, prepareOpenGate,1000),
+                new driveAutoCommand(follower, openGate,1500),
                 new WaitCommand(1000),
                 new driveAutoCommand(follower, afterOpenGate),
+                new InstantCommand(()->follower.setMaxPower(0.75)),
                 new driveAutoCommand(follower, scoreExtra),
+                new InstantCommand(()->follower.setMaxPower(0.85)),
                 autoCommand.shootMid()
         );
 
