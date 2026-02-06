@@ -13,11 +13,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.commands.autos.driveAutoCommand;
 import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
 
-/*
-预制3个
-拿完3组之后吸3个loading
- */
-
 @Config
 @Autonomous(name = "Auto Red Near Loading")
 public class RedNearAutoLoading extends AutoCommandBase {
@@ -25,23 +20,22 @@ public class RedNearAutoLoading extends AutoCommandBase {
     /* ================= Pose ================= */
 
     private final Pose startPose      = new Pose(58.767, -45.313, Math.toRadians(-53));
-    private final Pose scorePose      = new Pose(40, -30, Math.toRadians(-48));
-    private final Pose scoreMidPose   = new Pose(20, -20, Math.toRadians(-52));
+    private final Pose scorePose      = new Pose(40, -30, Math.toRadians(-50));
+    private final Pose scoreMidPose   = new Pose(20, -20, Math.toRadians(-48));
 
-    private final Pose prepare1Pose   = new Pose(14.5, -26.574, Math.toRadians(-90));
-    private final Pose intake1Pose    = new Pose(14.5, -49, Math.toRadians(-90));
+    private final Pose prepare1Pose   = new Pose(14.5, -24.574, Math.toRadians(-90));
+    private final Pose intake1Pose    = new Pose(14.5, -50, Math.toRadians(-90));
 
-    private final Pose prepare2Pose   = new Pose(-9.5, -26.318, Math.toRadians(-90));
-    private final Pose intake2Pose    = new Pose(-9.5, -53, Math.toRadians(-90));
+    private final Pose prepare2Pose   = new Pose(-9.5, -24.318, Math.toRadians(-90));
+    private final Pose intake2Pose    = new Pose(-9.5, -55, Math.toRadians(-90));
 
-    private final Pose prepare3Pose   = new Pose(-32.5, -36.077, Math.toRadians(-90));
-    private final Pose intake3Pose    = new Pose(-32.5, -53, Math.toRadians(-90));
+    private final Pose prepare3Pose   = new Pose(-32.5, -24.077, Math.toRadians(-90));
+    private final Pose intake3Pose    = new Pose(-32.5, -55, Math.toRadians(-90));
 
     private final Pose openGatePose   = new Pose(3.187, -51.3015, Math.toRadians(-90));
 
-    private final Pose intakeLoad1    = new Pose(-35.270, -63.013, Math.toRadians(-180));
-    private final Pose intakeLoad3    = new Pose(-56.703,  -63.53, Math.toRadians(-180));
-
+    private final Pose intakeLoad1    = new Pose(-35.270, -64.013, Math.toRadians(-180));
+    private final Pose intakeLoad3    = new Pose(-56.703,  -64.53, Math.toRadians(-180));
     private final Pose parkPose       = new Pose(3.187, -40, Math.toRadians(-90));
 
     /* ================= Paths ================= */
@@ -53,7 +47,7 @@ public class RedNearAutoLoading extends AutoCommandBase {
             prepare2, intake2, after2, score2,
             prepare3, intake3, after3, score3,
 
-    prepareMid, intakeLoad, scoreMidLoad,
+    prepareMid, intakeLoad, scoreMidLoad,intakeLoadOther,intakeLoadOther2,
             park;
 
     /* ================= Small Commands ================= */
@@ -88,6 +82,7 @@ public class RedNearAutoLoading extends AutoCommandBase {
 
         prepareMid   = path(scoreMidPose, intakeLoad1);
         intakeLoad   = path(intakeLoad1, intakeLoad3);
+
         scoreMidLoad = path(intakeLoad3, scoreMidPose);
 
         park = path(scoreMidPose, parkPose);
@@ -95,6 +90,7 @@ public class RedNearAutoLoading extends AutoCommandBase {
         /* ---------- Command Groups ---------- */
 
         SequentialCommandGroup preload = new SequentialCommandGroup(
+                new InstantCommand(()->follower.setMaxPower(0.8)),
                 new InstantCommand(() -> intake.dntShoot()),
                 autoCommand.accelSlow(),
                 autoCommand.intakeAuto(intakeAutoCommand),
@@ -132,7 +128,7 @@ public class RedNearAutoLoading extends AutoCommandBase {
 
         SequentialCommandGroup midLoad = new SequentialCommandGroup(
                 new driveAutoCommand(follower, prepareMid),
-                new driveAutoCommand(follower, intakeLoad, 1000),
+                new driveAutoCommand(follower, intakeLoad, 1300),
                 new driveAutoCommand(follower, scoreMidLoad),
                 autoCommand.shootMid()
         );
@@ -145,6 +141,8 @@ public class RedNearAutoLoading extends AutoCommandBase {
                 cycle2,
                 cycle3,
                 midLoad,
+                new InstantCommand(()->follower.setMaxPower(1)),
+
                 new driveAutoCommand(follower, park),
                 autoCommand.stopAll()
         );
