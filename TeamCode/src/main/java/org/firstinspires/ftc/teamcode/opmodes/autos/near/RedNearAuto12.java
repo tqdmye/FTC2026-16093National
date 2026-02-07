@@ -30,7 +30,7 @@ public class RedNearAuto12 extends AutoCommandBase {
     private final Pose intake1Pose    = new Pose(14.5, -51, Math.toRadians(-90));
 
     private final Pose openGatePreparePose   = new Pose(10, -30, Math.toRadians(-90));
-    private final Pose openGatePose   = new Pose(6, -54.5, Math.toRadians(-90));
+    private final Pose openGatePose   = new Pose(6, -56, Math.toRadians(-90));
 
     private final Pose prepare2Pose   = new Pose(-9.5, -23.318, Math.toRadians(-90));
     private final Pose intake2Pose    = new Pose(-9.5, -56, Math.toRadians(-90));
@@ -44,7 +44,7 @@ public class RedNearAuto12 extends AutoCommandBase {
     /* ================= Small Commands ================= */
 
     private Command openGateWait() {
-        return new WaitCommand(1100);
+        return new WaitCommand(1000);
     }
 
     /* ================= Auto ================= */
@@ -76,7 +76,7 @@ public class RedNearAuto12 extends AutoCommandBase {
         /* ---------- Command Groups ---------- */
 
         SequentialCommandGroup preload = new SequentialCommandGroup(
-                new InstantCommand(()->follower.setMaxPower(0.75)),
+                new InstantCommand(()->follower.setMaxPower(0.9)),
                 new InstantCommand(() -> intake.dntShoot()),
                 autoCommand.accelSlow(),
                 autoCommand.intakeAuto(intakeAutoCommand),
@@ -89,10 +89,10 @@ public class RedNearAuto12 extends AutoCommandBase {
                 new driveAutoCommand(follower, prepare1),
                 new driveAutoCommand(follower, intake1),
                 new driveAutoCommand(follower, path(intake1Pose, openGatePreparePose)),
-                new InstantCommand(()->follower.setMaxPower(0.85)),
+                new InstantCommand(()->follower.setMaxPower(0.9)),
                 new driveAutoCommand(follower, path(openGatePreparePose, openGatePose), 1500),
                 openGateWait(),
-                new InstantCommand(()->follower.setMaxPower(0.75)),
+                new InstantCommand(()->follower.setMaxPower(0.85)),
                 new driveAutoCommand(follower, score1),
                 autoCommand.shootMid()
         );
@@ -101,16 +101,18 @@ public class RedNearAuto12 extends AutoCommandBase {
                 new driveAutoCommand(follower, prepare2),
                 new driveAutoCommand(follower, intake2),
                 new driveAutoCommand(follower, after2),
-                new InstantCommand(()->follower.setMaxPower(0.85)),
+                new InstantCommand(()->follower.setMaxPower(0.9)),
                 new driveAutoCommand(follower, path(prepare2Pose, openGatePose),1500),
-                new InstantCommand(()->follower.setMaxPower(0.75)),
+                new InstantCommand(()->follower.setMaxPower(0.85)),
                 openGateWait(),
                 new driveAutoCommand(follower, score2),
                 autoCommand.shootMid()
         );
 
         SequentialCommandGroup cycle3 = new SequentialCommandGroup(
-                new driveAutoCommand(follower, prepare3),
+                new driveAutoCommand(follower, path(scoreMidPose, openGatePreparePose),1500),
+                new driveAutoCommand(follower, path(openGatePreparePose, openGatePose)),
+                new driveAutoCommand(follower, path(openGatePose, prepare3Pose)),
                 new driveAutoCommand(follower, intake3),
                 new driveAutoCommand(follower, after3),
                 new driveAutoCommand(follower, score3),
