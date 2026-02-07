@@ -20,8 +20,8 @@ public class BlueFarAutoCross extends AutoCommandBase {
     /* ================= Pose ================= */
 
     private final Pose startPose = new Pose(1.939, -51.423, Math.toRadians(23));
-    private final Pose scorePoseStraight = new Pose(8, -40.423, Math.toRadians(23.5));
-    private final Pose scorePoseCross = new Pose(8, -40.423, Math.toRadians(23.5));
+    private final Pose scorePoseStraight = new Pose(8, -40.423, Math.toRadians(20.75));
+    private final Pose scorePoseCross = new Pose(8, -40.423, Math.toRadians(22));
     private final Pose prepareLoadingPose = new Pose(3, -47, Math.toRadians(90));
     private final Pose intakeLoadingPose = new Pose(1, -3, Math.toRadians(90));
     private final Pose prepareCrossPose = new Pose(30, -40, Math.toRadians(85));

@@ -23,19 +23,19 @@ public class RedNearAuto12 extends AutoCommandBase {
     /* ================= Pose ================= */
 
     private final Pose startPose      = new Pose(58.767, -45.313, Math.toRadians(-53));
-    private final Pose scorePose      = new Pose(40, -30, Math.toRadians(-50));
+    private final Pose scorePose      = new Pose(40, -30, Math.toRadians(-47));
     private final Pose scoreMidPose   = new Pose(20, -20, Math.toRadians(-45));
 
-    private final Pose prepare1Pose   = new Pose(14.5, -25.574, Math.toRadians(-90));
+    private final Pose prepare1Pose   = new Pose(14.5, -23.574, Math.toRadians(-90));
     private final Pose intake1Pose    = new Pose(14.5, -51, Math.toRadians(-90));
 
     private final Pose openGatePreparePose   = new Pose(10, -30, Math.toRadians(-90));
-    private final Pose openGatePose   = new Pose(6, -53, Math.toRadians(-90));
+    private final Pose openGatePose   = new Pose(6, -54.5, Math.toRadians(-90));
 
-    private final Pose prepare2Pose   = new Pose(-9.5, -25.318, Math.toRadians(-90));
+    private final Pose prepare2Pose   = new Pose(-9.5, -23.318, Math.toRadians(-90));
     private final Pose intake2Pose    = new Pose(-9.5, -56, Math.toRadians(-90));
 
-    private final Pose prepare3Pose   = new Pose(-32.5, -25.077, Math.toRadians(-90));
+    private final Pose prepare3Pose   = new Pose(-32.5, -23.077, Math.toRadians(-90));
     private final Pose intake3Pose    = new Pose(-32.5, -56, Math.toRadians(-90));
 
     private final Pose parkPose       = new Pose(3.187, -40, Math.toRadians(-90));
@@ -44,7 +44,7 @@ public class RedNearAuto12 extends AutoCommandBase {
     /* ================= Small Commands ================= */
 
     private Command openGateWait() {
-        return new WaitCommand(1500);
+        return new WaitCommand(1100);
     }
 
     /* ================= Auto ================= */
@@ -76,7 +76,7 @@ public class RedNearAuto12 extends AutoCommandBase {
         /* ---------- Command Groups ---------- */
 
         SequentialCommandGroup preload = new SequentialCommandGroup(
-                new InstantCommand(()->follower.setMaxPower(0.7)),
+                new InstantCommand(()->follower.setMaxPower(0.75)),
                 new InstantCommand(() -> intake.dntShoot()),
                 autoCommand.accelSlow(),
                 autoCommand.intakeAuto(intakeAutoCommand),
@@ -89,8 +89,10 @@ public class RedNearAuto12 extends AutoCommandBase {
                 new driveAutoCommand(follower, prepare1),
                 new driveAutoCommand(follower, intake1),
                 new driveAutoCommand(follower, path(intake1Pose, openGatePreparePose)),
-                new driveAutoCommand(follower, path(openGatePreparePose, openGatePose)),
+                new InstantCommand(()->follower.setMaxPower(0.85)),
+                new driveAutoCommand(follower, path(openGatePreparePose, openGatePose), 1500),
                 openGateWait(),
+                new InstantCommand(()->follower.setMaxPower(0.75)),
                 new driveAutoCommand(follower, score1),
                 autoCommand.shootMid()
         );
@@ -99,7 +101,9 @@ public class RedNearAuto12 extends AutoCommandBase {
                 new driveAutoCommand(follower, prepare2),
                 new driveAutoCommand(follower, intake2),
                 new driveAutoCommand(follower, after2),
-                new driveAutoCommand(follower, path(prepare2Pose, openGatePose)),
+                new InstantCommand(()->follower.setMaxPower(0.85)),
+                new driveAutoCommand(follower, path(prepare2Pose, openGatePose),1500),
+                new InstantCommand(()->follower.setMaxPower(0.75)),
                 openGateWait(),
                 new driveAutoCommand(follower, score2),
                 autoCommand.shootMid()

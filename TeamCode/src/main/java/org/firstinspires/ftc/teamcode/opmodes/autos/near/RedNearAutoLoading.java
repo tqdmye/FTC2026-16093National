@@ -36,7 +36,7 @@ public class RedNearAutoLoading extends AutoCommandBase {
 
     private final Pose intakeLoad1    = new Pose(-35.270, -63.53, Math.toRadians(-180));
     private final Pose intakeLoad3    = new Pose(-56.703,  -63.53, Math.toRadians(-180));
-    private final Pose parkPose       = new Pose(3.187, -40, Math.toRadians(-90));
+    private final Pose parkPose       = new Pose(3.187, -35, Math.toRadians(-90));
 
     /* ================= Paths ================= */
 

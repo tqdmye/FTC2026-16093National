@@ -21,7 +21,7 @@ public class RedFarAutoCross extends AutoCommandBase {
 
     private final Pose startPose = new Pose(1.939, 51.423, Math.toRadians(-23));
     private final Pose scorePoseStraight = new Pose(8, 40.423, Math.toRadians(-22));
-    private final Pose scorePoseCross = new Pose(8, 40.423, Math.toRadians(-24));
+    private final Pose scorePoseCross = new Pose(8, 40.423, Math.toRadians(-22));
     private final Pose prepareLoadingPose = new Pose(3, 47, Math.toRadians(-90));
     private final Pose intakeLoadingPose = new Pose(1, 3, Math.toRadians(-90));
     private final Pose prepareCrossPose = new Pose(30, 40, Math.toRadians(-85));
@@ -33,7 +33,7 @@ public class RedFarAutoCross extends AutoCommandBase {
     /* ================= 参数 ================= */
 
     public static double AUTO_TOTAL_TIME = 30.0;
-    public static double PARK_REMAIN_TIME = 2.5;
+    public static double PARK_REMAIN_TIME = 3.2;
 
     /* ================= Auto ================= */
 
@@ -61,6 +61,13 @@ public class RedFarAutoCross extends AutoCommandBase {
                 new driveAutoCommand(follower, buildPath(intakeLoadingPose, scorePoseStraight)),
                 autoCommand.shootFar()
         );
+        SequentialCommandGroup intakeStraightLast = new SequentialCommandGroup(
+                new driveAutoCommand(follower, buildPath(scorePoseCross, prepareLoadingPose)),
+                new InstantCommand(() -> follower.setMaxPower(0.9)),
+                new driveAutoCommand(follower, buildPath(prepareLoadingPose, intakeLoadingPose), 1800),
+                new driveAutoCommand(follower, buildPath(intakeLoadingPose, prepareLoadingPose), 200),
+                new driveAutoCommand(follower, buildPath(prepareLoadingPose, intakeLoadingPose), 1800)
+        );
 
         /* ---------- Final Auto ---------- */
 
@@ -73,14 +80,15 @@ public class RedFarAutoCross extends AutoCommandBase {
                 getScoreStraightCommand(),
                 // 2. 这里再次调用方法，生成又一个新的 scoreCross 实例并加入队列
                 getScoreCrossCommand(),
+                intakeStraightLast,
 
                 // 3. ConditionalCommand 内部也会调用 getScoreCrossCommand()，生成它自己专用的实例
                 // 这样就避免了同一个 Command 对象被添加多次的问题
-                new ConditionalCommand(
-                        getScoreCrossCommand(), // 内部生成新实例
-                        getIntakeLastCommand(), // 内部生成新实例
-                        () -> (AUTO_TOTAL_TIME - getRuntime()) > PARK_REMAIN_TIME
-                ),
+//                new ConditionalCommand(
+//                        getScoreCrossCommand(), // 内部生成新实例
+//                        getIntakeLastCommand(), // 内部生成新实例
+//                        () -> (AUTO_TOTAL_TIME - getRuntime()) > PARK_REMAIN_TIME
+//                ),
 
                 autoCommand.stopAll()
         );
