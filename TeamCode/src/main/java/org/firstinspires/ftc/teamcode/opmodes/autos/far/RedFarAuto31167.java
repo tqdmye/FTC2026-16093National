@@ -13,23 +13,23 @@ import org.firstinspires.ftc.teamcode.commands.autos.driveAutoCommand;
 import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
 
 @Config
-@Autonomous(name = "Auto Blue Far 31167")
-public class BlueFarAuto31167 extends AutoCommandBase {
+@Autonomous(name = "Auto Red Far 31167")
+public class RedFarAuto31167 extends AutoCommandBase {
 
     /* ================= Pose ================= */
 
-    private final Pose startPose = new Pose(1.939, -51.423, Math.toRadians(23));
-    private final Pose scorePoseStraight =  new Pose(8, -40.423, Math.toRadians(25));
-    private final Pose scorePoseCross = new Pose(8, -40.423, Math.toRadians(32));
-    private final Pose preparePose = new Pose(4, -47, Math.toRadians(90));
-    private final Pose intakeLoadingPose = new Pose(0.5, -3, Math.toRadians(90));
-    private final Pose intakeOtherPose = new Pose(0.5, -6, Math.toRadians(90));
+    private final Pose startPose = new Pose(1.939, 51.423, Math.toRadians(-23));
+    private final Pose scorePoseStraight =  new Pose(8, 40.423, Math.toRadians(-25));
+    private final Pose scorePoseCross = new Pose(8, 40.423, Math.toRadians(-32));
+    private final Pose preparePose = new Pose(4, 47, Math.toRadians(-90));
+    private final Pose intakeLoadingPose = new Pose(0.5, 3, Math.toRadians(-90));
+    private final Pose intakeOtherPose = new Pose(0.5, 6, Math.toRadians(-90));
 
-    private final Pose parkPose = new Pose(0.5, -15, Math.toRadians(90));
+    private final Pose parkPose = new Pose(0.5, 15, Math.toRadians(-90));
 
 
-    private final Pose prepareCrossPose = new Pose(30, -40, Math.toRadians(85));
-    private final Pose intakeCrossPose = new Pose(30, -10, Math.toRadians(90));
+    private final Pose prepareCrossPose = new Pose(30, 40, Math.toRadians(-85));
+    private final Pose intakeCrossPose = new Pose(30, 10, Math.toRadians(-90));
 
     /* ================= 参数 ================= */
 
